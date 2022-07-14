@@ -63,7 +63,7 @@ stguri1=$(az storage account show -n hubstg$randomIdentifier1 -g $rg --query pri
 az vm boot-diagnostics enable --storage $stguri1 --ids $(az vm list -g $rg --query '[?contains(location,`'$location'`)].{id:id}' -o tsv) -o none
 
 ### Installing tools for networking connectivity validation such as traceroute, tcptraceroute, iperf and others (check link below for more details) 
-echo Installing tools for networking connectivity validation such as traceroute, tcptraceroute, iperf and others (check link below for more details)  
+echo Installing tools for networking connectivity validation such as traceroute, tcptraceroute, iperf and others  
 nettoolsuri="https://raw.githubusercontent.com/dmauser/azure-vm-net-tools/main/script/nettools.sh"
 for vm in `az vm list -g $rg --query "[?storageProfile.imageReference.offer=='UbuntuServer'].name" -o tsv`
 do
@@ -227,19 +227,18 @@ az network private-endpoint dns-zone-group create \
 done
 
 # ***** On-premises (onprem.contoso.corp) + Azure (azure.contoso.corp) DNS integration ***** 
-echo ***** On-premises (onprem.contoso.corp) + Azure (azure.contoso.corp) DNS integration ***** 
-
+echo -e "***** On-premises domain onprem.contoso.corp + Azure domain azure.contoso.corp DNS integration *****" 
 
 # Creating Private DNS Zone for Azure VM resolution
 echo Creating Private DNS Zone azure.contoso.corp for Azure VM resolution
 az network private-dns zone create -g $rg -n azure.contoso.corp --output none
 
 # Linking hub for DNS name resgistration (Private DNZ zone: azure.contoso.corp)
-echo Linking hub for DNS name resgistration (Private DNZ zone: azure.contoso.corp)
+echo Linking hub for DNS name resgistration Private DNZ zone: azure.contoso.corp
 az network private-dns link vnet create -g $rg -n $AzurehubName-link -z azure.contoso.corp -v $AzurehubName-vnet -e true -o none
 
 # Linking all spokes for registration (Private DNZ zone: azure.contoso.corp)
-echo Linking all spokes for registration (Private DNZ zone: azure.contoso.corp)
+echo Linking all spokes for registration Private DNZ zone: azure.contoso.corp
 for spoke in $(az network vnet list -g $rg --query '[?contains(name,`'Az-Spk'`)].{name:name}' -o tsv)
 do
  echo Adding Private DNS vnet link to $spoke
