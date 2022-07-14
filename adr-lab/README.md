@@ -14,4 +14,6 @@ chmod +xr adr-deploy.sh
 ./adr-deploy.sh 
 ```
 
-**Note:** the provisioning process will take around 60 minutes to complete.
+**Note:** the provisioning process will take around 25 minutes to complete.
+
+## Validation
