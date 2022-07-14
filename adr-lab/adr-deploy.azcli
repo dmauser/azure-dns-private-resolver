@@ -78,9 +78,9 @@ do
 done
 
 # Deploy Bastion $OnPremName for DNS Server access. ======> Add this step to the Base Lab.
-az network public-ip create --resource-group $rg --name $OnPremName-bastion-pip --sku Standard --location $location -o none
-az network vnet subnet create -g $rg --vnet-name $OnPremName-vnet -n AzureBastionSubnet --address-prefixes $OnPremAzureBastionSubnet --output none
-az network bastion create --name $OnPremName-bastion --public-ip-address $OnPremName-bastion-pip --sku basic --resource-group $rg --vnet-name $OnPremName-vnet --location $location -o none
+# az network public-ip create --resource-group $rg --name $OnPremName-bastion-pip --sku Standard --location $location -o none
+# az network vnet subnet create -g $rg --vnet-name $OnPremName-vnet -n AzureBastionSubnet --address-prefixes $OnPremAzureBastionSubnet --output none
+# az network bastion create --name $OnPremName-bastion --public-ip-address $OnPremName-bastion-pip --sku basic --resource-group $rg --vnet-name $OnPremName-vnet --location $location -o none
 
 # Deploying On-premises Windows DNS Server
 echo Deploying On-premises Windows DNS Server
