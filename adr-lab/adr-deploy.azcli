@@ -2,7 +2,7 @@
 az extension add -n dns-resolver
 
 #Parameters
-rg=lab-dns-resolver #Define your resource group
+rg=lab2-dns-resolver #Define your resource group
 location=eastus2 #Set location
 username=azureuser
 password=Msft123Msft123
@@ -275,6 +275,6 @@ az network vnet update -g $rg -n onprem-vnet \
  --output none
 # Restarting onprem VMs to commit the new VNET DNS settings.
 echo Restarting onprem VMs to commit the new VNET DNS settings.
-az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{id:id}' -o tsv) --no-wait
+az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{id:id}' -o tsv) --no- --output none
 echo Follow the validation script to test the name resolution.
 echo Deployment has finished.
