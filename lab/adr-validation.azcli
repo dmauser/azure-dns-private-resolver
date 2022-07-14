@@ -1,0 +1,14 @@
+# **** Validation *****
+#Parameters
+rg=lab-dns-resolver #Define your resource group
+location=eastus2 #Set location
+
+### Private Endpoint Name Resolution
+
+### List Blob Storage Account names to test Private Endpoint name resolution.
+az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
+# Example of the ouput for the hub storage account: https://hubstg32476.blob.core.windows.net/
+
+### Access via serial console/SSH or Bastion Onprem-vmlx (via ) and test name resolution:
+nslookup hubstg32476.blob.core.windows.net
+### Expect to get a private IP
