@@ -30,7 +30,7 @@ Azurespoke2Subnet1Prefix=10.0.22.0/27 # Azure Spoke 1 VNET address space
 
 #On-premises 
 #Define emulated On-premises parameters:
-OnPremName=OnPrem #On-premises Name
+OnPremName=onprem #On-premises Name
 OnPremVnetAddressSpace=192.168.100.0/24 #On-premises VNET address space
 OnPremSubnet1prefix=192.168.100.0/27 #On-premises Subnet1 address prefix
 OnPremgatewaySubnetPrefix=192.168.100.128/27 #On-premises Gateways address prefix
@@ -96,8 +96,8 @@ echo Deploying Azure DNS Resolver
 hubvnetid=$(az network vnet show -g $rg -n $AzurehubName-vnet --query id -o tsv)
 az dns-resolver create --name $AzurehubName-dnsresolver -g $rg --location $location --id $hubvnetid -o none
 
-# Creating inbound-endpoint subnet
-echo Creating inbound-endpoint subnet
+# Creating DNS inbound-endpoint 
+echo Creating DNS inbound-endpoint
 az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet -n dnsin --address-prefixes $AzureHubDnsInSubnetPrefix --output none
 indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $AzurehubName-vnet --query id -o tsv)
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
@@ -106,8 +106,8 @@ az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid" \
  --no-wait
 
-# Creating outbound-endpoint subnet
-echo Creating outbound-endpoint subnet
+# Creating DNS outbound-endpoint 
+echo Creating DNS outbound-endpoint 
 az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet -n dnsout --address-prefixes $AzureHubDnsOutSubnetPrefix --output none
 outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $AzurehubName-vnet --query id -o tsv)
 az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
@@ -117,15 +117,15 @@ az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
  --output none
 
 # Creating forwarding-ruleset
-echo Creating forwarding-ruleset
+echo Creating forwarding-ruleset 
 outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $AzurehubName-dnsresolver --query id -o tsv)
 az dns-resolver forwarding-ruleset create -g $rg --name $AzurehubName-fwd-ruleset \
  --location $location \
  --outbound-endpoints id=$outepid \
  --output none
 
-# Creating forwarding-rule to allow Azure to On-premises DNS name resolution
-echo Creating forwarding-rule to allow Azure to On-premises DNS name resolution
+# Creating forwarding-rule to allow Azure to On-premises DNS name resolution integration
+echo Creating forwarding-rule to allow Azure to On-premises DNS name resolution integration
 dnsvmip=$(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --ruleset-name $AzurehubName-fwd-ruleset \
@@ -141,27 +141,28 @@ az dns-resolver vnet-link create -g $rg --name $AzurehubName-vnetlink \
  --id $(az network vnet show -g $rg -n $AzurehubName-vnet --query id -o tsv) \
  --output none
 
-# Creating ruleset vnet links for Spoke1 vnet
-echo Creating ruleset vnet links for Spoke1 vnet
+# Creating ruleset vnet link for Spoke1 vnet
+echo Creating ruleset vnet link for Spoke1 vnet
 az dns-resolver vnet-link create -g $rg --name $Azurespoke1Name-vnetlink \
  --ruleset-name $AzurehubName-fwd-ruleset \
  --id $(az network vnet show -g $rg -n $Azurespoke1Name-vnet --query id -o tsv) \
  --output none
 
-# Creating ruleset vnet links for Spoke2 vnet
-echo Creating ruleset vnet links for Spoke2 vnet
+# Creating ruleset vnet link for Spoke2 vnet
+echo Creating ruleset vnet link for Spoke2 vnet
 az dns-resolver vnet-link create -g $rg --name $Azurespoke2Name-vnetlink \
  --ruleset-name $AzurehubName-fwd-ruleset \
  --id $(az network vnet show -g $rg -n $Azurespoke2Name-vnet --query id -o tsv) \
  --output none
 
 # ***** Private Endpoint + PrivateLink Private DNZ Zone ****
-echo ***** Private Endpoint + PrivateLink Private DNZ Zone ****
+echo Creating Private Endpoint and PrivateLink Private DNZ Zone integration
 # Creating DNS Private Link zone: privatelink.blob.core.windows.net
 echo Creating DNS Private Link zone: privatelink.blob.core.windows.net
 az network private-dns zone create \
-    --resource-group $rg \
-    --name "privatelink.blob.core.windows.net"
+ --resource-group $rg \
+ --name "privatelink.blob.core.windows.net" \
+ --output none
 
 # Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
 echo Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
@@ -202,7 +203,7 @@ az network private-endpoint create \
 
 #Creating Private DNS vnet link to Hub, Spoke1 and Spoke 2 vnets
 echo Creating Private DNS vnet link to Hub, Spoke1 and Spoke 2 vnets
-for vnet in $(az network vnet list -g $rg --query '[?contains(name,`'Az'`)].{name:name}' -o tsv)
+for vnet in $(az network vnet list -g $rg --query '[?contains(name,`'az'`)].{name:name}' -o tsv)
 do
  az network private-dns link vnet create \
     --resource-group $rg \
@@ -239,19 +240,19 @@ az network private-dns link vnet create -g $rg -n $AzurehubName-link -z azure.co
 
 # Linking all spokes for registration (Private DNZ zone: azure.contoso.corp)
 echo Linking all spokes for registration Private DNZ zone: azure.contoso.corp
-for spoke in $(az network vnet list -g $rg --query '[?contains(name,`'Az-Spk'`)].{name:name}' -o tsv)
+for spoke in $(az network vnet list -g $rg --query '[?contains(name,`'az-spk'`)].{name:name}' -o tsv)
 do
  echo Adding Private DNS vnet link to $spoke
  az network private-dns link vnet create -g $rg -n $spoke-link -z azure.contoso.corp -v $spoke -e true -o none
 done
 
 #***** Configuring On-Premises DNS *****
-echo ***** Configuring On-premises DNS Server *****
+echo Configuring On-premises DNS Server
 # Run command for Onprem DNS configuration:
 dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $AzurehubName-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
 # fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
 globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
-onpremvmip=$(az network nic show --name OnPrem-lxvm-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+onpremvmip=$(az network nic show --name onprem-lxvm-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 az vm run-command invoke --command-id RunPowerShellScript \
  --name $dnsvmname \
  --resource-group $rg \
@@ -269,11 +270,11 @@ az vm run-command invoke --command-id RunPowerShellScript \
 echo ***** Preparing On-premises VMs for Name Resolution *****
 # Setting On-prem vnet to use On-Prem DNS Server
 echo Setting On-prem vnet to use On-Prem DNS Server
-az network vnet update -g $rg -n OnPrem-vnet \
+az network vnet update -g $rg -n onprem-vnet \
  --dns-servers $(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv) \
  --output none
-# Restarting OnPrem VMs to commit the new VNET DNS settings.
-echo Restarting OnPrem VMs to commit the new VNET DNS settings.
-az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'OnPrem'`)].{id:id}' -o tsv) --no-wait
+# Restarting onprem VMs to commit the new VNET DNS settings.
+echo Restarting onprem VMs to commit the new VNET DNS settings.
+az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{id:id}' -o tsv) --no-wait
 echo Follow the validation script to test the name resolution.
 echo Deployment has finished.
