@@ -43,9 +43,8 @@ JsonOnPrem={\"name\":\"$OnPremName\",\"addressSpacePrefix\":\"$OnPremVnetAddress
 
 #Deploy base lab environment = Hub + VPN Gateway + VM and two Spokes with one VM on each.
 echo Deploying base lab: Hub with Spoke1 and 2, On-Premises and VPN using VNGs with BGP.
-echo "***  Note you will be prompted by username and password ***"
-echo "*** It will take around 30 minutes to finish the deployment ***"
-az group create --name $rg --location $location
+echo "*** It will take around 20 minutes to finish the deployment ***"
+az group create --name $rg --location $location --output none
 az deployment group create --name lab-$RANDOM --resource-group $rg \
 --template-uri https://raw.githubusercontent.com/dmauser/azure-hub-spoke-base-lab/main/azuredeploy.json \
 --parameters deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password \
