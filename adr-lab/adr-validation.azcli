@@ -1,7 +1,7 @@
 # **** Validation *****
 #Parameters
-rg=lab-dns-resolver #Define your resource group
-location=eastus2 #Set location
+rg=lab-dns-resolver 
+location=eastus2
 
 ### Scenario 1: Private Endpoint DNS Name Resolution
 

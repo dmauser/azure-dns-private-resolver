@@ -6,7 +6,11 @@
 
 ### Scenario 1: Private endpoint DNS name resolution
 
+![Private endpoint DNS name resolution](./media/scenario1.png)
+
 ### Scenario 2: On-premises and Azure DNS integration
+
+TBD
 
 ## Deploy this solution
 
@@ -306,7 +310,6 @@ az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{i
 echo Follow the validation script to test the name resolution.
 echo Deployment has finished.
 ```
-
 
 ## Validation
 
