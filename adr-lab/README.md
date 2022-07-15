@@ -316,22 +316,33 @@ echo Deployment has finished.
 ### Scenario 1: Private endpoint DNS name resolution
 
 ```Bash
+# **** Validation *****
 #Parameters
 rg=lab-dns-resolver 
 location=eastus2
 
 ### Scenario 1: Private Endpoint DNS Name Resolution
 
-### List Blob Storage Account names to test Private Endpoint name resolution.
+# 1) List Blob Storage Account names to test Private Endpoint name resolution.
 az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
 # Example of the ouput for the hub storage account: https://hubstg32476.blob.core.windows.net/
 
-### Access via serial console/SSH or Bastion Onprem-vmlx and test name resolution:
+# 2) Access via serial console/SSH or Bastion Onprem-vmlx 
+
+## 2.1) Review DNS client config. It will show what DNS server is being used.
+systemd-resolve --status | grep "DNS Servers:"
+## 2.2) Test storage accounts name resolution (change the name below based on what ):
 nslookup hubstg32476.blob.core.windows.net
-
-## Repeat the same steps above on spk1stgxxxx and spoke2stgxxx.
+## Repeat the same steps above on spk1stgxxxx and spoke2stgxxx storage accounts.
 ## Test from all VMs (on-premises and Azure Hub and spokes)
-## Expect to get a private IP
+## Expectation is to get the private endpoint IP for each
 
-### Review the Windows DNS Configuration using Conditional Forwarder.
+# 3) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration using Conditional Forwarder (use Bastion to access the Windows VM).
+
+# 4) Review the Priavte DNS Resolver configuration and inbound endpoints
+
+# 5) Review Private Endpoints (hubpe, spk1pe and spk2pe) configuration
+
+# 6) Review Private DNS Zones configuration related to Private Link zone: privatelink.blob.core.windows.net
+## Review VNET links from Hub, Spoke1 and Spoke2.
 ```
