@@ -3,7 +3,7 @@ az extension add -n dns-resolver
 
 #Parameters
 rg=lab-dns-resolver #Define your resource group
-location=eastus2 #Set location
+location=eastus #Set location
 username=azureuser
 password=Msft123Msft123
 
@@ -76,12 +76,6 @@ do
  --protected-settings "{\"fileUris\": [\"$nettoolsuri\"],\"commandToExecute\": \"./nettools.sh\"}" \
  --no-wait
 done
-
-# Deploying Bastion $OnPremName for DNS Server access
-echo Deploying Bastion $OnPremName for DNS Server access.
-az network public-ip create --resource-group $rg --name $OnPremName-bastion-pip --sku Standard --location $location -o none
-az network vnet subnet create -g $rg --vnet-name $OnPremName-vnet -n AzureBastionSubnet --address-prefixes $OnPremAzureBastionSubnet --output none
-az network bastion create --name $OnPremName-bastion --public-ip-address $OnPremName-bastion-pip --sku basic --resource-group $rg --vnet-name $OnPremName-vnet --location $location -o none
 
 # Deploying On-premises Windows DNS Server
 echo Deploying On-premises Windows DNS Server
