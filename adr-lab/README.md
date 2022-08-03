@@ -393,6 +393,20 @@ nslookup hubstg32476.blob.core.windows.net
 
 ### Scenario 2: On-premises and Azure DNS integration
 
+```Bash
+### Scenario 2: On-premises and Azure DNS integration
+
+# 1) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration. Check onprem.contoso.corp
+# 2) Review Azure DNS Resolver outbound endpoint as well as RuleSet with the specific rule to onprem.contoso.corp
+# 3) Test name resolution from both sides by accessing onprem-lxvm via Bastion or Serial Console and issue few nslookups against Azure VM names (az-hub-lxvm, az-spk1-lxvm, az-spk2-lxvm) using domain name azure.contoso.corp.
+# For example:
+# From onprem-lxvm run: 
+nslookup az-hub-lxvm.azure.contoso.corp # repeat the same for the other Azure VMs.
+# From az-hub-lxvm or other Azure spoke VM run:
+nslookup onprem-lxvm.onprem.contoso.corp 
+nslookup onprem-windns.onprem.contoso.corp
+```
+
 ## Clean up
 
 Delete the resource group via Portal o running the following command:
