@@ -38,14 +38,20 @@ The lab includes the following components:
 **Azure side:**
 
 - Azure Hub and two spokes virtual networks (VNETs) with their respective address spaces: 10.0.20.0/24 (Hub), 10.0.21.0/24 (Spoke1), and 10.0.22.0/24 (Spoke2)
-- Linux VMs on each Azure VNETs accessible via Serial Console
+- Linux VMs on each Azure VNETs accessible via Serial Console or Bastion.
 - Three storage accounts to be used for their Private Endpoints on each VNET. 
-- Azure VPN Gateway Active/Active using BGP (ASN 65515) with a connection to On-premises via a S2S VPN.
+- Azure VPN Gateway Active/Active using BGP (ASN 65515) with a S2S VPN connection to On-premises.
 - Azure Private DNS Resolver with both inbound and outbound endpoints.
-- DNS ruleset with a single rule to onprem.constoso.corp using on-prem Windows DNS Server as destination (192.168.100.5)
-- Private DNS Zones hosting two zones: azure.constoso.corp (using auto registration to get all Azure VM names automatically polulated) and privatelink.blob.core.windows.net hosting the three Private Endpoints located on each VNET.
+- DNS ruleset with a single rule to **onprem.constoso.corp** using on-prem Windows DNS Server as destination (192.168.100.5).
+- Private DNS Zones hosting two zones: **azure.constoso.corp** (using auto registration to get all Azure VM names automatically registered) and privatelink.blob.core.windows.net hosting the three Private Endpoints for on each VNET. 
+ - There are Private DNS zone VNET links to all three VNETs from each one of the zones.
 
 **On-premises side:**
+
+- On-premises emulated VNET with address space: 192.168.100.0/24.
+- There are two VMs. A Linux VM to emulate the client and a Windows Server DNS hosting **onprem.consotos.corp** zone.
+- VPN Gateway Active/Passive using BGP (ASN 65010) with a S2S VPN connection to the Azure VPN Gateway.
+- Bastion has been deployed to allow access to both Linux and Windows VMs. Linux VM can also be accessed using Serial Console.
 
 ## Deploy this solution
 
