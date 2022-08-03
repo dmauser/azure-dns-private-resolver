@@ -1,4 +1,4 @@
-# Lab: Azure DNS Private Resolver (single Hub/spoke)
+# Lab: Azure DNS Private Resolver (Hub and spoke)
 
 **Content**
 
