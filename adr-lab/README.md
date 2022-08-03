@@ -29,7 +29,23 @@ The goal of this post is to give you a ready environment that you can play or de
 
 ### Scenario 2: On-premises and Azure DNS integration
 
-TBD
+![On-premises and Azure DNS integration](./media/scenario2.png)
+
+### Lab components
+
+The lab includes the following components:
+
+**Azure side:**
+
+- Azure Hub and two spokes virtual networks (VNETs) with their respective address spaces: 10.0.20.0/24 (Hub), 10.0.21.0/24 (Spoke1), and 10.0.22.0/24 (Spoke2)
+- Linux VMs on each Azure VNETs accessible via Serial Console
+- Three storage accounts to be used for their Private Endpoints on each VNET. 
+- Azure VPN Gateway Active/Active using BGP (ASN 65515) with a connection to On-premises via a S2S VPN.
+- Azure Private DNS Resolver with both inbound and outbound endpoints.
+- DNS ruleset with a single rule to onprem.constoso.corp using on-prem Windows DNS Server as destination (192.168.100.5)
+- Private DNS Zones hosting two zones: azure.constoso.corp (using auto registration to get all Azure VM names automatically polulated) and privatelink.blob.core.windows.net hosting the three Private Endpoints located on each VNET.
+
+**On-premises side:**
 
 ## Deploy this solution
 
