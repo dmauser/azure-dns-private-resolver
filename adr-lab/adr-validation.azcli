@@ -1,7 +1,7 @@
 # **** Validation *****
 #Parameters
 rg=lab-dns-resolver 
-location=eastus2
+location=eastus
 
 ### Scenario 1: Private Endpoint DNS Name Resolution
 
@@ -27,3 +27,5 @@ nslookup hubstg32476.blob.core.windows.net
 
 # 6) Review Private DNS Zones configuration related to Private Link zone: privatelink.blob.core.windows.net
 ## Review VNET links from Hub, Spoke1 and Spoke2.
+
+### Scenario 2: On-premises and Azure DNS integration

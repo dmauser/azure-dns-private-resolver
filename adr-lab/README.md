@@ -3,13 +3,17 @@
 **Content**
 
 [Intro](#intro)
+
 [Lab diagram](#lab-diagram)
 - [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution)
 - [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration)
+
 [Deploy this solution](#deploy-this-solution)
+
 [Validation](#validation)
 - [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution-1)
 - [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration-1)
+
 [Clean up](#clean-up)
 
 ## Intro
@@ -38,9 +42,7 @@ You can follow the the first part of the provisioning by using Deployments under
 
 ![](./media/deployment.png)
 
-The second part of the deployment which build On-premises DNS Server, Private DNS Resolver, Private Link and DNS configuration is done using CLI:
-
-**Note:** the whole provisioning process will take around 35 minutes to complete.
+The second part of the deployment which build On-premises DNS Server, Private DNS Resolver, Private Link and DNS configuration is done using CLI. Please, note that the whole provisioning process will take around 35 minutes to complete.
 
 Another approach you can use is to deploy the lab step-by-step using the CLI commands below:
 
