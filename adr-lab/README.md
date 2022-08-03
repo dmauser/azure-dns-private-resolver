@@ -412,4 +412,6 @@ nslookup onprem-windns.onprem.contoso.corp
 Delete the resource group via Portal o running the following command:
 
 ```Bash
+rg=lab-dns-resolver 
+az group delete -g $rg --no-wait --yes
 ```
