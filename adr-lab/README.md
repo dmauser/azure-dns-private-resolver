@@ -35,6 +35,8 @@ The goal of this post is to give you a ready environment that you can play or de
 
 The lab includes the following components:
 
+
+
 **Azure side:**
 
 - Azure Hub and two spokes virtual networks (VNETs) with their respective address spaces: 10.0.20.0/24 (Hub), 10.0.21.0/24 (Spoke1), and 10.0.22.0/24 (Spoke2)
@@ -53,6 +55,8 @@ The lab includes the following components:
 - VPN Gateway Active/Passive using BGP (ASN 65010) with a S2S VPN connection to the Azure VPN Gateway.
 - Bastion has been deployed to allow access to both Linux and Windows VMs. Linux VM can also be accessed using Serial Console.
 
+**Note:** default username is azureuser and password Msft123Msft123. You can change that over parameters files before you deploy.
+
 ## Deploy this solution
 
 The lab is also available in the above .azcli that you can rename as .sh (shell script) and execute. You can open [Azure Cloud Shell (Bash)](https://shell.azure.com) and run the following commands build the entire lab:
@@ -62,6 +66,8 @@ wget -O adr-deploy.sh https://raw.githubusercontent.com/dmauser/azure-dns-privat
 chmod +xr adr-deploy.sh
 ./adr-deploy.sh 
 ```
+
+**Note:** Azure Cloud Shell has a timeout of 20 min of inactivity. Make sure you have an active window or issue few enters during the deployment. An alternative for Azure Cloud Shell is install AZCLI for your Linux distribution or get Linux for Windows via WSL2. See more information in [Set up a WSL development environment](https://docs.microsoft.com/en-us/windows/wsl/setup/environment)
 
 You can follow the the first part of the provisioning by using Deployments under settings section over the resource group as shown:
 

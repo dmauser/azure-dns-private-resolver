@@ -10,7 +10,6 @@ az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
 # Example of the ouput for the hub storage account: https://hubstg32476.blob.core.windows.net/
 
 # 2) Access via serial console/SSH or Bastion Onprem-vmlx 
-
 ## 2.1) Review DNS client config. It will show what DNS server is being used.
 systemd-resolve --status | grep "DNS Servers:"
 ## 2.2) Test storage accounts name resolution (change the name below based on what ):
@@ -29,3 +28,14 @@ nslookup hubstg32476.blob.core.windows.net
 ## Review VNET links from Hub, Spoke1 and Spoke2.
 
 ### Scenario 2: On-premises and Azure DNS integration
+
+# 1) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration. Check onprem.contoso.corp
+# 2) Review Azure DNS Resolver outbound endpoint as well as RuleSet with the specific rule to onprem.contoso.corp
+# 3) Test name resolution from both sides by accessing onprem-lxvm via Bastion or Serial Console and issue few nslookups against Azure VM names (az-hub-lxvm, az-spk1-lxvm, az-spk2-lxvm) using domain name azure.contoso.corp.
+# For example:
+# From onprem-lxvm run: 
+nslookup az-hub-lxvm.azure.contoso.corp # repeat the same for the other Azure VMs.
+# From az-hub-lxvm or other Azure spoke VM run:
+nslookup onprem-lxvm.onprem.contoso.corp 
+nslookup onprem-windns.onprem.contoso.corp
+
