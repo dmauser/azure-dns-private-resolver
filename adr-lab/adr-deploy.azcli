@@ -99,8 +99,7 @@ indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $AzurehubName-
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --dns-resolver-name $AzurehubName-dnsresolver \
  --location $location \
- --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid" \
- --no-wait
+ --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid"
 
 # Creating DNS outbound-endpoint 
 echo Creating DNS outbound-endpoint 
