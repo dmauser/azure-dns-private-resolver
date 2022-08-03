@@ -87,8 +87,8 @@ az vm extension set --resource-group $rg --vm-name $OnPremName-windns  --name Cu
  --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
  --no-wait
 
-# Deploying Azure DNS Resolver
-echo Deploying Azure DNS Resolver
+# Deploying Azure DNS Private Resolver
+echo Deploying Azure DNS Private Resolver
 hubvnetid=$(az network vnet show -g $rg -n $AzurehubName-vnet --query id -o tsv)
 az dns-resolver create --name $AzurehubName-dnsresolver -g $rg --location $location --id $hubvnetid -o none
 
