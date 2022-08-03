@@ -22,7 +22,11 @@ chmod +xr adr-deploy.sh
 ./adr-deploy.sh 
 ```
 
-**Note:** the provisioning process will take around 35 minutes to complete.
+You can follow the the first part of the provisioning by using Deployments under settings section over the resource group as shown:
+
+![](./media/deployment.png)
+
+**Note:** the whole provisioning process will take around 35 minutes to complete.
 
 Alternatively (recommended), you can run step-by-step to get familiar with the provisioning process and the components deployed:
 
