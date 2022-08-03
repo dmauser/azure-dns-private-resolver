@@ -18,8 +18,9 @@
 
 ## Intro
 
-Azure DNS Private Resolver (Public Preview) is a new networking component used to facilitate DNS name resolution from On-premises to Azure and vice-versa. Check out the official documentation on more information about [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview).
-The goal of this post is to give you a ready environment that you can play or demo the Azure DNS Private Resolver by over two scenarios. The first scenario is to demonstrate the integration with Azure Private Endpoint name resolution, by allowing On-premises DNS Server resolve Private Endpoint names hosted inside Azure Private DNS zones such as **privatelink.blob.core.windows.net**. The second scenario we have Azure and On-premises resolving each others domain zones where **onprem.contoso.corp** is the On-premises hosted zone in Windows Server DNS Server and **azure.contoso.corp** is on the Azure Private DNS Zones.
+Azure DNS Private Resolver (Public Preview) is a new network component that facilitates DNS name resolution integration between On-premises to Azure and vice-versa. Please, review the official documentation for more information: [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview).
+
+The goal of this lab is to give you a ready environment where you can play or demo the Azure DNS Private Resolver over two scenarios. The first scenario is to demonstrate the integration with Azure Private Endpoint name resolution, by allowing the On-premises DNS Server to resolve Private Endpoint names hosted inside Azure Private DNS zones such as  **privatelink.blob.core.windows.net**. In the second scenario we have Azure and On-premises resolving each other's domain zones where **onprem.contoso.corp** is the On-premises hosted zone in Windows Server DNS Server and **azure.contoso.corp** is on the Azure Private DNS Zones.
 
 ## Lab diagram
 
@@ -39,17 +40,19 @@ The lab includes the following components:
 
 - Azure Hub and two spokes virtual networks (VNETs) with their respective address spaces: 10.0.20.0/24 (Hub), 10.0.21.0/24 (Spoke1), and 10.0.22.0/24 (Spoke2)
 - Linux VMs on each Azure VNETs accessible via Serial Console or Bastion.
-- Three storage accounts to be used for their Private Endpoints on each VNET. 
+- Each VNET has Private Endpoint towards their respective storage account.
 - Azure VPN Gateway Active/Active using BGP (ASN 65515) with a S2S VPN connection to On-premises.
 - Azure DNS Private Resolver with both inbound and outbound endpoints.
-- DNS ruleset with a single rule to **onprem.constoso.corp** using on-prem Windows DNS Server as destination (192.168.100.5).
-- Private DNS Zones hosting two zones: **azure.constoso.corp** (using auto registration to get all Azure VM names automatically registered) and privatelink.blob.core.windows.net hosting the three Private Endpoints for on each VNET. 
- - There are Private DNS zone VNET links to all three VNETs from each one of the zones.
+- There's a DNS Private Resolver Ruleset with a single rule to **onprem.constoso.corp** using on-prem Windows DNS Server as destination (192.168.100.5). That rule set has VNET links to each Azure VNET.
+- Private DNS Zones host two zones: **azure.constoso.corp** with auto-registration to get all Azure VM names automatically registered) and privatelink.blob.core.windows.net hosting the three Private Endpoints for each VNET. 
+- There are VNET links for both Zones hosted in Azure Private DNS Zones linked to facilitate VNET name resolution via Azure Provided DNS (168.63.129.16).
 
 **On-premises side:**
 
 - On-premises emulated VNET with address space: 192.168.100.0/24.
+- VNET DNS configuration uses Windows DNS Server (192.168.100.5) for On-premises and Azure name resolution.
 - There are two VMs. A Linux VM to emulate the client and a Windows Server DNS hosting **onprem.consotos.corp** zone.
+- Windows DNS Server hosts **onprem.contoso.com**
 - VPN Gateway Active/Passive using BGP (ASN 65010) with a S2S VPN connection to the Azure VPN Gateway.
 - Bastion has been deployed to allow access to both Linux and Windows VMs. Linux VM can also be accessed using Serial Console.
 
@@ -71,7 +74,7 @@ You can follow the the first part of the provisioning by using Deployments under
 
 ![](./media/deployment.png)
 
-The second part of the deployment which build On-premises DNS Server, Private DNS Resolver, Private Link and DNS configuration is done using CLI. Please, note that the whole provisioning process will take around 35 minutes to complete.
+The second part of the deployment which build On-premises DNS Server, DNS Private Resolver, Private Link and DNS configuration is done using CLI. Please, note that the whole provisioning process will take around 35 minutes to complete.
 
 Another approach you can use is to deploy the lab step-by-step using the CLI commands below:
 
@@ -165,8 +168,8 @@ az vm extension set --resource-group $rg --vm-name $OnPremName-windns  --name Cu
  --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
  --no-wait
 
-# Deploying Azure DNS Resolver
-echo Deploying Azure DNS Resolver
+# Deploying Azure DNS Private Resolver
+echo Deploying Azure DNS Private Resolver
 hubvnetid=$(az network vnet show -g $rg -n $AzurehubName-vnet --query id -o tsv)
 az dns-resolver create --name $AzurehubName-dnsresolver -g $rg --location $location --id $hubvnetid -o none
 
@@ -381,7 +384,7 @@ nslookup hubstg32476.blob.core.windows.net
 
 # 3) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration using Conditional Forwarder (use Bastion to access the Windows VM).
 
-# 4) Review the Priavte DNS Resolver configuration and inbound endpoints
+# 4) Review the DNS Private Resolver configuration and inbound endpoints
 
 # 5) Review Private Endpoints (hubpe, spk1pe and spk2pe) configuration
 
@@ -395,7 +398,7 @@ nslookup hubstg32476.blob.core.windows.net
 ### Scenario 2: On-premises and Azure DNS integration
 
 # 1) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration. Check onprem.contoso.corp
-# 2) Review Azure DNS Resolver outbound endpoint as well as RuleSet with the specific rule to onprem.contoso.corp
+# 2) Review Azure DNS Private Resolver outbound endpoint as well as RuleSet with the specific rule to onprem.contoso.corp
 # 3) Test name resolution from both sides by accessing onprem-lxvm via Bastion or Serial Console and issue few nslookups against Azure VM names (az-hub-lxvm, az-spk1-lxvm, az-spk2-lxvm) using domain name azure.contoso.corp.
 # For example:
 # From onprem-lxvm run: 
