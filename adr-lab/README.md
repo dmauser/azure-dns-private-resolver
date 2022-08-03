@@ -18,6 +18,9 @@
 
 ## Intro
 
+Azure DNS Private Resolver (Public Preview) is a new networking component used to facilitate DNS name resolution from On-premises to Azure and vice-versa. Check out the official documentation on more information about [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview).
+The goal of this post is to give you a ready environment that you can play or demo the Azure DNS Private Resolver by over two scenarios. The first scenario is to demonstrate the integration with Azure Private Endpoint name resolution, by allowing On-premises DNS Server resolve Private Endpoint names hosted inside Azure Private DNS zones such as privatelink.blob.core.windows.net. The second scenario we have Azure and On-premises resolving each others domain zones where onprem.contoso.corp is the On-premises hosted zone in Windows Server DNS Server and azure.contoso.corp is on the Azure Private DNS Zones.
+
 ## Lab diagram
 
 ### Scenario 1: Private endpoint DNS name resolution
@@ -52,9 +55,10 @@ az extension add -n dns-resolver
 
 #Parameters
 rg=lab-dns-resolver #Define your resource group
-location=eastus2 #Set location
+location=eastus #Set location
 username=azureuser
 password=Msft123Msft123
+dnsvmname=onprem-windns
 
 #Variables
 mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NSG to restrict access to SSH only for your Public IP.
@@ -126,15 +130,8 @@ do
  --no-wait
 done
 
-# Deploying Bastion $OnPremName for DNS Server access
-echo Deploying Bastion $OnPremName for DNS Server access.
-az network public-ip create --resource-group $rg --name $OnPremName-bastion-pip --sku Standard --location $location -o none
-az network vnet subnet create -g $rg --vnet-name $OnPremName-vnet -n AzureBastionSubnet --address-prefixes $OnPremAzureBastionSubnet --output none
-az network bastion create --name $OnPremName-bastion --public-ip-address $OnPremName-bastion-pip --sku basic --resource-group $rg --vnet-name $OnPremName-vnet --location $location -o none
-
 # Deploying On-premises Windows DNS Server
 echo Deploying On-premises Windows DNS Server
-dnsvmname=onprem-windns
 az network nic create --name $OnPremName-windns-nic --resource-group $rg --subnet subnet1 --vnet $OnPremName-vnet -o none
 az vm create --resource-group $rg --location $location --name $OnPremName-windns --size Standard_DS1_v2 --nics $OnPremName-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
 az vm extension set --resource-group $rg --vm-name $OnPremName-windns  --name CustomScriptExtension \
@@ -154,8 +151,7 @@ indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $AzurehubName-
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --dns-resolver-name $AzurehubName-dnsresolver \
  --location $location \
- --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid" \
- --no-wait
+ --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid"
 
 # Creating DNS outbound-endpoint 
 echo Creating DNS outbound-endpoint 

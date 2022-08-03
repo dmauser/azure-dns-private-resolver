@@ -6,6 +6,7 @@ rg=lab-dns-resolver #Define your resource group
 location=eastus #Set location
 username=azureuser
 password=Msft123Msft123
+dnsvmname=onprem-windns
 
 #Variables
 mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NSG to restrict access to SSH only for your Public IP.
@@ -79,7 +80,6 @@ done
 
 # Deploying On-premises Windows DNS Server
 echo Deploying On-premises Windows DNS Server
-dnsvmname=onprem-windns
 az network nic create --name $OnPremName-windns-nic --resource-group $rg --subnet subnet1 --vnet $OnPremName-vnet -o none
 az vm create --resource-group $rg --location $location --name $OnPremName-windns --size Standard_DS1_v2 --nics $OnPremName-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
 az vm extension set --resource-group $rg --vm-name $OnPremName-windns  --name CustomScriptExtension \
