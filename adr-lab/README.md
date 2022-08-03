@@ -1,5 +1,17 @@
 # Lab: Azure DNS Private Resolver (single Hub/spoke)
 
+**Content**
+
+[Intro](#intro)
+[Lab diagram](#lab-diagram)
+- [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution)
+- [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration)
+[Deploy this solution](#deploy-this-solution)
+[Validation](#validation)
+- [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution-1)
+- [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration-1)
+[Clean up](#clean-up)
+
 ## Intro
 
 ## Lab diagram
@@ -26,9 +38,11 @@ You can follow the the first part of the provisioning by using Deployments under
 
 ![](./media/deployment.png)
 
+The second part of the deployment which build On-premises DNS Server, Private DNS Resolver, Private Link and DNS configuration is done using CLI:
+
 **Note:** the whole provisioning process will take around 35 minutes to complete.
 
-Alternatively (recommended), you can run step-by-step to get familiar with the provisioning process and the components deployed:
+Another approach you can use is to deploy the lab step-by-step using the CLI commands below:
 
 ```Bash
 # Pre-Requisites
@@ -349,4 +363,13 @@ nslookup hubstg32476.blob.core.windows.net
 
 # 6) Review Private DNS Zones configuration related to Private Link zone: privatelink.blob.core.windows.net
 ## Review VNET links from Hub, Spoke1 and Spoke2.
+```
+
+### Scenario 2: On-premises and Azure DNS integration
+
+## Clean up
+
+Delete the resource group via Portal o running the following command:
+
+```Bash
 ```
