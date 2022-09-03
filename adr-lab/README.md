@@ -68,7 +68,7 @@ The lab includes the following components:
 
 A frequent question is why the On-premises Windows DNS Server uses conditional forwarder zone **blob.core.windows.net** instead of **privatelink.blob.core.windows.net**. You can find the answer in this other post: [On-premises DNS Server conditional forwarder considerations](https://github.com/dmauser/PrivateLink/tree/master/DNS-Integration-Scenarios#43-on-premises-dns-server-conditional-forwarder-considerations)
 
-Please, use the [issue tab](https://github.com/dmauser/azure-dns-private-resolver/issues) on this repo to post your questions and other feedback.
+Please, use the [issues tab](https://github.com/dmauser/azure-dns-private-resolver/issues) on this repo to post your questions and other feedback.
 
 ## Deploy this solution
 
