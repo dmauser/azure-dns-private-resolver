@@ -68,7 +68,7 @@ chmod +xr adr-deploy.sh
 ./adr-deploy.sh 
 ```
 
-**Note:** Azure Cloud Shell has a timeout of 20 min of inactivity. Make sure you have an active window or issue few enters during the deployment. An alternative for Azure Cloud Shell is install AZCLI for your Linux distribution or get Linux for Windows via WSL2. See more information in [Set up a WSL development environment](https://docs.microsoft.com/en-us/windows/wsl/setup/environment)
+**Note:** Azure Cloud Shell has a timeout of 20 min of inactivity. Please, ensure you have an active window or issue a few times enter on your keyboard during the deployment. An alternative for Azure Cloud Shell is to install AZCLI for your Linux distribution or get Linux for Windows via WSL2. See more information in [Set up a WSL development environment](https://docs.microsoft.com/en-us/windows/wsl/setup/environment)
 
 You can follow the the first part of the provisioning by using Deployments under settings section over the resource group as shown:
 
@@ -353,7 +353,7 @@ az network vnet update -g $rg -n onprem-vnet \
 echo Restarting onprem VMs to commit the new VNET DNS settings.
 az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{id:id}' -o tsv) --no- --output none
 echo Follow the validation script to test the name resolution.
-echo Deployment has finished.
+echo Lab deployment has finished.
 ```
 
 ## Validation
@@ -361,34 +361,28 @@ echo Deployment has finished.
 ### Scenario 1: Private endpoint DNS name resolution
 
 ```Bash
-# **** Validation *****
-#Parameters
-rg=lab-dns-resolver 
-location=eastus2
-
 ### Scenario 1: Private Endpoint DNS Name Resolution
 
 # 1) List Blob Storage Account names to test Private Endpoint name resolution.
 az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
 # Example of the ouput for the hub storage account: https://hubstg32476.blob.core.windows.net/
 
-# 2) Access via serial console/SSH or Bastion Onprem-vmlx 
-
-## 2.1) Review DNS client config. It will show what DNS server is being used.
+# 2) Access VM Onprem-vmlx via serial console/SSH or Bastion 
+## 2.1) Review DNS client config. It will show the DNS server configured.
 systemd-resolve --status | grep "DNS Servers:"
-## 2.2) Test storage accounts name resolution (change the name below based on what ):
+## 2.2) Test storage account name resolution (change the name below based on the output on step 1):
 nslookup hubstg32476.blob.core.windows.net
 ## Repeat the same steps above on spk1stgxxxx and spoke2stgxxx storage accounts.
 ## Test from all VMs (on-premises and Azure Hub and spokes)
 ## Expectation is to get the private endpoint IP for each
 
-# 3) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration using Conditional Forwarder (use Bastion to access the Windows VM).
+# 3) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration and the Conditional Forwarder zone (use Bastion to access the Windows VM).
 
-# 4) Review the DNS Private Resolver configuration and inbound endpoints
+# 4) Review the Private DNS Resolver configuration and inbound endpoints.
 
-# 5) Review Private Endpoints (hubpe, spk1pe and spk2pe) configuration
+# 5) Review the private endpoints hubpe, spk1pe, and spk2pe configuration.
 
-# 6) Review Private DNS Zones configuration related to Private Link zone: privatelink.blob.core.windows.net
+# 6) Review the Private DNS Zones configuration related to Private Link zone: privatelink.blob.core.windows.net
 ## Review VNET links from Hub, Spoke1 and Spoke2.
 ```
 
@@ -397,15 +391,16 @@ nslookup hubstg32476.blob.core.windows.net
 ```Bash
 ### Scenario 2: On-premises and Azure DNS integration
 
-# 1) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration. Check onprem.contoso.corp
-# 2) Review Azure DNS Private Resolver outbound endpoint as well as RuleSet with the specific rule to onprem.contoso.corp
-# 3) Test name resolution from both sides by accessing onprem-lxvm via Bastion or Serial Console and issue few nslookups against Azure VM names (az-hub-lxvm, az-spk1-lxvm, az-spk2-lxvm) using domain name azure.contoso.corp.
+# 1) Access onprem-win-dns VM via Bastion and review the Windows DNS Configuration. Check onprem.contoso.corp zone and its local DNS records.
+# 2) Review the Azure DNS Resolver outbound endpoint as well as RuleSet with the specific rule to onprem.contoso.corp.
+# 3) Test the name resolution from both sides by accessing onprem-lxvm via Bastion or Serial Console and issue a few nslookups against Azure VM names (az-hub-lxvm, az-spk1-lxvm, az-spk2-lxvm) using domain name azure.contoso.corp.
 # For example:
 # From onprem-lxvm run: 
-nslookup az-hub-lxvm.azure.contoso.corp # repeat the same for the other Azure VMs.
+nslookup az-hub-lxvm.azure.contoso.corp # repeat the same command for the other Azure VMs.
 # From az-hub-lxvm or other Azure spoke VM run:
 nslookup onprem-lxvm.onprem.contoso.corp 
 nslookup onprem-windns.onprem.contoso.corp
+# Name resolution should work from On-premises to Azure and vice-versa.
 ```
 
 ## Clean up
