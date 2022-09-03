@@ -8,6 +8,10 @@
 - [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution)
 - [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration)
 
+[Lab components](#lab-components)
+
+[Considerations](#considerations)
+
 [Deploy this solution](#deploy-this-solution)
 
 [Validation](#validation)
@@ -21,6 +25,8 @@
 Azure DNS Private Resolver (Public Preview) is a new network component that facilitates DNS name resolution integration between On-premises to Azure and vice-versa. Please, review the official documentation for more information: [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview)
 
 The goal of this lab is to give you a ready environment where you can play or demo the Azure DNS Private Resolver over two scenarios. The first scenario is to demonstrate the integration with Azure Private Endpoint name resolution, by allowing the On-premises DNS Server to resolve Private Endpoint names hosted inside Azure Private DNS zones such as  **privatelink.blob.core.windows.net**. In the second scenario we have Azure and On-premises resolving each other's domain zones where **onprem.contoso.corp** is the On-premises hosted zone in Windows Server DNS Server and **azure.contoso.corp** is on the Azure Private DNS Zones.
+
+Note: check out the [Azure DNS Private Resolver repo](https://github.com/dmauser/azure-dns-private-resolver) for other related community resources.
 
 ## Lab diagram
 
@@ -57,6 +63,11 @@ The lab includes the following components:
 - Bastion has been deployed to allow access to both Linux and Windows VMs. Linux VM can also be accessed using Serial Console.
 
 **Note:** default username is azureuser and password Msft123Msft123. You can change that over parameters files before you deploy.
+
+### Considerations
+
+A frequent question is why the On-premises Windows DNS Server uses conditional forwarder zone **blob.core.windows.net** instead of **privatelink.blob.core.windows.net**. You can find the answer in this other post:
+Please, use the [issue tab](https://github.com/dmauser/azure-dns-private-resolver/issues) on this repo to post your questions and other feedback.
 
 ## Deploy this solution
 
