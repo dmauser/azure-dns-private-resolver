@@ -405,7 +405,7 @@ nslookup onprem-windns.onprem.contoso.corp
 
 ## Clean up
 
-Delete the resource group via Portal o running the following command:
+Delete the resource group via Portal or by running the following command:
 
 ```Bash
 rg=lab-dns-resolver 
