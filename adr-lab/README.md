@@ -72,7 +72,7 @@ Please, use the [issues tab](https://github.com/dmauser/azure-dns-private-resolv
 
 ## Deploy this solution
 
-The lab is also available in the above .azcli that you can rename as .sh (shell script) and execute. You can open [Azure Cloud Shell (Bash)](https://shell.azure.com) and run the following commands build the entire lab:
+The lab is also available in the above .azcli that you can rename as .sh (shell script) and execute. You can open [Azure Cloud Shell (Bash)](https://shell.azure.com) and run the following commands to build the entire lab:
 
 ```bash
 wget -O adr-deploy.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/adr-deploy.azcli
