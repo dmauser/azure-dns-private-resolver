@@ -2,7 +2,7 @@
 az extension add -n dns-resolver
 
 #Parameters
-rg=lab2-dns-resolver #Define your resource group
+rg=lab-dns-resolver #Define your resource group
 location=eastus2 #Set location
 username=azureuser
 password=Msft123Msft123
