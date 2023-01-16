@@ -11,8 +11,8 @@ vmsize=Standard_DS1_v2
 #Bastion
 branch1BastionPrefix=10.100.1.0/27
 #DNS Private Resolver
-$hub1name-sharedservicesDnsInSubnetPrefix=172.16.1.32/28
-$hub1name-sharedservicesDnsOutSubnetPrefix=172.16.1.48/28
+$hub1name-sharedservicesDnsInSubnetPrefix=172.16.10.32/28
+$hub1name-sharedservicesDnsOutSubnetPrefix=172.16.10.48/28
 # Pre-Requisites
 az extension add -n dns-resolver
 
@@ -28,7 +28,7 @@ az vm extension set --resource-group $rg --vm-name branch1-windns  --name Custom
 # Creating Bastion on Branch1
 az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
 az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
-az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none
+az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none 
 
 # Deploying Branch1 Windows DNS Server
 echo Deploying Beanch2 Windows DNS Server
