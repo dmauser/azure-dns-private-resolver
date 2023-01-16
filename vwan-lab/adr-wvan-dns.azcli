@@ -1,0 +1,143 @@
+# Parameters (make changes based on your requirements)
+region1=eastus
+region2=westus
+rg=lab-vwan-adr
+vwanname=vwan-adr
+hub1name=hub1
+hub2name=hub2
+username=azureuser
+password="Msft123Msft123"
+vmsize=Standard_DS1_v2
+#Bastion
+branch1BastionPrefix=10.100.1.0/27
+#DNS Private Resolver
+$hub1name-sharedservicesDnsInSubnetPrefix=172.16.1.32/28
+$hub1name-sharedservicesDnsOutSubnetPrefix=172.16.1.48/28
+# Pre-Requisites
+az extension add -n dns-resolver
+
+# Deploying Branch1 Windows DNS Server
+echo Deploying Branch1 Windows DNS Server
+az network nic create --name branch1-windns-nic --resource-group $rg --subnet main --vnet branch1 --location $region1 -o none
+az vm create --resource-group $rg --location $region1 --name branch1-windns --size Standard_DS1_v2 --nics branch1-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
+az vm extension set --resource-group $rg --vm-name branch1-windns  --name CustomScriptExtension \
+ --publisher Microsoft.Compute \
+ --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
+ --no-wait
+
+# Creating Bastion on Branch1
+az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
+az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none
+
+# Deploying Branch1 Windows DNS Server
+echo Deploying Beanch2 Windows DNS Server
+az network nic create --name branch2-windns-nic --resource-group $rg --subnet main --vnet branch2 -o none --location $region2
+az vm create --resource-group $rg --location $region2 --name branch2-windns --size Standard_DS1_v2 --nics branch2-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
+az vm extension set --resource-group $rg --vm-name branch2-windns  --name CustomScriptExtension \
+ --publisher Microsoft.Compute \
+ --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
+ --no-wait
+
+#Creating Storage Accounts (boot diagnostics + serial console)
+echo Creating Hub and Spokes storage accounts for serial console and private link.
+randomIdentifier1=$RANDOM 
+az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $region1 --sku Standard_LRS -o none
+az storage account create -n spk4stg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
+
+# Deploying Azure DNS Private Resolver
+echo Deploying Azure DNS Private Resolver
+spk1vnetid=$(az network vnet show -g $rg -n $hub1name-sharedservices --query id -o tsv)
+az dns-resolver create --name $hub1name-sharedservices-dnsresolver -g $rg --location $region1 --id $spk1vnetid -o none
+
+# Creating DNS inbound-endpoint 
+echo Creating DNS inbound-endpoint
+az network vnet subnet create -g $rg --vnet-name $hub1name-sharedservices -n dnsin --address-prefixes $$hub1name-sharedservicesDnsInSubnetPrefix --output none
+indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $hub1name-sharedservices --query id -o tsv)
+az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
+ --dns-resolver-name $hub1name-sharedservices-dnsresolver \
+ --location $region1 \
+ --ip-configurations '[{"private-ip-address":"","private-ip-allocation-method":"Dynamic","id":"'$indnsid'"}]' \
+ --output none
+
+# Creating DNS outbound-endpoint 
+echo Creating DNS outbound-endpoint 
+az network vnet subnet create -g $rg --vnet-name $hub1name-sharedservices -n dnsout --address-prefixes $$hub1name-sharedservicesDnsOutSubnetPrefix --output none
+outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $hub1name-sharedservices --query id -o tsv)
+az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
+ --dns-resolver-name $hub1name-sharedservices-dnsresolver \
+ --location $region1 \
+ --id="$outdnsid" \
+ --output none
+
+# Creating forwarding-ruleset
+echo Creating forwarding-ruleset 
+outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub1name-sharedservices-dnsresolver --query id -o tsv)
+az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-sharedservices-fwd-ruleset \
+ --location $region1 \
+ --outbound-endpoints '[{"id":"'$outepid'"}]' \
+ --output none
+
+# Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
+echo Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
+dnsvmip=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
+ --ruleset-name $hub1name-sharedservices-fwd-ruleset \
+ --domain-name "contoso.corp." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsvmip'","port":"53"}]' \
+ --output none
+
+# Creating ruleset vnet link for $hub1name-sharedservices vnet
+echo Creating ruleset vnet link for $hub1name-sharedservices vnet
+az dns-resolver vnet-link create -g $rg --name $hub1name-sharedserviceslink \
+ --ruleset-name $hub1name-sharedservices-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n $hub1name-sharedservices --query id -o tsv) \
+ --output none
+
+# Creating ruleset vnet link for Spoke2 vnet
+echo Creating ruleset vnet link for Spoke2 vnet
+az dns-resolver vnet-link create -g $rg --name spoke2-vnetlink \
+ --ruleset-name $hub1name-sharedservices-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke2 --query id -o tsv) \
+ --output none
+
+# Creating ruleset vnet link for Spoke3 vnet
+echo Creating ruleset vnet link for Spoke3 vnet
+az dns-resolver vnet-link create -g $rg --name spoke3-vnetlink \
+ --ruleset-name $hub1name-sharedservices-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke3 --query id -o tsv) \
+ --output none
+
+#***** Configuring Branch DNS *****
+echo Configuring Branch1 DNS Server
+# Run command for Onprem DNS configuration:
+dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-sharedservices-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+# fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
+globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
+onpremvmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az vm run-command invoke --command-id RunPowerShellScript \
+ --name branch1-windns \
+ --resource-group $rg \
+ --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3,[string]$arg4,[string]$arg5)' \
+ 'Set-DnsServerForwarder -IPAddress $arg2' \
+ 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1 -PassThru' \
+ 'Add-DnsServerConditionalForwarderZone -Name "azure.contoso.corp" -MasterServers $arg1 -PassThru' \
+ 'Add-DnsServerPrimaryZone -Name "contoso.corp" -ZoneFile "contoso.corp.dns"' \
+ 'Add-DnsServerResourceRecordA -Name $arg4 -IPv4Address $arg5 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name "branch1vm" -IPv4Address $arg3 -ZoneName "contoso.corp"' \
+ --parameters $(echo "arg1="$dnsresolverip"" "arg2=$globaldnsfwd" "arg3=$onpremvmip" "arg4=branch1-windns" "arg5=$dnsvmip") \
+ --output none
+
+# ***** Preparing Branch1 VMs for Name Resolution *****
+echo ***** Preparing Branch1 VMs for Name Resolution *****
+# Setting Branch1 vnet to use Branch1 DNS Server
+echo Setting Branch1 vnet to use Branch1 DNS Server
+az network vnet update -g $rg -n branch1 \
+ --dns-servers $(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv) \
+ --output none
+# Restarting onprem VMs to commit the new VNET DNS settings.
+echo Restarting onprem VMs to commit the new VNET DNS settings.
+az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'branch'`)].{id:id}' -o tsv) --no- --output none
+echo Follow the validation script to test the name resolution.
+echo echo Lab deployment has finished.
