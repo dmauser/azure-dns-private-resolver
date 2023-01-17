@@ -5,5 +5,5 @@ The lab is also available in the above .azcli that you can rename as .sh (shell 
 ```bash
 wget -O adr-vwan-deploy.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-vwan-deploy.azcli
 chmod +xr adr-vwan-deploy.sh
-./adr-vwan-deploy.sh 
+./adr-vwan-deploy.sh
 ```

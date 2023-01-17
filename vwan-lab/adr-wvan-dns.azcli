@@ -11,48 +11,33 @@ vmsize=Standard_DS1_v2
 #Bastion
 branch1BastionPrefix=10.100.1.0/27
 #DNS Private Resolver
-$hub1name-servicesDnsInSubnetPrefix=172.16.10.32/28
-$hub1name-servicesDnsOutSubnetPrefix=172.16.10.48/28
+hub1servicesDnsInSubnetPrefix=172.16.10.32/28
+hub1servicesDnsOutSubnetPrefix=172.16.10.48/28
 # Pre-Requisites
 az extension add -n dns-resolver
+
+# Creating Bastion on Branch1
+az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
+az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none --no-wait
 
 # Deploying Branch1 Windows DNS Server
 echo Deploying Branch1 Windows DNS Server
 az network nic create --name branch1-windns-nic --resource-group $rg --subnet main --vnet branch1 --location $region1 -o none
-az vm create --resource-group $rg --location $region1 --name branch1-windns --size Standard_DS1_v2 --nics branch1-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
+az vm create --resource-group $rg --location $region1 --name branch1-windns --size $vmsize --nics branch1-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
 az vm extension set --resource-group $rg --vm-name branch1-windns  --name CustomScriptExtension \
  --publisher Microsoft.Compute \
  --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
  --no-wait
 
-# Creating Bastion on Branch1
-az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
-az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
-az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none 
-
-# Deploying Branch1 Windows DNS Server
-echo Deploying Beanch2 Windows DNS Server
-az network nic create --name branch2-windns-nic --resource-group $rg --subnet main --vnet branch2 -o none --location $region2
-az vm create --resource-group $rg --location $region2 --name branch2-windns --size Standard_DS1_v2 --nics branch2-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
-az vm extension set --resource-group $rg --vm-name branch2-windns  --name CustomScriptExtension \
- --publisher Microsoft.Compute \
- --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
- --no-wait
-
-#Creating Storage Accounts (boot diagnostics + serial console)
-echo Creating Hub and Spokes storage accounts for serial console and private link.
-randomIdentifier1=$RANDOM 
-az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $region1 --sku Standard_LRS -o none
-az storage account create -n spk4stg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
-
 # Deploying Azure DNS Private Resolver
 echo Deploying Azure DNS Private Resolver
 spk1vnetid=$(az network vnet show -g $rg -n $hub1name-services --query id -o tsv)
-az dns-resolver create --name $hub1name-services-dnsresolver -g $rg --location $region1 --id $spk1vnetid -o none
+az dns-resolver create --name $hub1name-services-dnsresolver -g $rg --location $region1 --id $spk1vnetid -o none 
 
 # Creating DNS inbound-endpoint 
 echo Creating DNS inbound-endpoint
-az network vnet subnet create -g $rg --vnet-name $hub1name-services -n dnsin --address-prefixes $$hub1name-servicesDnsInSubnetPrefix --output none
+az network vnet subnet create -g $rg --vnet-name $hub1name-services -n dnsin --address-prefixes $hub1servicesDnsInSubnetPrefix --output none
 indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $hub1name-services --query id -o tsv)
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --dns-resolver-name $hub1name-services-dnsresolver \
@@ -62,7 +47,7 @@ az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
 
 # Creating DNS outbound-endpoint 
 echo Creating DNS outbound-endpoint 
-az network vnet subnet create -g $rg --vnet-name $hub1name-services -n dnsout --address-prefixes $$hub1name-servicesDnsOutSubnetPrefix --output none
+az network vnet subnet create -g $rg --vnet-name $hub1name-services -n dnsout --address-prefixes $hub1servicesDnsOutSubnetPrefix --output none
 outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $hub1name-services --query id -o tsv)
 az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
  --dns-resolver-name $hub1name-services-dnsresolver \
@@ -95,6 +80,13 @@ az dns-resolver vnet-link create -g $rg --name $hub1name-serviceslink \
  --id $(az network vnet show -g $rg -n $hub1name-services --query id -o tsv) \
  --output none
 
+# Creating ruleset vnet link for Spoke1 vnet
+echo Creating ruleset vnet link for Spoke1 vnet
+az dns-resolver vnet-link create -g $rg --name spoke1-vnetlink \
+ --ruleset-name $hub1name-services-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke1 --query id -o tsv) \
+ --output none
+
 # Creating ruleset vnet link for Spoke2 vnet
 echo Creating ruleset vnet link for Spoke2 vnet
 az dns-resolver vnet-link create -g $rg --name spoke2-vnetlink \
@@ -102,12 +94,49 @@ az dns-resolver vnet-link create -g $rg --name spoke2-vnetlink \
  --id $(az network vnet show -g $rg -n spoke2 --query id -o tsv) \
  --output none
 
-# Creating ruleset vnet link for Spoke3 vnet
-echo Creating ruleset vnet link for Spoke3 vnet
-az dns-resolver vnet-link create -g $rg --name spoke3-vnetlink \
+#***** Configuring Private DNS Zones for Spokes 1,2,3 and 4)
+
+# Creating Private DNS Zone for Azure VM resolution
+echo Creating Private DNS Zone for each spoke
+az network private-dns zone create -g $rg -n svc.azure.contoso.corp --output none
+az network private-dns zone create -g $rg -n spk1.azure.contoso.corp --output none
+az network private-dns zone create -g $rg -n spk2.azure.contoso.corp --output none
+az network private-dns zone create -g $rg -n spk3.azure.contoso.corp --output none
+az network private-dns zone create -g $rg -n spk4.azure.contoso.corp --output none
+
+echo Creating VNET Link each spoke with auto-registration enabled:
+az network private-dns link vnet create -g $rg -n $hub1name-services-link -z svc.azure.contoso.corp -v $hub1name-services -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-services-link -z svc.azure.contoso.corp -v $hub2name-services -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n spoke1-link -z spk1.azure.contoso.corp -v spoke1 -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n spoke2-link -z spk2.azure.contoso.corp -v spoke2 -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n spoke3-link -z spk3.azure.contoso.corp -v spoke3 -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n spoke4-link -z spk4.azure.contoso.corp -v spoke4 -e true -o none --no-wait
+
+
+echo Creating VNET Link each spoke to $hub1name and $hub2name services VNETs
+#Spoke1
+az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk1.azure.contoso.corp -v $hub1name-services -o none -e false --no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk1.azure.contoso.corp -v $hub2name-services -o none -e false -no-wait
+#Spoke2
+az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk2.azure.contoso.corp -v $hub1name-services -o none -e false --no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk2.azure.contoso.corp -v $hub2name-services -o none -e false --no-wait
+#Spoke3
+az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk3.azure.contoso.corp -v $hub1name-services -o none -e false --no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk3.azure.contoso.corp -v $hub2name-services -o none -e false --no-wait
+#Spoke4
+az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk4.azure.contoso.corp -v $hub1name-services -o none -e false --no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk4.azure.contoso.corp -v $hub2name-services -o none -e false --no-wait
+
+# Creating forwarding-rule to all Azure Resoluton Spokes to resolver each other using DNS Private Resolver
+echo Creating forwarding-rule to allow Spokes to resolver each other using DNS Private Resolver
+dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name azure-contoso \
  --ruleset-name $hub1name-services-fwd-ruleset \
- --id $(az network vnet show -g $rg -n spoke3 --query id -o tsv) \
+ --domain-name "azure.contoso.corp." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsresolverip'","port":"53"}]' \
  --output none
+
 
 #***** Configuring Branch DNS *****
 echo Configuring Branch1 DNS Server
@@ -141,3 +170,11 @@ echo Restarting onprem VMs to commit the new VNET DNS settings.
 az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'branch'`)].{id:id}' -o tsv) --no- --output none
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.
+
+### ******* Double check if needed ***********
+
+#Creating Storage Accounts (boot diagnostics + serial console)
+echo Creating Hub and Spokes storage accounts for serial console and private link.
+randomIdentifier1=$RANDOM 
+az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $region1 --sku Standard_LRS -o none
+az storage account create -n spk4stg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
