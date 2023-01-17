@@ -1,6 +1,9 @@
+# Pre-Requisites
+az extension add -n dns-resolver
+
 # Parameters (make changes based on your requirements)
-region1=eastus
-region2=westus
+region1=eastus2
+region2=westus2
 rg=lab-vwan-adr
 vwanname=vwan-adr
 hub1name=hub1
@@ -10,16 +13,24 @@ password="Msft123Msft123"
 vmsize=Standard_DS1_v2
 #Bastion
 branch1BastionPrefix=10.100.1.0/27
+branch2BastionPrefix=10.200.1.0/27
 #DNS Private Resolver
 hub1servicesDnsInSubnetPrefix=172.16.10.32/28
 hub1servicesDnsOutSubnetPrefix=172.16.10.48/28
-# Pre-Requisites
-az extension add -n dns-resolver
+hub2servicesDnsInSubnetPrefix=172.16.20.32/28
+hub2servicesDnsOutSubnetPrefix=172.16.20.48/28
 
-# Creating Bastion on Branch1
+
+# Creating Bastion on Branch1 and Branch2
+echo Creating Bastion on Branch1 and Branch2 for Windows DNS Server management
+# Branch1
 az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
 az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
 az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none --no-wait
+# Branch2
+az network vnet subnet create -g $rg --vnet-name branch2 -n AzureBastionSubnet --address-prefixes $branch2BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch2-bastion-pip --sku Standard --location $region2 --output none 
+az network bastion create --name branch2-bastion --public-ip-address branch2-bastion-pip --resource-group $rg --vnet-name branch2 --location $region2 --sku Basic --output none --no-wait
 
 # Deploying Branch1 Windows DNS Server
 echo Deploying Branch1 Windows DNS Server
@@ -30,10 +41,24 @@ az vm extension set --resource-group $rg --vm-name branch1-windns  --name Custom
  --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
  --no-wait
 
+# Deploying Branch2 Windows DNS Server
+echo Deploying Branch2 Windows DNS Server
+az network nic create --name branch2-windns-nic --resource-group $rg --subnet main --vnet branch2 --location $region2 -o none
+az vm create --resource-group $rg --location $region2 --name branch2-windns --size $vmsize --nics branch2-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
+az vm extension set --resource-group $rg --vm-name branch2-windns  --name CustomScriptExtension \
+ --publisher Microsoft.Compute \
+ --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
+ --no-wait
+
 # Deploying Azure DNS Private Resolver
-echo Deploying Azure DNS Private Resolver
-spk1vnetid=$(az network vnet show -g $rg -n $hub1name-services --query id -o tsv)
-az dns-resolver create --name $hub1name-services-dnsresolver -g $rg --location $region1 --id $spk1vnetid -o none 
+echo Deploying Azure DNS Private Resolvers
+#Hub1
+hub1svcvnetid=$(az network vnet show -g $rg -n $hub1name-services --query id -o tsv)
+az dns-resolver create --name $hub1name-services-dnsresolver -g $rg --location $region1 --id $hub1svcvnetid -o none 
+
+#Hub2
+hub2svcvnetid=$(az network vnet show -g $rg -n $hub2name-services --query id -o tsv)
+az dns-resolver create --name $hub2name-services-dnsresolver -g $rg --location $region2 --id $hub2svcvnetid -o none
 
 # Creating DNS inbound-endpoint 
 echo Creating DNS inbound-endpoint
