@@ -20,7 +20,6 @@ hub1servicesDnsOutSubnetPrefix=172.16.10.48/28
 hub2servicesDnsInSubnetPrefix=172.16.20.32/28
 hub2servicesDnsOutSubnetPrefix=172.16.20.48/28
 
-
 # Creating Bastion on Branch1 and Branch2
 echo Creating Bastion on Branch1 and Branch2 for Windows DNS Server management
 # Branch1
