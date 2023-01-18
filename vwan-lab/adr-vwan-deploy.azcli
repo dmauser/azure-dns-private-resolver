@@ -184,8 +184,8 @@ done
 prState=''
 while [[ $prState != 'Succeeded' ]];
 do
-    prState=$(az network vhub connection show -n spoke5conn --vhub-name $hub2name -g $rg  --query 'provisioningState' -o tsv)
-    echo "vnet connection spoke5conn provisioningState="$prState
+    prState=$(az network vhub connection show -n spoke4conn --vhub-name $hub2name -g $rg  --query 'provisioningState' -o tsv)
+    echo "vnet connection spoke4conn provisioningState="$prState
     sleep 5
 done
 
