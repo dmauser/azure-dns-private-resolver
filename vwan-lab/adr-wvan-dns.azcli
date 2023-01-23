@@ -303,10 +303,3 @@ az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'branch'`)].{i
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.
 
-### ******* Double check if needed ***********
-
-#Creating Storage Accounts (boot diagnostics + serial console)
-echo Creating Hub and Spokes storage accounts for serial console and private link.
-randomIdentifier1=$RANDOM 
-az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $region1 --sku Standard_LRS -o none
-az storage account create -n spk4stg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
