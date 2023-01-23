@@ -60,6 +60,7 @@ hub2svcvnetid=$(az network vnet show -g $rg -n $hub2name-services --query id -o 
 az dns-resolver create --name $hub2name-services-dnsresolver -g $rg --location $region2 --id $hub2svcvnetid -o none
 
 # Creating DNS inbound-endpoint 
+#Hub1
 echo Creating DNS inbound-endpoint
 az network vnet subnet create -g $rg --vnet-name $hub1name-services -n dnsin --address-prefixes $hub1servicesDnsInSubnetPrefix --output none
 indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $hub1name-services --query id -o tsv)
@@ -67,10 +68,23 @@ az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --dns-resolver-name $hub1name-services-dnsresolver \
  --location $region1 \
  --ip-configurations '[{"private-ip-address":"","private-ip-allocation-method":"Dynamic","id":"'$indnsid'"}]' \
- --output none
+ --output none \
+ --no-wait
+#Hub2
+# Creating DNS inbound-endpoint 
+echo Creating DNS inbound-endpoint
+az network vnet subnet create -g $rg --vnet-name $hub2name-services -n dnsin --address-prefixes $hub2servicesDnsInSubnetPrefix --output none
+indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $hub2name-services --query id -o tsv)
+az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
+ --dns-resolver-name $hub2name-services-dnsresolver \
+ --location $region2 \
+ --ip-configurations '[{"private-ip-address":"","private-ip-allocation-method":"Dynamic","id":"'$indnsid'"}]' \
+ --output none \
+ --no-wait
 
 # Creating DNS outbound-endpoint 
 echo Creating DNS outbound-endpoint 
+#Hub1
 az network vnet subnet create -g $rg --vnet-name $hub1name-services -n dnsout --address-prefixes $hub1servicesDnsOutSubnetPrefix --output none
 outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $hub1name-services --query id -o tsv)
 az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
@@ -79,44 +93,99 @@ az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
  --id="$outdnsid" \
  --output none
 
+#Hub2
+az network vnet subnet create -g $rg --vnet-name $hub2name-services -n dnsout --address-prefixes $hub2servicesDnsOutSubnetPrefix --output none
+outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $hub2name-services --query id -o tsv)
+az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
+ --dns-resolver-name $hub2name-services-dnsresolver \
+ --location $region2 \
+ --id="$outdnsid" \
+ --output none
+
 # Creating forwarding-ruleset
 echo Creating forwarding-ruleset 
+#Hub1
 outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub1name-services-dnsresolver --query id -o tsv)
-az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-services-fwd-ruleset \
+az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-svc-fwd-ruleset \
  --location $region1 \
  --outbound-endpoints '[{"id":"'$outepid'"}]' \
  --output none
 
-# Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
-echo Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
-dnsvmip=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
-az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
- --ruleset-name $hub1name-services-fwd-ruleset \
- --domain-name "contoso.corp." \
- --forwarding-rule-state "Enabled" \
- --target-dns-servers '[{"ip-address":"'$dnsvmip'","port":"53"}]' \
+#Hub2
+outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub2name-services-dnsresolver --query id -o tsv)
+az dns-resolver forwarding-ruleset create -g $rg --name $hub2name-svc-fwd-ruleset \
+ --location $region2 \
+ --outbound-endpoints '[{"id":"'$outepid'"}]' \
  --output none
 
-# Creating ruleset vnet link for $hub1name-services vnet
+# Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
+# Hub1
+echo Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
+dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
+ --domain-name "contoso.corp." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsvmip1'","port":"53"},{"ip-address":"'$dnsvmip2'","port":"53"}]' \
+ --output none
+
+#Hub2
+dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --domain-name "contoso.corp." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsvmip2'","port":"53"},{"ip-address":"'$dnsvmip1'","port":"53"}]' \
+ --output none
+
+# Creating ruleset vnet links
 echo Creating ruleset vnet link for $hub1name-services vnet
 az dns-resolver vnet-link create -g $rg --name $hub1name-serviceslink \
- --ruleset-name $hub1name-services-fwd-ruleset \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
  --id $(az network vnet show -g $rg -n $hub1name-services --query id -o tsv) \
- --output none
+ --output none \
+ --no-wait
+
+echo Creating ruleset vnet link for $hub2name-services vnet
+az dns-resolver vnet-link create -g $rg --name $hub2name-serviceslink \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n $hub2name-services --query id -o tsv) \
+ --output none \
+ --no-wait
 
 # Creating ruleset vnet link for Spoke1 vnet
 echo Creating ruleset vnet link for Spoke1 vnet
 az dns-resolver vnet-link create -g $rg --name spoke1-vnetlink \
- --ruleset-name $hub1name-services-fwd-ruleset \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
  --id $(az network vnet show -g $rg -n spoke1 --query id -o tsv) \
- --output none
+ --output none \
+ --no-wait
 
 # Creating ruleset vnet link for Spoke2 vnet
 echo Creating ruleset vnet link for Spoke2 vnet
 az dns-resolver vnet-link create -g $rg --name spoke2-vnetlink \
- --ruleset-name $hub1name-services-fwd-ruleset \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
  --id $(az network vnet show -g $rg -n spoke2 --query id -o tsv) \
- --output none
+ --output none \
+ --no-wait
+
+# Creating ruleset vnet link for Spoke3 vnet
+echo Creating ruleset vnet link for Spoke3 vnet
+az dns-resolver vnet-link create -g $rg --name spoke3-vnetlink \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke3 --query id -o tsv) \
+ --output none \
+ --no-wait
+
+# Creating ruleset vnet link for Spoke4 vnet
+echo Creating ruleset vnet link for Spoke4 vnet
+az dns-resolver vnet-link create -g $rg --name spoke4-vnetlink \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke4 --query id -o tsv) \
+ --output none \
+ --no-wait
 
 #***** Configuring Private DNS Zones for Spokes 1,2,3 and 4)
 
@@ -136,7 +205,6 @@ az network private-dns link vnet create -g $rg -n spoke2-link -z spk2.azure.cont
 az network private-dns link vnet create -g $rg -n spoke3-link -z spk3.azure.contoso.corp -v spoke3 -e true -o none --no-wait
 az network private-dns link vnet create -g $rg -n spoke4-link -z spk4.azure.contoso.corp -v spoke4 -e true -o none --no-wait
 
-
 echo Creating VNET Link each spoke to $hub1name and $hub2name services VNETs
 #Spoke1
 az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk1.azure.contoso.corp -v $hub1name-services -o none -e false --no-wait
@@ -152,35 +220,74 @@ az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk
 az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk4.azure.contoso.corp -v $hub2name-services -o none -e false --no-wait
 
 # Creating forwarding-rule to all Azure Resoluton Spokes to resolver each other using DNS Private Resolver
+#Hub1
 echo Creating forwarding-rule to allow Spokes to resolver each other using DNS Private Resolver
-dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name azure-contoso \
- --ruleset-name $hub1name-services-fwd-ruleset \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
  --domain-name "azure.contoso.corp." \
  --forwarding-rule-state "Enabled" \
  --target-dns-servers '[{"ip-address":"'$dnsresolverip'","port":"53"}]' \
  --output none
 
+# Hub2
+echo Creating forwarding-rule to allow Spokes to resolver each other using DNS Private Resolver
+dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name azure-contoso \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
+ --domain-name "azure.contoso.corp." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsresolverip'","port":"53"}]' \
+ --output none
 
 #***** Configuring Branch DNS *****
 echo Configuring Branch1 DNS Server
 # Run command for Onprem DNS configuration:
-dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip2=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub2name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
 # fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
 globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
-onpremvmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+branch1vmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+branch2vmip=$(az network nic show --name branch2VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 az vm run-command invoke --command-id RunPowerShellScript \
  --name branch1-windns \
  --resource-group $rg \
- --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3,[string]$arg4,[string]$arg5)' \
- 'Set-DnsServerForwarder -IPAddress $arg2' \
- 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1 -PassThru' \
- 'Add-DnsServerConditionalForwarderZone -Name "azure.contoso.corp" -MasterServers $arg1 -PassThru' \
+ --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3,[string]$arg4,[string]$arg5,[string]$arg6,[string]$arg7,[string]$arg8,[string]$arg9)' \
+ 'Set-DnsServerForwarder -IPAddress $arg3' \
+ 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1,$arg2 -PassThru' \
+ 'Add-DnsServerConditionalForwarderZone -Name "azure.contoso.corp" -MasterServers $arg1,$arg2 -PassThru' \
  'Add-DnsServerPrimaryZone -Name "contoso.corp" -ZoneFile "contoso.corp.dns"' \
- 'Add-DnsServerResourceRecordA -Name $arg4 -IPv4Address $arg5 -ZoneName "contoso.corp"' \
- 'Add-DnsServerResourceRecordA -Name "branch1vm" -IPv4Address $arg3 -ZoneName "contoso.corp"' \
- --parameters $(echo "arg1="$dnsresolverip"" "arg2=$globaldnsfwd" "arg3=$onpremvmip" "arg4=branch1-windns" "arg5=$dnsvmip") \
- --output none
+ 'Add-DnsServerResourceRecordA -Name $arg6 -IPv4Address $arg7 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name $arg8 -IPv4Address $arg9 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name "branch1vm" -IPv4Address $arg4 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name "branch2vm" -IPv4Address $arg5 -ZoneName "contoso.corp"' \
+ --parameters $(echo "arg1=$dnsresolverip1" "arg2=$dnsresolverip2" "arg3=$globaldnsfwd" "arg4=$branch1vmip" "arg5=$branch2vmip" "arg6=branch1-windns" "arg7=$dnsvmip1" "arg8=branch2-windns" "arg9=$dnsvmip2") \
+ --output none \
+ --no-wait
+
+echo Configuring Branch2 DNS Server
+# Run command for Onprem DNS configuration:
+dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub2name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip2=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+# fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
+globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
+branch1vmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+branch2vmip=$(az network nic show --name branch2VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az vm run-command invoke --command-id RunPowerShellScript \
+ --name branch2-windns \
+ --resource-group $rg \
+ --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3,[string]$arg4,[string]$arg5,[string]$arg6,[string]$arg7,[string]$arg8,[string]$arg9)' \
+ 'Set-DnsServerForwarder -IPAddress $arg3' \
+ 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1,$arg2 -PassThru' \
+ 'Add-DnsServerConditionalForwarderZone -Name "azure.contoso.corp" -MasterServers $arg1,$arg2 -PassThru' \
+ 'Add-DnsServerPrimaryZone -Name "contoso.corp" -ZoneFile "contoso.corp.dns"' \
+ 'Add-DnsServerResourceRecordA -Name $arg6 -IPv4Address $arg7 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name $arg8 -IPv4Address $arg9 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name "branch1vm" -IPv4Address $arg4 -ZoneName "contoso.corp"' \
+ 'Add-DnsServerResourceRecordA -Name "branch2vm" -IPv4Address $arg5 -ZoneName "contoso.corp"' \
+ --parameters $(echo "arg1=$dnsresolverip1" "arg2=$dnsresolverip2" "arg3=$globaldnsfwd" "arg4=$branch1vmip" "arg5=$branch2vmip" "arg6=branch1-windns" "arg7=$dnsvmip1" "arg8=branch2-windns" "arg9=$dnsvmip2") \
+ --output none \
+ --no-wait
 
 # ***** Preparing Branch1 VMs for Name Resolution *****
 echo ***** Preparing Branch1 VMs for Name Resolution *****
