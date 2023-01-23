@@ -219,7 +219,8 @@ az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk
 az network private-dns link vnet create -g $rg -n $hub1name-services-link -z spk4.azure.contoso.corp -v $hub1name-services -o none -e false --no-wait
 az network private-dns link vnet create -g $rg -n $hub2name-services-link -z spk4.azure.contoso.corp -v $hub2name-services -o none -e false --no-wait
 
-# Creating forwarding-rule to all Azure Resoluton Spokes to resolver each other using DNS Private Resolver
+# Creating forwarding-rule azure.contoso.corp to the Inbound Endpoint IP
+echo Creating forwarding-rule azure.contoso.corp to the Inbound Endpoint IP
 #Hub1
 echo Creating forwarding-rule to allow Spokes to resolver each other using DNS Private Resolver
 dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
@@ -227,17 +228,17 @@ az dns-resolver forwarding-rule create -g $rg --name azure-contoso \
  --ruleset-name $hub1name-svc-fwd-ruleset \
  --domain-name "azure.contoso.corp." \
  --forwarding-rule-state "Enabled" \
- --target-dns-servers '[{"ip-address":"'$dnsresolverip'","port":"53"}]' \
+ --target-dns-servers '[{"ip-address":"'$dnsresolverip1'","port":"53"}]' \
  --output none
 
 # Hub2
 echo Creating forwarding-rule to allow Spokes to resolver each other using DNS Private Resolver
-dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip2=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub2name-services-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name azure-contoso \
- --ruleset-name $hub1name-svc-fwd-ruleset \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
  --domain-name "azure.contoso.corp." \
  --forwarding-rule-state "Enabled" \
- --target-dns-servers '[{"ip-address":"'$dnsresolverip'","port":"53"}]' \
+ --target-dns-servers '[{"ip-address":"'$dnsresolverip2'","port":"53"}]' \
  --output none
 
 #***** Configuring Branch DNS *****
