@@ -42,11 +42,11 @@ echo Creating spoke VNETs...
 # Region1
 az network vnet create --address-prefixes 172.16.1.0/24 -n spoke1 -g $rg -l $region1 --subnet-name main --subnet-prefixes 172.16.1.0/27 --output none
 az network vnet create --address-prefixes 172.16.2.0/24 -n spoke2 -g $rg -l $region1 --subnet-name main --subnet-prefixes 172.16.2.0/27 --output none
-az network vnet create --address-prefixes 172.16.10.0/24 -n $hub1name-services -g $rg -l $region1 --subnet-name main --subnet-prefixes 172.16.10.0/27 --output none
+az network vnet create --address-prefixes 172.16.10.0/24 -n $hub1name-svc -g $rg -l $region1 --subnet-name main --subnet-prefixes 172.16.10.0/27 --output none
 # Region2
 az network vnet create --address-prefixes 172.16.3.0/24 -n spoke3 -g $rg -l $region2 --subnet-name main --subnet-prefixes 172.16.3.0/27 --output none
 az network vnet create --address-prefixes 172.16.4.0/24 -n spoke4 -g $rg -l $region2 --subnet-name main --subnet-prefixes 172.16.4.0/27 --output none
-az network vnet create --address-prefixes 172.16.20.0/24 -n $hub2name-services -g $rg -l $region2 --subnet-name main --subnet-prefixes 172.16.20.0/27 --output none
+az network vnet create --address-prefixes 172.16.20.0/24 -n $hub2name-svc -g $rg -l $region2 --subnet-name main --subnet-prefixes 172.16.20.0/27 --output none
 
 echo Creating VMs in both branches...
 # create a VM in each branch spoke
@@ -78,10 +78,10 @@ echo Creating Spoke VMs...
 # create a VM in each connected spoke
 az vm create -n spoke1VM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region1 --subnet main --vnet-name spoke1 --admin-username $username --admin-password $password --nsg "" --no-wait
 az vm create -n spoke2VM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region1 --subnet main --vnet-name spoke2 --admin-username $username --admin-password $password --nsg "" --no-wait
-az vm create -n $hub1name-servicesVM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region1 --subnet main --vnet-name $hub1name-services --admin-username $username --admin-password $password --nsg "" --no-wait
+az vm create -n $hub1name-svcVM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region1 --subnet main --vnet-name $hub1name-svc --admin-username $username --admin-password $password --nsg "" --no-wait
 az vm create -n spoke3VM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name spoke3 --admin-username $username --admin-password $password --nsg "" --no-wait
 az vm create -n spoke4VM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name spoke4 --admin-username $username --admin-password $password --nsg "" --no-wait
-az vm create -n $hub2name-servicesVM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name $hub2name-services --admin-username $username --admin-password $password --nsg "" --no-wait
+az vm create -n $hub2name-svcVM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name $hub2name-svc --admin-username $username --admin-password $password --nsg "" --no-wait
 #Enable boot diagnostics
 echo Enabling boot diagnostics
 az vm boot-diagnostics enable --ids $(az vm list -g $rg --query '[].{id:id}' -o tsv) -o none
@@ -120,7 +120,7 @@ echo Creating Hub1 vNET connections
 # create spoke to Vwan connections to hub1
 az network vhub connection create -n spoke1conn --remote-vnet spoke1 -g $rg --vhub-name $hub1name --no-wait
 az network vhub connection create -n spoke2conn --remote-vnet spoke2 -g $rg --vhub-name $hub1name --no-wait
-az network vhub connection create -n $hub1name-servicesconn --remote-vnet $hub1name-services -g $rg --vhub-name $hub1name --no-wait
+az network vhub connection create -n $hub1name-svcconn --remote-vnet $hub1name-svc -g $rg --vhub-name $hub1name --no-wait
 
 prState=''
 while [[ $prState != 'Succeeded' ]];
@@ -141,8 +141,8 @@ done
 prState=''
 while [[ $prState != 'Succeeded' ]];
 do
-    prState=$(az network vhub connection show -n $hub1name-servicesconn --vhub-name $hub1name -g $rg  --query 'provisioningState' -o tsv)
-    echo "vnet connection $hub1name-servicesconn provisioningState="$prState
+    prState=$(az network vhub connection show -n $hub1name-svcconn --vhub-name $hub1name -g $rg  --query 'provisioningState' -o tsv)
+    echo "vnet connection $hub1name-svcconn provisioningState="$prState
     sleep 5
 done
 
@@ -171,7 +171,7 @@ done
 # create spoke to Vwan connections to hub2
 az network vhub connection create -n spoke3conn --remote-vnet spoke3 -g $rg --vhub-name $hub2name --no-wait
 az network vhub connection create -n spoke4conn --remote-vnet spoke4 -g $rg --vhub-name $hub2name --no-wait
-az network vhub connection create -n $hub2name-servicesconn --remote-vnet $hub2name-services -g $rg --vhub-name $hub2name --no-wait
+az network vhub connection create -n $hub2name-svcconn --remote-vnet $hub2name-svc -g $rg --vhub-name $hub2name --no-wait
 
 prState=''
 while [[ $prState != 'Succeeded' ]];
@@ -192,8 +192,8 @@ done
 prState=''
 while [[ $prState != 'Succeeded' ]];
 do
-    prState=$(az network vhub connection show -n $hub2name-servicesconn --vhub-name $hub2name -g $rg  --query 'provisioningState' -o tsv)
-    echo "vnet connection $hub2name-servicesconn provisioningState="$prState
+    prState=$(az network vhub connection show -n $hub2name-svcconn --vhub-name $hub2name -g $rg  --query 'provisioningState' -o tsv)
+    echo "vnet connection $hub2name-svcconn provisioningState="$prState
     sleep 5
 done
 
