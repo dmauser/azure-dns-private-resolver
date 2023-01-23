@@ -2,8 +2,8 @@
 az extension add -n dns-resolver
 
 # Parameters (make changes based on your requirements)
-region1=eastus
-region2=westus3
+region1=southcentralus
+region2=northcentralus
 rg=lab-vwan-adr
 vwanname=vwan-adr
 hub1name=hub1
