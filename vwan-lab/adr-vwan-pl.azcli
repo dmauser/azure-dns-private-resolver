@@ -78,3 +78,25 @@ az network private-endpoint dns-zone-group create \
     --zone-name default \
     --output none
 done
+
+
+
+
+#***** Configuring Branch DNS *****
+echo Configuring Branch1 DNS Server
+# Run command for Onprem DNS configuration:
+dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-svc-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip2=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub2name-svc-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+# fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
+globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
+branch1vmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+branch2vmip=$(az network nic show --name branch2VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az vm run-command invoke --command-id RunPowerShellScript \
+ --name branch1-windns \
+ --resource-group $rg \
+ --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3)' \
+ 'Set-DnsServerForwarder -IPAddress $arg3' \
+ 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1,$arg2 -PassThru' \
+ --parameters $(echo "arg1=$dnsresolverip1" "arg2=$dnsresolverip2" "arg3=$globaldnsfwd") \
+ --output none \
+ --no-wait

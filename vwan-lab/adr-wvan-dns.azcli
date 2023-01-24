@@ -258,7 +258,6 @@ az vm run-command invoke --command-id RunPowerShellScript \
  --resource-group $rg \
  --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3,[string]$arg4,[string]$arg5,[string]$arg6,[string]$arg7,[string]$arg8,[string]$arg9)' \
  'Set-DnsServerForwarder -IPAddress $arg3' \
- 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1,$arg2 -PassThru' \
  'Add-DnsServerConditionalForwarderZone -Name "azure.contoso.corp" -MasterServers $arg1,$arg2 -PassThru' \
  'Add-DnsServerPrimaryZone -Name "contoso.corp" -ZoneFile "contoso.corp.dns"' \
  'Add-DnsServerResourceRecordA -Name $arg6 -IPv4Address $arg7 -ZoneName "contoso.corp"' \
