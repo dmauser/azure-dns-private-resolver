@@ -61,7 +61,7 @@ az dns-resolver create --name $hub2name-svc-dnsresolver -g $rg --location $regio
 
 # Creating DNS inbound-endpoint 
 #Hub1
-echo Creating DNS inbound-endpoint
+echo Creating DNS inbound-endpoint on $hub1name-svc-dnsresolver
 az network vnet subnet create -g $rg --vnet-name $hub1name-svc -n dnsin --address-prefixes $hub1servicesDnsInSubnetPrefix --output none
 indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $hub1name-svc --query id -o tsv)
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
@@ -72,7 +72,7 @@ az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --no-wait
 #Hub2
 # Creating DNS inbound-endpoint 
-echo Creating DNS inbound-endpoint
+echo Creating DNS inbound-endpoint on $hub2name-svc-dnsresolver
 az network vnet subnet create -g $rg --vnet-name $hub2name-svc -n dnsin --address-prefixes $hub2servicesDnsInSubnetPrefix --output none
 indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $hub2name-svc --query id -o tsv)
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
@@ -83,7 +83,7 @@ az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --no-wait
 
 # Creating DNS outbound-endpoint 
-echo Creating DNS outbound-endpoint 
+echo Creating DNS outbound-endpoint on $hub1name-svc-dnsresolver
 #Hub1
 az network vnet subnet create -g $rg --vnet-name $hub1name-svc -n dnsout --address-prefixes $hub1servicesDnsOutSubnetPrefix --output none
 outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $hub1name-svc --query id -o tsv)
@@ -94,6 +94,7 @@ az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
  --output none
 
 #Hub2
+echo Creating DNS outbound-endpoint on $hub2name-svc-dnsresolver
 az network vnet subnet create -g $rg --vnet-name $hub2name-svc -n dnsout --address-prefixes $hub2servicesDnsOutSubnetPrefix --output none
 outdnsid=$(az network vnet subnet show -g $rg -n dnsout --vnet-name $hub2name-svc --query id -o tsv)
 az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
@@ -103,7 +104,7 @@ az dns-resolver outbound-endpoint create -g $rg --name OutboundEndpoint \
  --output none
 
 # Creating forwarding-ruleset
-echo Creating forwarding-ruleset 
+echo Creating forwarding-ruleset on $hub1name-svc-dnsresolver
 #Hub1
 outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub1name-svc-dnsresolver --query id -o tsv)
 az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-svc-fwd-ruleset \
@@ -112,6 +113,7 @@ az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-svc-fwd-rulese
  --output none
 
 #Hub2
+echo Creating forwarding-ruleset on $hub2name-svc-dnsresolver
 outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub2name-svc-dnsresolver --query id -o tsv)
 az dns-resolver forwarding-ruleset create -g $rg --name $hub2name-svc-fwd-ruleset \
  --location $region2 \
@@ -120,7 +122,7 @@ az dns-resolver forwarding-ruleset create -g $rg --name $hub2name-svc-fwd-rulese
 
 # Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
 # Hub1
-echo Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
+echo Creating forwarding-rule contoso.corp on $hub1name-svc-fwd-ruleset
 dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
@@ -131,6 +133,7 @@ az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --output none
 
 #Hub2
+echo Creating forwarding-rule contoso.corp on $hub2name-svc-fwd-ruleset
 dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
@@ -306,4 +309,3 @@ echo Restarting branches VMs to commit the new VNET DNS settings.
 az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'branch'`)].{id:id}' -o tsv) --no- --output none
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.
-
