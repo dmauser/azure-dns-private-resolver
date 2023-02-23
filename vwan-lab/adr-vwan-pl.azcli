@@ -1,12 +1,26 @@
+# Parameters (make changes based on your requirements)
+region1=southcentralus
+region2=northcentralus
+rg=lab-vwan-adr
+vwanname=vwan-adr
+hub1name=hub1
+hub2name=hub2
+username=azureuser
+password="Msft123Msft123"
+vmsize=Standard_DS1_v2
+
 # ***** Private Endpoint + PrivateLink Private DNZ Zone ****
 
 
 #Creating Storage Accounts 
 echo Creating Hub and Spokes storage accounts for serial console and private link.
 randomIdentifier1=$RANDOM 
-az storage account create -n hubstg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
-az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
-az storage account create -n spk2stg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
+az storage account create -n hub1svcstg$randomIdentifier1 -g $rg -l $region1 --sku Standard_LRS -o none 
+az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $region1 --sku Standard_LRS -o none
+
+az storage account create -n hub2svcstg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
+az storage account create -n spk3stg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
+
 
 echo Creating Private Endpoint and PrivateLink Private DNZ Zone integration
 # Creating DNS Private Link zone: privatelink.blob.core.windows.net
@@ -17,45 +31,59 @@ az network private-dns zone create \
  --output none
 
 # Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
-echo Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
-## Hub
-stgname=$(az storage account list -g $rg --query '[?contains(name,`'hub'`)].{name:name}' -o tsv)
-az network private-endpoint create \
-    --connection-name $AzurehubName-connection \
-    --name hubpe \
+echo Creating Private Endpoints for Hub1-svc, Hub2-svc, Spoke1 and Spoke 3.
+## Hub1
+stgname=$(az storage account list -g $rg --query '[?contains(name,`'hub1'`)].{name:name}' -o tsv)
+az network private-endpoint create -l $region1 \
+    --connection-name $hub1name-connection \
+    --name $hub1name=pe \
     --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
     --resource-group $rg \
-    --subnet subnet1 \
+    --subnet main \
     --group-id blob \
-    --vnet-name $AzurehubName-vnet \
+    --vnet-name $hub1name-svc \
+    --output none
+
+## Hub2
+stgname=$(az storage account list -g $rg --query '[?contains(name,`'hub2'`)].{name:name}' -o tsv)
+az network private-endpoint create -l $region2 \
+    --connection-name $hub2name-connection \
+    --name $hub2name-pe \
+    --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
+    --resource-group $rg \
+    --subnet main \
+    --group-id blob \
+    --vnet-name $hub2name-svc \
     --output none
 
 ## Spk1
 stgname=$(az storage account list -g $rg --query '[?contains(name,`'spk1'`)].{name:name}' -o tsv)
-az network private-endpoint create \
-    --connection-name $Azurespoke1Name-connection \
-    --name spk1pe \
+az network private-endpoint create -l $region1 \
+    --connection-name spoke1-connection \
+    --name spk1-pe \
     --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
     --resource-group $rg \
-    --subnet subnet1 \
+    --subnet main \
     --group-id blob \
-    --vnet-name $Azurespoke1Name-vnet \
-    --output none
-## Spk2
-stgname=$(az storage account list -g $rg --query '[?contains(name,`'spk2'`)].{name:name}' -o tsv)
-az network private-endpoint create \
-    --connection-name $Azurespoke2Name-connection \
-    --name spk2pe \
-    --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
-    --resource-group $rg \
-    --subnet subnet1 \
-    --group-id blob \
-    --vnet-name $Azurespoke2Name-vnet \
+    --vnet-name spoke1 \
     --output none
 
-#Creating Private DNS vnet link to Hub, Spoke1 and Spoke 2 vnets
-echo Creating Private DNS vnet link to Hub, Spoke1 and Spoke 2 vnets
-for vnet in $(az network vnet list -g $rg --query '[?contains(name,`'az'`)].{name:name}' -o tsv)
+## Spk3
+stgname=$(az storage account list -g $rg --query '[?contains(name,`'spk3'`)].{name:name}' -o tsv)
+az network private-endpoint create -l $region2 \
+    --connection-name spoke3-connection \
+    --name spk3-pe \
+    --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
+    --resource-group $rg \
+    --subnet main \
+    --group-id blob \
+    --vnet-name spoke3 \
+    --output none
+
+
+#Creating Private DNS vnet link to Hub1 and Hub2
+echo Creating Private DNS vnet link to Hub1 and Hub2
+for vnet in $(az network vnet list -g $rg --query '[?contains(name,`'hub'`)].{name:name}' -o tsv)
 do
  az network private-dns link vnet create \
     --resource-group $rg \
@@ -68,7 +96,7 @@ done
 
 # Creating DNS zone group to have PE registered in Private Link DNS zone.
 echo Creating DNS zone group to have PE registered in Private Link DNS zone.
-for pe in $(az network private-endpoint list -g $rg --query [].name -o tsv)
+for pe in $(az network private-endpoint list -g $rg --query '[?contains(privateLinkServiceConnections[].groupIds[],`'blob'`)].{name:name}' -o tsv)
 do
 az network private-endpoint dns-zone-group create \
     --resource-group $rg \
@@ -80,7 +108,26 @@ az network private-endpoint dns-zone-group create \
 done
 
 
+#***** Configuring DNS Private Resolver Rules *****
+#Hub1
+echo Creating forwarding-rule on $hub1name-svc-fwd-ruleset
+dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-svc-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name privatelinkblob \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
+ --domain-name "privatelink.blob.core.windows.net." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsresolverip1'","port":"53"}]' \
+ --output none
 
+# Hub2
+echo Creating forwarding-rule on $hub2name-svc-fwd-ruleset
+dnsresolverip2=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub2name-svc-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+az dns-resolver forwarding-rule create -g $rg --name privatelinkblob \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --domain-name "privatelink.blob.core.windows.net." \
+ --forwarding-rule-state "Enabled" \
+ --target-dns-servers '[{"ip-address":"'$dnsresolverip2'","port":"53"}]' \
+ --output none
 
 #***** Configuring Branch DNS *****
 echo Configuring Branch1 DNS Server
@@ -93,6 +140,24 @@ branch1vmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfi
 branch2vmip=$(az network nic show --name branch2VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
 az vm run-command invoke --command-id RunPowerShellScript \
  --name branch1-windns \
+ --resource-group $rg \
+ --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3)' \
+ 'Set-DnsServerForwarder -IPAddress $arg3' \
+ 'Add-DnsServerConditionalForwarderZone -Name "blob.core.windows.net" -MasterServers $arg1,$arg2 -PassThru' \
+ --parameters $(echo "arg1=$dnsresolverip1" "arg2=$dnsresolverip2" "arg3=$globaldnsfwd") \
+ --output none \
+ --no-wait
+
+echo Configuring Branch2 DNS Server
+# Run command for Onprem DNS configuration:
+dnsresolverip1=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub2name-svc-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+dnsresolverip2=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $hub1name-svc-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
+# fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
+globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
+branch1vmip=$(az network nic show --name branch1VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+branch2vmip=$(az network nic show --name branch2VMVMNic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+az vm run-command invoke --command-id RunPowerShellScript \
+ --name branch2-windns \
  --resource-group $rg \
  --scripts 'param([string]$arg1,[string]$arg2,[string]$arg3)' \
  'Set-DnsServerForwarder -IPAddress $arg3' \

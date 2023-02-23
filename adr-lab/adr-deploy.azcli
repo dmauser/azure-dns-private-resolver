@@ -52,6 +52,8 @@ az deployment group create --name lab-$RANDOM --resource-group $rg \
 --parameters deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password deployBastion=true \
 --output none
 
+# Add Deployment checking
+
 #Creating Storage Accounts (boot diagnostics + serial console)
 echo Creating Hub and Spokes storage accounts for serial console and private link.
 randomIdentifier1=$RANDOM 
@@ -99,7 +101,7 @@ indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $AzurehubName-
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --dns-resolver-name $AzurehubName-dnsresolver \
  --location $location \
- --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid" \
+ --ip-configurations '[{"private-ip-address":"","private-ip-allocation-method":"Dynamic","id":"'$indnsid'"}]' \
  --output none
 
 # Creating DNS outbound-endpoint 
@@ -117,7 +119,7 @@ echo Creating forwarding-ruleset
 outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $AzurehubName-dnsresolver --query id -o tsv)
 az dns-resolver forwarding-ruleset create -g $rg --name $AzurehubName-fwd-ruleset \
  --location $location \
- --outbound-endpoints id=$outepid \
+ --outbound-endpoints '[{"id":"'$outepid'"}]' \
  --output none
 
 # Creating forwarding-rule to allow Azure to On-premises DNS name resolution integration
@@ -127,7 +129,7 @@ az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --ruleset-name $AzurehubName-fwd-ruleset \
  --domain-name "onprem.contoso.corp." \
  --forwarding-rule-state "Enabled" \
- --target-dns-servers ip-address="$dnsvmip" port=53 \
+ --target-dns-servers '[{"ip-address":"'$dnsvmip'","port":"53"}]' \
  --output none
 
 # Creating ruleset vnet link for Hub vnet
