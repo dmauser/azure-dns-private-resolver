@@ -145,7 +145,9 @@ az deployment group create --name lab-$RANDOM --resource-group $rg \
 --parameters deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password deployBastion=true \
 --output none
 
-#Creating Storage Accounta (boot diagnostics + serial console)
+# Add Deployment checking
+
+#Creating Storage Accounts (boot diagnostics + serial console)
 echo Creating Hub and Spokes storage accounts for serial console and private link.
 randomIdentifier1=$RANDOM 
 az storage account create -n hubstg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
@@ -192,7 +194,8 @@ indnsid=$(az network vnet subnet show -g $rg -n dnsin --vnet-name $AzurehubName-
 az dns-resolver inbound-endpoint create -g $rg --name InboundEndpoint \
  --dns-resolver-name $AzurehubName-dnsresolver \
  --location $location \
- --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="$indnsid"
+ --ip-configurations '[{"private-ip-address":"","private-ip-allocation-method":"Dynamic","id":"'$indnsid'"}]' \
+ --output none
 
 # Creating DNS outbound-endpoint 
 echo Creating DNS outbound-endpoint 
@@ -209,7 +212,7 @@ echo Creating forwarding-ruleset
 outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $AzurehubName-dnsresolver --query id -o tsv)
 az dns-resolver forwarding-ruleset create -g $rg --name $AzurehubName-fwd-ruleset \
  --location $location \
- --outbound-endpoints id=$outepid \
+ --outbound-endpoints '[{"id":"'$outepid'"}]' \
  --output none
 
 # Creating forwarding-rule to allow Azure to On-premises DNS name resolution integration
@@ -219,7 +222,7 @@ az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --ruleset-name $AzurehubName-fwd-ruleset \
  --domain-name "onprem.contoso.corp." \
  --forwarding-rule-state "Enabled" \
- --target-dns-servers ip-address="$dnsvmip" port=53 \
+ --target-dns-servers '[{"ip-address":"'$dnsvmip'","port":"53"}]' \
  --output none
 
 # Creating ruleset vnet link for Hub vnet
@@ -322,8 +325,8 @@ echo -e "***** On-premises domain onprem.contoso.corp + Azure domain azure.conto
 echo Creating Private DNS Zone azure.contoso.corp for Azure VM resolution
 az network private-dns zone create -g $rg -n azure.contoso.corp --output none
 
-# Linking hub for DNS name resgistration (Private DNZ zone: azure.contoso.corp)
-echo Linking hub for DNS name resgistration Private DNZ zone: azure.contoso.corp
+# Linking hub for DNS name registration (Private DNZ zone: azure.contoso.corp)
+echo Linking hub for DNS name registration Private DNZ zone: azure.contoso.corp
 az network private-dns link vnet create -g $rg -n $AzurehubName-link -z azure.contoso.corp -v $AzurehubName-vnet -e true -o none
 
 # Linking all spokes for registration (Private DNZ zone: azure.contoso.corp)
@@ -365,7 +368,7 @@ az network vnet update -g $rg -n onprem-vnet \
 echo Restarting onprem VMs to commit the new VNET DNS settings.
 az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{id:id}' -o tsv) --no- --output none
 echo Follow the validation script to test the name resolution.
-echo Lab deployment has finished.
+echo echo Lab deployment has finished.
 ```
 
 ## Validation
