@@ -194,15 +194,15 @@ az dns-resolver vnet-link create -g $rg --name spoke4-vnetlink \
 
 # Creating Private DNS Zone for Azure VM resolution
 echo Creating Private DNS Zone for each spoke
-az network private-dns zone create -g $rg -n svc.azure.contoso.corp --output none
+az network private-dns zone create -g $rg -n azure.contoso.corp --output none
 az network private-dns zone create -g $rg -n spk1.azure.contoso.corp --output none
 az network private-dns zone create -g $rg -n spk2.azure.contoso.corp --output none
 az network private-dns zone create -g $rg -n spk3.azure.contoso.corp --output none
 az network private-dns zone create -g $rg -n spk4.azure.contoso.corp --output none
 
 echo Creating VNET Link each spoke with auto-registration enabled
-az network private-dns link vnet create -g $rg -n $hub1name-svc-link -z svc.azure.contoso.corp -v $hub1name-svc -e true -o none --no-wait
-az network private-dns link vnet create -g $rg -n $hub2name-svc-link -z svc.azure.contoso.corp -v $hub2name-svc -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n $hub1name-svc-link -z azure.contoso.corp -v $hub1name-svc -e true -o none --no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-svc-link -z azure.contoso.corp -v $hub2name-svc -e true -o none --no-wait
 az network private-dns link vnet create -g $rg -n spoke1-link -z spk1.azure.contoso.corp -v spoke1 -e true -o none --no-wait
 az network private-dns link vnet create -g $rg -n spoke2-link -z spk2.azure.contoso.corp -v spoke2 -e true -o none --no-wait
 az network private-dns link vnet create -g $rg -n spoke3-link -z spk3.azure.contoso.corp -v spoke3 -e true -o none --no-wait
