@@ -80,7 +80,6 @@ az network private-endpoint create -l $region2 \
     --vnet-name spoke3 \
     --output none
 
-
 #Creating Private DNS vnet link to Hub1 and Hub2
 echo Creating Private DNS vnet link to Hub1 and Hub2
 for vnet in $(az network vnet list -g $rg --query '[?contains(name,`'hub'`)].{name:name}' -o tsv)

@@ -22,7 +22,7 @@
 
 ## Intro
 
-Azure DNS Private Resolver (Public Preview) is a new network component that facilitates DNS name resolution integration between On-premises to Azure and vice-versa. Please, review the official documentation for more information: [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview)
+Azure DNS Private Resolver is a first-party Azure network component that facilitates DNS name resolution integration between On-premises to Azure and vice-versa. Please, review the official documentation for more information: [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview)
 
 The goal of this lab is to give you a ready environment where you can play or demo the Azure DNS Private Resolver over two scenarios. The first scenario demonstrates the integration with Azure Private Endpoint name resolution by allowing the On-premises DNS Server to resolve Private Endpoint names hosted inside Azure Private DNS zones such as **privatelink.blob.core.windows.net**. In the second scenario, Azure and On-premises resolve names for each other's domain zones where  **onprem.contoso.corp** is the On-premises hosted zone in Windows Server DNS Server and **azure.contoso.corp** is on the Azure Private DNS Zones.
 

@@ -16,6 +16,10 @@ username=azureuser
 password="Msft123Msft123"
 vmsize=Standard_DS1_v2
 
+#Bastion
+branch1BastionPrefix=10.100.1.0/27
+branch2BastionPrefix=10.200.1.0/27
+
 #Variables
 mypip=$(curl -4 ifconfig.io -s)
 
@@ -273,6 +277,17 @@ else
     done
 fi
 
+# Creating Bastion on Branch1 and Branch2
+echo Creating Bastion on Branch1 and Branch2 for Windows DNS Server management
+# Branch1
+az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
+az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none --no-wait
+# Branch2
+az network vnet subnet create -g $rg --vnet-name branch2 -n AzureBastionSubnet --address-prefixes $branch2BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch2-bastion-pip --sku Standard --location $region2 --output none 
+az network bastion create --name branch2-bastion --public-ip-address branch2-bastion-pip --resource-group $rg --vnet-name branch2 --location $region2 --sku Basic --output none --no-wait
+
 echo Building VPN connections from VPN Gateways to the respective Branches...
 # get bgp peering and public ip addresses of VPN GW and VWAN to set up connection
 # Branch 1 and Hub1 VPN Gateway variables
@@ -314,4 +329,5 @@ az network vpn-connection create -n branch2-to-$hub2name-gw2 -g $rg -l $region2 
 
 # Note: at this point you can test connectivity and the expected behavior is to have any-to-any connectivity using the default route table (by design vWAN behavior).
 # Use instruction of validation section below if you want to test that connectivity.
+
 echo Deployment has finished
