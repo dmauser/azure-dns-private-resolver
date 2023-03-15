@@ -52,6 +52,17 @@ az network vnet create --address-prefixes 172.16.3.0/24 -n spoke3 -g $rg -l $reg
 az network vnet create --address-prefixes 172.16.4.0/24 -n spoke4 -g $rg -l $region2 --subnet-name main --subnet-prefixes 172.16.4.0/27 --output none
 az network vnet create --address-prefixes 172.16.20.0/24 -n $hub2name-svc -g $rg -l $region2 --subnet-name main --subnet-prefixes 172.16.20.0/27 --output none
 
+# Creating Bastion on Branch1 and Branch2
+echo Creating Bastion on Branch1 and Branch2 for Windows DNS Server management
+# Branch1
+az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
+az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none --no-wait
+# Branch2
+az network vnet subnet create -g $rg --vnet-name branch2 -n AzureBastionSubnet --address-prefixes $branch2BastionPrefix --output none
+az network public-ip create --resource-group $rg --name branch2-bastion-pip --sku Standard --location $region2 --output none 
+az network bastion create --name branch2-bastion --public-ip-address branch2-bastion-pip --resource-group $rg --vnet-name branch2 --location $region2 --sku Basic --output none --no-wait
+
 echo Creating VMs in both branches...
 # create a VM in each branch spoke
 az vm create -n branch1VM  -g $rg --image ubuntults --public-ip-sku Standard --size $vmsize -l $region1 --subnet main --vnet-name branch1 --admin-username $username --admin-password $password --nsg "" --no-wait
@@ -277,16 +288,6 @@ else
     done
 fi
 
-# Creating Bastion on Branch1 and Branch2
-echo Creating Bastion on Branch1 and Branch2 for Windows DNS Server management
-# Branch1
-az network vnet subnet create -g $rg --vnet-name branch1 -n AzureBastionSubnet --address-prefixes $branch1BastionPrefix --output none
-az network public-ip create --resource-group $rg --name branch1-bastion-pip --sku Standard --location $region1 --output none 
-az network bastion create --name branch1-bastion --public-ip-address branch1-bastion-pip --resource-group $rg --vnet-name branch1 --location $region1 --sku Basic --output none --no-wait
-# Branch2
-az network vnet subnet create -g $rg --vnet-name branch2 -n AzureBastionSubnet --address-prefixes $branch2BastionPrefix --output none
-az network public-ip create --resource-group $rg --name branch2-bastion-pip --sku Standard --location $region2 --output none 
-az network bastion create --name branch2-bastion --public-ip-address branch2-bastion-pip --resource-group $rg --vnet-name branch2 --location $region2 --sku Basic --output none --no-wait
 
 echo Building VPN connections from VPN Gateways to the respective Branches...
 # get bgp peering and public ip addresses of VPN GW and VWAN to set up connection
