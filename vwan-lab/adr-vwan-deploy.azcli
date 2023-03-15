@@ -2,8 +2,10 @@
 
 # Pre-Requisite
 az extension add --name virtual-wan 
+az extension add --name bastion
 # or update
 az extension update --name virtual-wan
+az extension update --name bastion
 
 # Parameters (make changes based on your requirements)
 region1=southcentralus
