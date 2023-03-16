@@ -1,10 +1,18 @@
 az account list -o table
 # Visual Studio Sub
 az account set -s vse-sub
+rg=lab-dns-resolver 
+az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
 
-# Visual Studio Sub
+# Internal MS
 az account set -s DMAUSER-FDPO
+rg=lab-vwan-adr
+az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
 
-https://hubstg5059.blob.core.windows.net/
-https://spk1stg5059.blob.core.windows.net/
-https://spk2stg5059.blob.core.windows.net/
+
+#Check DNS settings
+cat /etc/resolv.conf
+#Flush cache
+sudo systemd-resolve --flush-caches
+# Check DNS settings Azure VM
+systemd-resolve --status | grep "DNS Servers"
