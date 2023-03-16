@@ -1,0 +1,10 @@
+az account list -o table
+# Visual Studio Sub
+az account set -s vse-sub
+
+# Visual Studio Sub
+az account set -s DMAUSER-FDPO
+
+https://hubstg5059.blob.core.windows.net/
+https://spk1stg5059.blob.core.windows.net/
+https://spk2stg5059.blob.core.windows.net/

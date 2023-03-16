@@ -247,10 +247,11 @@ done
 #***** Configuring On-Premises DNS *****
 echo Configuring On-premises DNS Server
 # Run command for Onprem DNS configuration:
-dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $AzurehubName-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIPAddress -o tsv)
+dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $AzurehubName-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
 # fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIPAddress" -o tsv)
 globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
 onpremvmip=$(az network nic show --name onprem-lxvm-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
+dnsvmip=$(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
 az vm run-command invoke --command-id RunPowerShellScript \
  --name $dnsvmname \
  --resource-group $rg \
