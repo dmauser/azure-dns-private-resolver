@@ -108,7 +108,7 @@ az network private-dns link vnet create -g $rg -n spoke4-link -z spk4.azure.cont
 echo Creating VNET Link each spoke to $hub1name and $hub2name services VNETs
 #Spoke1
 az network private-dns link vnet create -g $rg -n $hub1name-svc-link -z spk1.azure.contoso.corp -v $hub1name-svc -o none -e false --no-wait
-az network private-dns link vnet create -g $rg -n $hub2name-svc-link -z spk1.azure.contoso.corp -v $hub2name-svc -o none -e false -no-wait
+az network private-dns link vnet create -g $rg -n $hub2name-svc-link -z spk1.azure.contoso.corp -v $hub2name-svc -o none -e false --no-wait
 #Spoke2
 az network private-dns link vnet create -g $rg -n $hub1name-svc-link -z spk2.azure.contoso.corp -v $hub1name-svc -o none -e false --no-wait
 az network private-dns link vnet create -g $rg -n $hub2name-svc-link -z spk2.azure.contoso.corp -v $hub2name-svc -o none -e false --no-wait
