@@ -17,23 +17,6 @@ hub1servicesDnsOutSubnetPrefix=172.16.10.48/28
 hub2servicesDnsInSubnetPrefix=172.16.20.32/28
 hub2servicesDnsOutSubnetPrefix=172.16.20.48/28
 
-# Creating forwarding-ruleset
-echo Creating forwarding-ruleset on $hub1name-svc-dnsresolver
-#Hub1
-outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub1name-svc-dnsresolver --query id -o tsv)
-az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-svc-fwd-ruleset \
- --location $region1 \
- --outbound-endpoints '[{"id":"'$outepid'"}]' \
- --output none
-
-#Hub2
-echo Creating forwarding-ruleset on $hub2name-svc-dnsresolver
-outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub2name-svc-dnsresolver --query id -o tsv)
-az dns-resolver forwarding-ruleset create -g $rg --name $hub2name-svc-fwd-ruleset \
- --location $region2 \
- --outbound-endpoints '[{"id":"'$outepid'"}]' \
- --output none
-
 # Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
 # Hub1
 echo Creating forwarding-rule contoso.corp on $hub1name-svc-fwd-ruleset
@@ -157,7 +140,6 @@ az dns-resolver forwarding-rule create -g $rg --name azure-contoso \
  --forwarding-rule-state "Enabled" \
  --target-dns-servers '[{"ip-address":"'$dnsresolverip2'","port":"53"}]' \
  --output none
-
 
 #***** Configuring Branch DNS *****
 echo Configuring Branch1 DNS Server

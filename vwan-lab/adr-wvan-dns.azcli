@@ -103,7 +103,7 @@ az vm run-command invoke --command-id RunPowerShellScript \
  --resource-group $rg \
  --scripts 'param([string]$arg3)' \
  'Set-DnsServerForwarder -IPAddress $arg3' \
- --parameters $("arg3=$globaldnsfwd") \
+ --parameters $(echo "arg3=$globaldnsfwd") \
  --output none \
  --no-wait
 
@@ -120,12 +120,29 @@ az vm run-command invoke --command-id RunPowerShellScript \
  --resource-group $rg \
  --scripts 'param([string]$arg3)' \
  'Set-DnsServerForwarder -IPAddress $arg3' \
- --parameters $("arg3=$globaldnsfwd") \
+ --parameters $(echo "arg3=$globaldnsfwd") \
  --output none \
  --no-wait
 
-# ***** Preparing Branch1 VMs for Name Resolution *****
-echo ***** Preparing Branch1 VMs for Name Resolution *****
+# Creating forwarding-ruleset
+echo Creating forwarding-ruleset on $hub1name-svc-dnsresolver
+#Hub1
+outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub1name-svc-dnsresolver --query id -o tsv)
+az dns-resolver forwarding-ruleset create -g $rg --name $hub1name-svc-fwd-ruleset \
+ --location $region1 \
+ --outbound-endpoints '[{"id":"'$outepid'"}]' \
+ --output none
+
+#Hub2
+echo Creating forwarding-ruleset on $hub2name-svc-dnsresolver
+outepid=$(az dns-resolver outbound-endpoint show -g $rg --name OutboundEndpoint --dns-resolver-name $hub2name-svc-dnsresolver --query id -o tsv)
+az dns-resolver forwarding-ruleset create -g $rg --name $hub2name-svc-fwd-ruleset \
+ --location $region2 \
+ --outbound-endpoints '[{"id":"'$outepid'"}]' \
+ --output none
+
+# ***** Preparing Branch VMs for Name Resolution *****
+echo ***** Preparing Branch VMs for Name Resolution *****
 # Setting Branch1 vnet to use Branch1 DNS Server
 echo Setting Branch1 vnet to use Branch1 DNS Server
 az network vnet update -g $rg -n branch1 \

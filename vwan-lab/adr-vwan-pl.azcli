@@ -11,7 +11,6 @@ vmsize=Standard_DS1_v2
 
 # ***** Private Endpoint + PrivateLink Private DNZ Zone ****
 
-
 #Creating Storage Accounts 
 echo Creating Hub and Spokes storage accounts for serial console and private link.
 randomIdentifier1=$RANDOM 
@@ -20,7 +19,6 @@ az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $region1 --sku 
 
 az storage account create -n hub2svcstg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
 az storage account create -n spk3stg$randomIdentifier1 -g $rg -l $region2 --sku Standard_LRS -o none
-
 
 echo Creating Private Endpoint and PrivateLink Private DNZ Zone integration
 # Creating DNS Private Link zone: privatelink.blob.core.windows.net
@@ -36,7 +34,7 @@ echo Creating Private Endpoints for Hub1-svc, Hub2-svc, Spoke1 and Spoke 3.
 stgname=$(az storage account list -g $rg --query '[?contains(name,`'hub1'`)].{name:name}' -o tsv)
 az network private-endpoint create -l $region1 \
     --connection-name $hub1name-connection \
-    --name $hub1name=pe \
+    --name $hub1name-pe \
     --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
     --resource-group $rg \
     --subnet main \
@@ -128,6 +126,53 @@ az dns-resolver forwarding-rule create -g $rg --name privatelinkblob \
  --target-dns-servers '[{"ip-address":"'$dnsresolverip2'","port":"53"}]' \
  --output none
 
+# Creating ruleset vnet links
+echo Creating ruleset vnet link for $hub1name-svc vnet
+az dns-resolver vnet-link create -g $rg --name $hub1name-svclink \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n $hub1name-svc --query id -o tsv) \
+ --output none \
+ --no-wait
+
+echo Creating ruleset vnet link for $hub2name-svc vnet
+az dns-resolver vnet-link create -g $rg --name $hub2name-svclink \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n $hub2name-svc --query id -o tsv) \
+ --output none \
+ --no-wait
+
+# Creating ruleset vnet link for Spoke1 vnet
+echo Creating ruleset vnet link for Spoke1 vnet
+az dns-resolver vnet-link create -g $rg --name spoke1-vnetlink \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke1 --query id -o tsv) \
+ --output none \
+ --no-wait
+
+# Creating ruleset vnet link for Spoke2 vnet
+echo Creating ruleset vnet link for Spoke2 vnet
+az dns-resolver vnet-link create -g $rg --name spoke2-vnetlink \
+ --ruleset-name $hub1name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke2 --query id -o tsv) \
+ --output none \
+ --no-wait
+
+# Creating ruleset vnet link for Spoke3 vnet
+echo Creating ruleset vnet link for Spoke3 vnet
+az dns-resolver vnet-link create -g $rg --name spoke3-vnetlink \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke3 --query id -o tsv) \
+ --output none \
+ --no-wait
+
+# Creating ruleset vnet link for Spoke4 vnet
+echo Creating ruleset vnet link for Spoke4 vnet
+az dns-resolver vnet-link create -g $rg --name spoke4-vnetlink \
+ --ruleset-name $hub2name-svc-fwd-ruleset \
+ --id $(az network vnet show -g $rg -n spoke4 --query id -o tsv) \
+ --output none \
+ --no-wait
+
 #***** Configuring Branch DNS *****
 echo Configuring Branch1 DNS Server
 # Run command for Onprem DNS configuration:
@@ -164,3 +209,7 @@ az vm run-command invoke --command-id RunPowerShellScript \
  --parameters $(echo "arg1=$dnsresolverip1" "arg2=$dnsresolverip2" "arg3=$globaldnsfwd") \
  --output none \
  --no-wait
+
+echo Listing Private Endpoint Names:
+az storage account list  -g $rg --query [].primaryEndpoints.blob -o table
+echo Test private endpoint name resolution against the names listed above

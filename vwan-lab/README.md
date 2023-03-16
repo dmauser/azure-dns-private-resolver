@@ -38,9 +38,10 @@ chmod +xr adr-vwan-deploy.sh
 ./adr-vwan-deploy.sh
 ```
 
-## Scenario 1: Private Link DNS resolution
+## Scenario 1: DNS componentsIn this part of the lab, you will add all DNS components:
 
-If you want a ready demo to get all DNS configured use the following script:
+1 - On-premises Windows DNS Servers (Branch 1 and Branch2).
+2 - DNS Private Resolver with Inbound and Outbound endpoints.
 
 ```bash
 wget -O adr-wvan-dns.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-wvan-dns.azcli
@@ -48,5 +49,13 @@ chmod +xr adr-wvan-dns.sh
 ./adr-wvan-dns.sh
 ```
 
-## Private Link name resolution
+The following diagram reflects what is expected after deploying the shell adr-wvan-dns.sh script.
 
+## Scenario 2: Private Link name resolution
+
+
+```bash
+wget -O adr-vwan-pl.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-vwan-pl.azcli
+chmod +xr adr-vwan-pl.sh
+./adr-vwan-pl.sh
+```
