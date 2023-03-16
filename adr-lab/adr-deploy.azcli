@@ -124,7 +124,7 @@ az dns-resolver forwarding-ruleset create -g $rg --name $AzurehubName-fwd-rulese
 
 # Creating forwarding-rule to allow Azure to On-premises DNS name resolution integration
 echo Creating forwarding-rule to allow Azure to On-premises DNS name resolution integration
-dnsvmip=$(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+dnsvmip=$(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --ruleset-name $AzurehubName-fwd-ruleset \
  --domain-name "onprem.contoso.corp." \
@@ -247,10 +247,10 @@ done
 #***** Configuring On-Premises DNS *****
 echo Configuring On-premises DNS Server
 # Run command for Onprem DNS configuration:
-dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $AzurehubName-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIpAddress -o tsv)
-# fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIpAddress" -o tsv)
+dnsresolverip=$(az dns-resolver inbound-endpoint show -g $rg --dns-resolver-name $AzurehubName-dnsresolver --name InboundEndpoint --query ipConfigurations[].privateIPAddress -o tsv)
+# fwdnsresolverip=$(az network firewall show --name $hubname-azfw --resource-group $rg --query "hubIpAddresses.privateIPAddress" -o tsv)
 globaldnsfwd=8.8.8.8 # Global/Server level DNS Forwarder
-onpremvmip=$(az network nic show --name onprem-lxvm-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+onpremvmip=$(az network nic show --name onprem-lxvm-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
 az vm run-command invoke --command-id RunPowerShellScript \
  --name $dnsvmname \
  --resource-group $rg \
@@ -269,7 +269,7 @@ echo ***** Preparing On-premises VMs for Name Resolution *****
 # Setting On-prem vnet to use On-Prem DNS Server
 echo Setting On-prem vnet to use On-Prem DNS Server
 az network vnet update -g $rg -n onprem-vnet \
- --dns-servers $(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv) \
+ --dns-servers $(az network nic show --name $dnsvmname-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv) \
  --output none
 # Restarting onprem VMs to commit the new VNET DNS settings.
 echo Restarting onprem VMs to commit the new VNET DNS settings.
