@@ -54,9 +54,10 @@ The following diagram reflects what is expected after deploying the shell adr-wv
 
 ## Scenario 2: Private Link name resolution
 
-
 ```bash
 wget -O adr-vwan-pl.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-vwan-pl.azcli
 chmod +xr adr-vwan-pl.sh
 ./adr-vwan-pl.sh
 ```
+
+## Scenario 3: P
