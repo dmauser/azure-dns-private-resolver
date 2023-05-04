@@ -4,7 +4,7 @@
 
 [Intro](#intro)
 
-[Lab diagram](#lab-diagram)
+[Lab Diagram](#lab-diagram)
 - [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution)
 - [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration)
 
@@ -24,11 +24,11 @@
 
 Azure DNS Private Resolver is a first-party Azure network component that facilitates DNS name resolution integration between On-premises to Azure and vice-versa. Please, review the official documentation for more information: [What is Azure DNS Private Resolver?](https://docs.microsoft.com/en-us/azure/dns/dns-private-resolver-overview)
 
-The goal of this lab is to give you a ready environment where you can play or demo the Azure DNS Private Resolver over two scenarios. The first scenario demonstrates the integration with Azure Private Endpoint name resolution by allowing the On-premises DNS Server to resolve Private Endpoint names hosted inside Azure Private DNS zones such as **privatelink.blob.core.windows.net**. In the second scenario, Azure and On-premises resolve names for each other's domain zones where  **onprem.contoso.corp** is the On-premises hosted zone in Windows Server DNS Server and **azure.contoso.corp** is on the Azure Private DNS Zones.
+The goal of this lab is to give you a ready environment where you can play or demo the Azure DNS Private Resolver over two scenarios. The first scenario demonstrates the integration with Azure Private Endpoint name resolution by allowing the On-premises DNS Server to resolve Private Endpoint names hosted inside Azure Private DNS zones such as **privatelink.blob.core.windows.net**. In the second scenario, Azure and On-premises resolve names for each other's domain zones where **onprem****.contoso**.corp** is the On-premises hosted zone in Windows Server DNS Server and **azure.contoso.corp** is on the Azure Private DNS Zones.
 
 Note: check out the [Azure DNS Private Resolver repo](https://github.com/dmauser/azure-dns-private-resolver) for other related community resources.
 
-## Lab diagram
+## Lab Diagram
 
 ### Scenario 1: Private endpoint DNS name resolution
 
@@ -45,9 +45,9 @@ The lab includes the following components:
 **Azure side:**
 
 - Azure Hub and two spokes virtual networks (VNETs) with their respective address spaces: 10.0.20.0/24 (Hub), 10.0.21.0/24 (Spoke1), and 10.0.22.0/24 (Spoke2)
-- Linux VMs on each Azure VNETs accessible via Serial Console or Bastion.
-- Each VNET has Private Endpoint towards their respective storage account.
-- Azure VPN Gateway Active/Active using BGP (ASN 65515) with a S2S VPN connection to On-premises.
+- Linux VMs on each Azure VNETs are accessible via Serial Console or Bastion.
+- Each VNET has Private Endpoint toward its respective storage account.
+- Azure VPN Gateway Active/Active using BGP (ASN 65515) with an S2S VPN connection to On-premises.
 - Azure DNS Private Resolver with both inbound and outbound endpoints.
 - There's a DNS Private Resolver Ruleset with a single rule to **onprem.constoso.corp** using on-prem Windows DNS Server as destination (192.168.100.5). That rule set has VNET links to each Azure VNET.
 - Private DNS Zones host two zones: **azure.constoso.corp** with auto-registration to get all Azure VM names automatically registered) and privatelink.blob.core.windows.net hosting the three Private Endpoints for each VNET. 
@@ -86,7 +86,7 @@ You can follow the the first part of the provisioning by using Deployments under
 
 ![](./media/deployment.png)
 
-The second part of the deployment which build On-premises DNS Server, DNS Private Resolver, Private Link and DNS configuration is done using CLI. Please, note that the whole provisioning process will take around 35 minutes to complete.
+The second part of the deployment which builds the On-premises DNS Server, DNS Private Resolver, Private Link and DNS configuration is done using CLI. Please, note that the whole provisioning process will take around 35 minutes to complete.
 
 Another approach you can use is to deploy the lab step-by-step using the CLI commands below:
 

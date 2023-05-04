@@ -52,3 +52,6 @@ az vm run-command invoke --command-id RunPowerShellScript \
  --no-wait
 done
 
+
+# write me 
+

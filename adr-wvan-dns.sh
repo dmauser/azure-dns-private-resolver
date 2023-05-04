@@ -146,11 +146,11 @@ echo ***** Preparing Branch VMs for Name Resolution *****
 # Setting Branch1 vnet to use Branch1 DNS Server
 echo Setting Branch1 vnet to use Branch1 DNS Server
 az network vnet update -g $rg -n branch1 \
- --dns-servers $(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv) \
+ --dns-servers $(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv) \
  --output none
 echo Setting Branch2 vnet to use Branch2 DNS Server
 az network vnet update -g $rg -n branch2 \
- --dns-servers $(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv) \
+ --dns-servers $(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv) \
  --output none
 # Restarting onprem VMs to commit the new VNET DNS settings.
 echo Restarting branches VMs to commit the new VNET DNS settings.

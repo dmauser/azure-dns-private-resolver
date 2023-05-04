@@ -38,9 +38,10 @@ chmod +xr adr-vwan-deploy.sh
 ./adr-vwan-deploy.sh
 ```
 
-## Scenario 1: DNS componentsIn this part of the lab, you will add all DNS components:
+## Scenario 1: DNS components
 
-1 - On-premises Windows DNS Servers (Branch 1 and Branch2).
+In this part of the lab, you will add all DNS components:
+1 - On-premises Windows DNS Servers (Branch1 and Branch2).
 2 - DNS Private Resolver with Inbound and Outbound endpoints.
 
 ```bash
