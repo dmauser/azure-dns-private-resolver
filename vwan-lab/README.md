@@ -22,9 +22,10 @@ Azure DNS Private Resolver is a first-party Azure network component that facilit
 
 This repo goes over DNS Private Resolver on a multi-region scenario, where we going to explore the following scenarios:
 
-1 - Azure Private Link name resolution
-2 - Multiple Private DNS Zones resolution (the Business Unit use case)
-3 - Name resolution multi-region failover validation
+1. Deploy and review DNS components
+2. Azure Private Link name resolution
+3. Multiple Private DNS Zones resolution (the Business Unit use case)
+4. Name resolution multi-region failover validation
 
 Although this article goes over multi-region with Virtual WAN the same scenarios can be easily applied to Hub/Spoke architecture. The difference is on vWAN is mandatory that you host a shared service such as DNS Private Resolver in a dedicated Virtual Network (VNet). On a Hub/Spoke architecture, you can use either a dedicated VNET or host DNS Private Resolver inside the HUB.
 
