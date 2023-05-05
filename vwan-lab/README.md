@@ -60,4 +60,14 @@ chmod +xr adr-vwan-pl.sh
 ./adr-vwan-pl.sh
 ```
 
-## Scenario 3: P
+## Scenario 3: Multiple DNS Private Zones (Business Unit use case)
+
+```bash
+wget -O adr-vwan-bu.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-vwan-bu.azcli
+chmod +xr adr-vwan-bu.sh
+./adr-vwan-bu.sh
+```
+
+## Scenario 4: Multi-region and BCDR
+
+Coming soon...
