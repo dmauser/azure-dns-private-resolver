@@ -48,7 +48,11 @@ chmod +xr adr-wvan-dns.sh
 ./adr-wvan-dns.sh
 ```
 
-The following diagram reflects what is expected after deploying the shell adr-wvan-dns.sh script.
+#### Diagram
+
+The following diagram reflects what is the outcome after deploying the shell adr-wvan-dns.sh script.
+
+![](./media/scenario1.png)
 
 ## Scenario 2: Private Link name resolution
 
@@ -57,6 +61,11 @@ wget -O adr-vwan-pl.sh https://raw.githubusercontent.com/dmauser/azure-dns-priva
 chmod +xr adr-vwan-pl.sh
 ./adr-vwan-pl.sh
 ```
+#### Diagram
+
+The following diagram reflects what is the outcome after deploying the shell adr-vwan-pl.sh script.
+
+![](./media/scenario2.png)
 
 ## Scenario 3: Multiple DNS Private Zones (Business Unit use case)
 
@@ -65,6 +74,15 @@ wget -O adr-vwan-bu.sh https://raw.githubusercontent.com/dmauser/azure-dns-priva
 chmod +xr adr-vwan-bu.sh
 ./adr-vwan-bu.sh
 ```
+#### Diagram
+
+The following diagram reflects what is the outcome after deploying the shell adr-vwan-pl.sh script.
+
+![](./media/scenario3-2.png)
+
+#### Private DNS zones Vnet link configuration
+
+![](./media/scenario3-1.png)
 
 ## Scenario 4: Multi-region and BCDR
 
