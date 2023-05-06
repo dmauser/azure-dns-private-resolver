@@ -4,15 +4,12 @@
 
 [Intro](#intro)
 
-[Lab diagram](#lab-diagram)
-- [Scenario 1: Private endpoint DNS name resolution](#scenario-1-private-endpoint-dns-name-resolution)
-- [Scenario 2: On-premises and Azure DNS integration](#scenario-2-on-premises-and-azure-dns-integration)
+[Deploy the solution](#deploy-the-solution)
 
-[Lab components](#lab-components)
-
-[Considerations](#considerations)
-
-[Deploy this solution](#deploy-this-solution)
+- [Scenario 1: Deploy DNS components](#scenario-1-deploy-dns-components)
+- [Scenario 2: Private Link name resolution](#scenario-2-private-link-name-resolution)
+- [Scenario 3: Multiple Private DNS Zones (business unit use case)](#scenario-3-multiple-dns-private-zones-business-unit-use-case)
+- [Scenario 4: ](#scenario-4-multi-region-and-bcdr)
 
 [Clean up](#clean-up)
 
@@ -39,7 +36,7 @@ chmod +xr adr-vwan-deploy.sh
 ./adr-vwan-deploy.sh
 ```
 
-## Scenario 1: DNS components
+## Scenario 1: Deploy DNS components
 
 In this part of the lab, you will add all DNS components:
 1 - On-premises Windows DNS Servers (Branch1 and Branch2).
