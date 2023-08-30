@@ -1,3 +1,4 @@
+#!/bin/bash
 # Pre-Requisites
 az extension add -n dns-resolver
 
