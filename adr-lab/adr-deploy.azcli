@@ -7,6 +7,7 @@ location=eastus #Set location
 username=azureuser
 password=Msft123Msft123
 dnsvmname=onprem-windns
+vmsize=Standard_DS1_v2
 
 #Variables
 mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NSG to restrict access to SSH only for your Public IP.
@@ -49,7 +50,7 @@ echo "*** It will take around 30 minutes to finish the deployment ***"
 az group create --name $rg --location $location --output none
 az deployment group create --name lab-$RANDOM --resource-group $rg \
 --template-uri https://raw.githubusercontent.com/dmauser/azure-hub-spoke-base-lab/main/azuredeployv2.json \
---parameters deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password deployBastion=true \
+--parameters virtualMachineSize=$vmsize deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password deployBastion=true \
 --output none
 
 # Add Deployment checking
@@ -83,7 +84,7 @@ done
 # Deploying On-premises Windows DNS Server
 echo Deploying On-premises Windows DNS Server
 az network nic create --name $OnPremName-windns-nic --resource-group $rg --subnet subnet1 --vnet $OnPremName-vnet -o none
-az vm create --resource-group $rg --location $location --name $OnPremName-windns --size Standard_DS1_v2 --nics $OnPremName-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
+az vm create --resource-group $rg --location $location --name $OnPremName-windns --size $vmsize --nics $OnPremName-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none
 az vm extension set --resource-group $rg --vm-name $OnPremName-windns  --name CustomScriptExtension \
  --publisher Microsoft.Compute \
  --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
