@@ -1,0 +1,151 @@
+#Parameters
+rg=lab-dns-resolver #Define your resource group
+location=eastus #Set location
+username=azureuser
+password=Msft123Msft123
+dnsvmname=onprem-windns
+vmsize=Standard_DS1_v2
+
+AzurehubaddressSpacePrefix=$(az network vnet show -n az-hub-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
+Azurehubsubnet1Prefix=$(az network vnet subnet show -n subnet1 -g $rg --vnet-name az-hub-vnet --query addressPrefix -o tsv)
+Azurespoke1AddressSpacePrefix=$(az network vnet show -n az-spk1-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
+Azurespoke2AddressSpacePrefix=$(az network vnet show -n az-spk2-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
+
+#Variables
+mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NSG to restrict access to SSH only for your Public IP.
+
+# OPNsense NVA parameters
+ShellScriptName=configureopnsense.sh
+scenarioOption="TwoNics"
+virtualMachineSize=Standard_DS1_v2
+virtualNetworkName=$AzurehubName-vnet
+existingvirtualNetwork=existing
+VNETAddress=10.0.20.0/24 
+UntrustedSubnetCIDR=10.0.20.64/28
+TrustedSubnetCIDR=10.0.20.80/28
+existingUntrustedSubnetName=untrusted
+existingTrustedSubnetName=trusted
+
+# Create untrusted subnetnet
+echo Creating untrusted subnet
+az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet --name $existingUntrustedSubnetName --address-prefixes $UntrustedSubnetCIDR --output none
+# Create trusted subnetnet
+echo Creating trusted subnet
+az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet --name $existingTrustedSubnetName --address-prefixes $TrustedSubnetCIDR --output none
+
+echo "Deploying OPNsense NVA1 on the $AzurehubName"
+virtualMachineName=$AzurehubName-opnnva1
+az vm image terms accept --urn thefreebsdfoundation:freebsd-13_1:13_1-release:13.1.0 -o none
+az deployment group create --name $AzurehubName-nva --resource-group $rg \
+--template-uri "https://raw.githubusercontent.com/dmauser/opnazure/master/ARM/main.json" \
+--parameters scenarioOption=$scenarioOption virtualMachineName=$virtualMachineName virtualMachineSize=$virtualMachineSize existingvirtualNetwork=$existingvirtualNetwork virtualNetworkName=$virtualNetworkName UntrustedSubnetCIDR=$UntrustedSubnetCIDR TrustedSubnetCIDR=$TrustedSubnetCIDR existingUntrustedSubnetName=$existingUntrustedSubnetName existingTrustedSubnetName=$existingTrustedSubnetName Location=$location \
+--no-wait
+
+# Adding loop script to chek if deployment is complete
+while true
+do
+    if [ $(az deployment group show --name $AzurehubName-nva --resource-group $rg --query properties.provisioningState -o tsv) == "Succeeded" ]
+    then
+        echo "OPNSense Deployment is complete"
+        break
+    else
+        echo "Deployment is still in progress..."
+        sleep 15
+    fi
+done
+
+# Add https rule to the nsg from $mypip as source to allow access to OPNSense GUI
+az network nsg rule create -g $rg --nsg-name $location-default-nsg -n allow-https --priority 301 \
+    --source-address-prefixes $mypip --source-port-ranges '*' \
+    --destination-address-prefixes '*' --destination-port-ranges 443 --access Allow \
+    --protocol Tcp --description "Allow https" --output none
+
+# Misc remove NSG from OPNSense NICs 
+az network nic update -g $rg -n $virtualMachineName-Trusted-NIC --network-security-group null --output none
+az network nic update -g $rg -n $virtualMachineName-Untrusted-NIC --network-security-group null --output none
+# Ensure default NSG is associated to OPNSense Trusted and Untrusted Networks
+az network vnet subnet update -g $rg --name $existingTrustedSubnetName --vnet-name $virtualNetworkName --network-security-group null -o none
+az network vnet subnet update -g $rg --name $existingUntrustedSubnetName --vnet-name $virtualNetworkName --network-security-group null -o none
+az network vnet subnet update -g $rg --name $existingTrustedSubnetName --vnet-name $virtualNetworkName --network-security-group $location-default-nsg -o none
+az network vnet subnet update -g $rg --name $existingUntrustedSubnetName --vnet-name $virtualNetworkName --network-security-group $location-default-nsg -o none
+
+# Add UDRs on Spoke VNETs to route traffic to OPNSense
+# Get OPNSense Trusted NIC Private IP
+nvaip=$(az network nic show -g $rg -n $virtualMachineName-Trusted-NIC --query ipConfigurations[].privateIPAddress -o tsv)
+
+#### Configure OPNSense to allow traffic on trusted interface
+# Get OPNsense Public IP az-hub-opnnva1-PublicIP
+opnpublicip=$(az network public-ip show -g $rg -n $virtualMachineName-PublicIP --query ipAddress -o tsv)
+echo "https://$opnpublicip"
+# 1) Go to: Firewall: Rules: LAN. See screenshot:
+# under opnconfig folder, step1.png	
+# 2) Change Default allow LAN to any rule to any source
+# under opnconfig folder, step2.png
+
+# Create UDR disabling bgp propgation and pointing default route to NVA trusted NIC
+az network route-table create --name az-rt-spoke-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
+az network route-table route create --resource-group $rg --name Default-to-nva --route-table-name az-rt-spoke-to-nva \
+ --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name Exception --route-table-name az-rt-spoke-to-nva \
+ --address-prefix $mypip/32 \
+  --next-hop-type Internet \
+  --output none
+az network route-table route create --resource-group $rg --name Hub-via-nva --route-table-name az-rt-spoke-to-nva \
+ --address-prefix $AzurehubaddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+
+# VM Subnet in the Hub
+az network route-table create --name az-rt-hub-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
+az network route-table route create --resource-group $rg --name Default-to-nva --route-table-name az-rt-hub-to-nva \
+ --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name Exception --route-table-name az-rt-hub-to-nva \
+ --address-prefix $mypip/32 \
+  --next-hop-type Internet \
+  --output none
+az network route-table route create --resource-group $rg --name Spoke1-to-nva --route-table-name az-rt-hub-to-nva \
+ --address-prefix $Azurespoke1AddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name Spoke2-to-nva --route-table-name az-rt-hub-to-nva \
+ --address-prefix $Azurespoke2AddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+
+# Associate UDR az-rt-hub-to-nva to Hub Subnet1
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-hub-to-nva -o none
+# Associate UDR az-rt-spoke-to-nva to Spoke1 Subnet1
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table az-rt-spoke-to-nva -o none
+# Associate UDR az-rt-spoke-to-nva to Spoke2 Subnet1
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke-to-nva -o none
+
+# Create UDR GatewaySubnet and pointing default route to Azure Firewall
+az network route-table create --name az-rt-GWSubnet-to-nva --resource-group $rg --location $location -o none
+
+az network route-table route create --resource-group $rg --name Spoke1 --route-table-name az-rt-GWSubnet-to-nva \
+ --address-prefix $Azurespoke1AddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name Spoke2 --route-table-name az-rt-GWSubnet-to-nva \
+ --address-prefix $Azurespoke2AddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name Hub-Subnet1 --route-table-name az-rt-GWSubnet-to-nva \
+ --address-prefix $Azurehubsubnet1Prefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+
+# Associate UDR az-rt-GWSubnet-to-nva to Gateway Subnet
+az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-GWSubnet-to-nva -o none

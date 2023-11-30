@@ -1,0 +1,14 @@
+# List all route table is the rg
+az network route-table list -g $rg -o table
+
+# Associate UDR to their respective subnets
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-hub-to-nva -o none
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table az-rt-spoke-to-nva -o none
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke-to-nva -o none
+az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-GWSubnet-to-nva -o none
+
+# Disassociate UDR from their respective subnets
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $AzurehubName-vnet --route-table null -o none
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table null -o none
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table null -o none
+az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table null -o none
