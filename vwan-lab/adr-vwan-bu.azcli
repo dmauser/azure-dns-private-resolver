@@ -20,8 +20,8 @@ hub2servicesDnsOutSubnetPrefix=172.16.20.48/28
 # Creating forwarding-rule to allow Azure to Branch1 DNS name resolution integration
 # Hub1
 echo Creating forwarding-rule contoso.corp on $hub1name-svc-fwd-ruleset
-dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
-dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
+dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --ruleset-name $hub1name-svc-fwd-ruleset \
  --domain-name "contoso.corp." \
@@ -31,8 +31,8 @@ az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
 
 #Hub2
 echo Creating forwarding-rule contoso.corp on $hub2name-svc-fwd-ruleset
-dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
-dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIpAddress" -o tsv)
+dnsvmip1=$(az network nic show --name branch1-windns-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
+dnsvmip2=$(az network nic show --name branch2-windns-nic -g $rg  --query "ipConfigurations[0].privateIPAddress" -o tsv)
 az dns-resolver forwarding-rule create -g $rg --name onprem-contoso \
  --ruleset-name $hub2name-svc-fwd-ruleset \
  --domain-name "contoso.corp." \
