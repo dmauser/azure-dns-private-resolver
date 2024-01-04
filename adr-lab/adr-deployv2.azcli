@@ -164,6 +164,12 @@ az network private-dns zone create \
  --output none
 
 # Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
+# Create a subnet called pesubnet Private Endpoint for Hub, Spoke1 and Spoke 2.
+echo Creating subnet called pesubnet Private Endpoint for Hub, Spoke1 and Spoke 2.
+az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet -n pesubnet --address-prefixes 10.0.20.96/27 --output none
+az network vnet subnet create -g $rg --vnet-name $Azurespoke1Name-vnet -n pesubnet --address-prefixes 10.0.21.32/27 --output none
+az network vnet subnet create -g $rg --vnet-name $Azurespoke2Name-vnet -n pesubnet --address-prefixes 10.0.22.32/27 --output none
+
 echo Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
 ## Hub
 stgname=$(az storage account list -g $rg --query '[?contains(name,`'hub'`)].{name:name}' -o tsv)
@@ -172,7 +178,7 @@ az network private-endpoint create \
     --name hubstgpe \
     --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
     --resource-group $rg \
-    --subnet subnet1 \
+    --subnet pesubnet \
     --group-id blob \
     --vnet-name $AzurehubName-vnet \
     --output none
@@ -184,7 +190,7 @@ az network private-endpoint create \
     --name spk1stgpe \
     --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
     --resource-group $rg \
-    --subnet subnet1 \
+    --subnet pesubnet \
     --group-id blob \
     --vnet-name $Azurespoke1Name-vnet \
     --output none
@@ -195,7 +201,7 @@ az network private-endpoint create \
     --name spk2stgpe \
     --private-connection-resource-id $(az storage account show -g $rg -n $stgname --query id -o tsv) \
     --resource-group $rg \
-    --subnet subnet1 \
+    --subnet pesubnet \
     --group-id blob \
     --vnet-name $Azurespoke2Name-vnet \
     --output none

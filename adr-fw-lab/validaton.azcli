@@ -1,3 +1,36 @@
+#Parameters
+rg=lab-dns-resolver #Define your resource group
+location=eastus #Set location
+username=azureuser
+password=Msft123Msft123
+AzurehubName=az-hub
+Azurespoke1Name=az-spk1
+Azurespoke2Name=az-spk2
+
+# List all bastions in the resource group
+az network bastion list -g $rg -o table
+# For each bastion update configuration to Standard and enable native client
+az network bastion update --name az-hub-bastion --resource-group $rg --sku Standard --enable-tunneling -o none --no-wait
+az network bastion update --name onprem-bastion --resource-group $rg --sku Standard --enable-tunneling -o none --no-wait
+
+# Wait for bastion to be updated
+az network bastion wait --name az-hub-bastion --resource-group $rg --updated
+az network bastion wait --name onprem-bastion --resource-group $rg --updated
+
+# SSH to az-hub-lxvm using bastion native ssh client
+# Get bastions on the resource group
+az network bastion list -g $rg -o table
+
+###### BASTION SSH ######
+# az-hub-lxvm
+az network bastion ssh --name az-hub-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n az-hub-lxvm --query id -o tsv) --auth-type password --username azureuser
+# az-spk1-lxvm
+az network bastion ssh --name az-hub-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n az-spk1-lxvm --query id -o tsv) --auth-type password --username azureuser
+# az-spk2-lxvm
+az network bastion ssh --name az-hub-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n az-spk2-lxvm --query id -o tsv) --auth-type password --username azureuser
+# onprem-lxvm
+az network bastion ssh --name onprem-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n onprem-lxvm --query id -o tsv) --auth-type password --username azureuser
+
 # List all route table is the rg
 az network route-table list -g $rg -o table
 
@@ -12,3 +45,67 @@ az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $A
 az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table null -o none
 az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table null -o none
 az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table null -o none
+
+###=> List all private endpoints fqdns in the resource group with their private IPs and fqdn names
+az network nic list --resource-group $rg --query "[?contains(name, 'pe')].{fqdn:ipConfigurations[0].privateLinkConnectionProperties.fqdns[0], privateIp:ipConfigurations[0].privateIPAddress,Nic:name, privateIp:ipConfigurations[0].privateIPAddress}" -o table
+
+####=> Get NIC effective route table
+for i in $(az network nic list --resource-group $rg --query "[?contains(name, 'lxvm')].name" -o tsv)
+do
+    echo $i 
+    az network nic show-effective-route-table --resource-group $rg --name $i -o table
+done
+
+# Dump all routes in the all route tables in the resource group
+for i in $(az network route-table list --resource-group $rg --query "[].name" -o tsv)
+do
+    echo $i 
+    az network route-table route list --resource-group $rg --route-table-name $i -o table
+done
+
+# Storage Account Test
+nc -v -z 10.0.20.100 443
+nc -v -z 10.0.21.36 443
+nc -v -z 10.0.22.36 443
+
+# SQL Server Test
+nc -v -z 10.0.20.101 1433
+nc -v -z 10.0.21.37 1433
+nc -v -z 10.0.22.37 1433
+
+# Service Bus Test
+nc -v -z 10.0.20.102 443
+nc -v -z 10.0.21.38 443
+nc -v -z 10.0.22.38 443
+
+# WebApp
+nc -v -z 10.0.20.104 443
+nc -v -z 10.0.21.39 443
+nc -v -z 10.0.22.39 443
+
+### SNAT Feature ###
+
+# Register feature AllowDisableSnatOnPL
+
+# Enable feature Microsoft.Network/AllowDisableSnatOnPL
+az feature register --name AllowDisableSnatOnPL --namespace Microsoft.Network 
+
+# Loop script to check if feature is registered
+while [ $(az feature show --name AllowDisableSnatOnPL --namespace Microsoft.Network --query properties.state -o tsv) != "Registered" ]
+do
+    echo "Waiting for feature to be registered"
+    sleep 10
+done
+
+### Adding disableSnatOnPL=true tag on az-hub-opnnva1-trusted-NIC
+
+# Add a tag on az-hub-opnnva1-trusted-NIC
+az network nic update --name az-hub-opnnva1-trusted-NIC --resource-group $rg --set tags.disableSnatOnPL=\'true\' -o none 
+
+# Test SNAT connectivity you should get it working.
+
+# Remote the tag or set it to false the SNAT requirement again.
+az network nic update --name az-hub-opnnva1-trusted-NIC --resource-group $rg --set tags.disableSnatOnPL=\'false\' -o none
+
+# Loop script to test PE connectivity
+while true; do nc -v -z 10.0.20.101 1433 -w 2; sleep 2; done

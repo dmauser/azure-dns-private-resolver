@@ -6,6 +6,7 @@ password=Msft123Msft123
 dnsvmname=onprem-windns
 vmsize=Standard_DS1_v2
 
+AzurehubName=az-hub
 AzurehubaddressSpacePrefix=$(az network vnet show -n az-hub-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
 Azurehubsubnet1Prefix=$(az network vnet subnet show -n subnet1 -g $rg --vnet-name az-hub-vnet --query addressPrefix -o tsv)
 Azurespoke1AddressSpacePrefix=$(az network vnet show -n az-spk1-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
@@ -17,6 +18,7 @@ mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NS
 # OPNsense NVA parameters
 ShellScriptName=configureopnsense.sh
 scenarioOption="TwoNics"
+virtualMachineName=$AzurehubName-opnnva1
 virtualMachineSize=Standard_DS1_v2
 virtualNetworkName=$AzurehubName-vnet
 existingvirtualNetwork=existing
@@ -34,7 +36,6 @@ echo Creating trusted subnet
 az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet --name $existingTrustedSubnetName --address-prefixes $TrustedSubnetCIDR --output none
 
 echo "Deploying OPNsense NVA1 on the $AzurehubName"
-virtualMachineName=$AzurehubName-opnnva1
 az vm image terms accept --urn thefreebsdfoundation:freebsd-13_1:13_1-release:13.1.0 -o none
 az deployment group create --name $AzurehubName-nva --resource-group $rg \
 --template-uri "https://raw.githubusercontent.com/dmauser/opnazure/master/ARM/main.json" \
@@ -81,10 +82,12 @@ echo "https://$opnpublicip"
 # under opnconfig folder, step1.png	
 # 2) Change Default allow LAN to any rule to any source
 # under opnconfig folder, step2.png
+# 3) Add RFC1918 next hop LAN Gateway as shown:
+# under opnconfig folder, step3.png
 
 # Create UDR disabling bgp propgation and pointing default route to NVA trusted NIC
 az network route-table create --name az-rt-spoke-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
-az network route-table route create --resource-group $rg --name Default-to-nva --route-table-name az-rt-spoke-to-nva \
+az network route-table route create --resource-group $rg --name default-to-nva --route-table-name az-rt-spoke-to-nva \
  --address-prefix 0.0.0.0/0 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
@@ -93,8 +96,23 @@ az network route-table route create --resource-group $rg --name Exception --rout
  --address-prefix $mypip/32 \
   --next-hop-type Internet \
   --output none
-az network route-table route create --resource-group $rg --name Hub-via-nva --route-table-name az-rt-spoke-to-nva \
- --address-prefix $AzurehubaddressSpacePrefix \
+az network route-table route create --resource-group $rg --name az-az-hub-subnet1 --route-table-name az-rt-spoke-to-nva \
+ --address-prefix $Azurehubsubnet1Prefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name az-hub-pesubnet --route-table-name az-rt-spoke-to-nva \
+ --address-prefix 10.0.20.96/27 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name az-spk1-pesubnet --route-table-name az-rt-spoke-to-nva \
+ --address-prefix 10.0.21.32/27 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name az-spk2-pesubnet --route-table-name az-rt-spoke-to-nva \
+ --address-prefix 10.0.22.32/27 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
@@ -120,6 +138,11 @@ az network route-table route create --resource-group $rg --name Spoke2-to-nva --
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
+az network route-table route create --resource-group $rg --name az-hub-pesubnet --route-table-name az-rt-hub-to-nva \
+ --address-prefix 10.0.20.96/27 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
 
 # Associate UDR az-rt-hub-to-nva to Hub Subnet1
 az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-hub-to-nva -o none
@@ -129,23 +152,31 @@ az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $A
 az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke-to-nva -o none
 
 # Create UDR GatewaySubnet and pointing default route to Azure Firewall
-az network route-table create --name az-rt-GWSubnet-to-nva --resource-group $rg --location $location -o none
-
-az network route-table route create --resource-group $rg --name Spoke1 --route-table-name az-rt-GWSubnet-to-nva \
+az network route-table create --name az-rt-gwsubnet-to-nva --resource-group $rg --location $location -o none
+az network route-table route create --resource-group $rg --name Spoke1 --route-table-name az-rt-gwsubnet-to-nva \
  --address-prefix $Azurespoke1AddressSpacePrefix \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
-az network route-table route create --resource-group $rg --name Spoke2 --route-table-name az-rt-GWSubnet-to-nva \
+az network route-table route create --resource-group $rg --name Spoke2 --route-table-name az-rt-gwsubnet-to-nva \
  --address-prefix $Azurespoke2AddressSpacePrefix \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
-az network route-table route create --resource-group $rg --name Hub-Subnet1 --route-table-name az-rt-GWSubnet-to-nva \
+az network route-table route create --resource-group $rg --name az-hub-subnet1 --route-table-name az-rt-gwsubnet-to-nva \
  --address-prefix $Azurehubsubnet1Prefix \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
+az network route-table route create --resource-group $rg --name az-hub-pesubnet --route-table-name az-rt-gwsubnet-to-nva \
+ --address-prefix 10.0.20.96/27 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
 
-# Associate UDR az-rt-GWSubnet-to-nva to Gateway Subnet
-az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-GWSubnet-to-nva -o none
+# Associate UDR az-rt-gwsubnet-to-nva to Gateway Subnet
+az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-gwsubnet-to-nva -o none
+
+
+
+
