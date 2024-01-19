@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="3">
     <diagram name="NetworkPolicy-Disabled" id="TIKukc__NlJQYqkLnaR7">
-        <mxGraphModel dx="885" dy="551" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="974" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-0"/>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-1" parent="he0kqgZxXAUqB0J18NEI-0"/>
@@ -210,7 +210,7 @@
         </mxGraphModel>
     </diagram>
     <diagram name="NetworkPolicy-Enabled" id="QJTYta4yJP7eJ28P1nHF">
-        <mxGraphModel dx="929" dy="579" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="974" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="mILvHSCZfIqw_XFxnMRQ-0"/>
                 <mxCell id="mILvHSCZfIqw_XFxnMRQ-1" parent="mILvHSCZfIqw_XFxnMRQ-0"/>
@@ -423,7 +423,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="zOX7VpMLd-8lQlo3Ocq1" name="SNAT-Requirement">
-        <mxGraphModel grid="0" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="974" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -494,7 +494,7 @@
                         <mxRectangle width="135" height="80" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="4ni6N4c9mznvYzL-rEoo-16" value="&lt;font color=&quot;#ff0000&quot; style=&quot;font-size: 12px;&quot;&gt;Yes (SQLPE, ServiceBus, WebApp)&lt;br&gt;&lt;/font&gt;No (StoragePE)" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;dashed=1;dashPattern=8 8;strokeColor=default;fontSize=12;" parent="4ni6N4c9mznvYzL-rEoo-12" vertex="1">
+                <mxCell id="4ni6N4c9mznvYzL-rEoo-16" value="&lt;font color=&quot;#ff0000&quot;&gt;Yes&lt;/font&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;dashed=1;dashPattern=8 8;strokeColor=default;fontSize=12;" parent="4ni6N4c9mznvYzL-rEoo-12" vertex="1">
                     <mxGeometry x="406" width="130" height="80" as="geometry">
                         <mxRectangle width="130" height="80" as="alternateBounds"/>
                     </mxGeometry>

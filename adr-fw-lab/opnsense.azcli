@@ -7,6 +7,8 @@ dnsvmname=onprem-windns
 vmsize=Standard_DS1_v2
 
 AzurehubName=az-hub
+Azurespoke1Name=az-spk1
+Azurespoke2Name=az-spk2
 AzurehubaddressSpacePrefix=$(az network vnet show -n az-hub-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
 Azurehubsubnet1Prefix=$(az network vnet subnet show -n subnet1 -g $rg --vnet-name az-hub-vnet --query addressPrefix -o tsv)
 Azurespoke1AddressSpacePrefix=$(az network vnet show -n az-spk1-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
@@ -78,12 +80,21 @@ nvaip=$(az network nic show -g $rg -n $virtualMachineName-Trusted-NIC --query ip
 # Get OPNsense Public IP az-hub-opnnva1-PublicIP
 opnpublicip=$(az network public-ip show -g $rg -n $virtualMachineName-PublicIP --query ipAddress -o tsv)
 echo "https://$opnpublicip"
+
+### Option 1 ### Manual configuration
 # 1) Go to: Firewall: Rules: LAN. See screenshot:
 # under opnconfig folder, step1.png	
 # 2) Change Default allow LAN to any rule to any source
 # under opnconfig folder, step2.png
 # 3) Add RFC1918 next hop LAN Gateway as shown:
 # under opnconfig folder, step3.png
+
+### Option 2 - Import XLM config file
+# 1) Go to: System: Configuration: Backups
+# 2) Under Restore, click Choose File and select adr-lab-config.xml.xml
+# Config file url: https://github.com/dmauser/azure-dns-private-resolver/blob/main/adr-fw-lab/opnconfig/adr-lab-config.xml
+# 3) Click Restore Configuration
+# under opnconfig folder, restore-config.png
 
 # Create UDR disabling bgp propgation and pointing default route to NVA trusted NIC
 az network route-table create --name az-rt-spoke-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
