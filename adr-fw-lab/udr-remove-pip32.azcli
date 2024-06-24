@@ -5,11 +5,17 @@ do
     peip=$(az network nic show --resource-group $rg --name $i --query ipConfigurations[].privateIPAddress -o tsv)
     az network route-table route delete --resource-group $rg --name $i --route-table-name az-rt-gwsubnet-to-nva -o none
 done
-# Same to UDR az-rt-spoke-to-nva
+# Same to UDR az-rt-spoke1-to-nva
 for i in $(az network nic list --resource-group $rg --query "[?contains(name, 'pe')].name" -o tsv)
 do
     peip=$(az network nic show --resource-group $rg --name $i --query ipConfigurations[].privateIPAddress -o tsv)
-    az network route-table route delete --resource-group $rg --name $i --route-table-name az-rt-spoke-to-nva -o none
+    az network route-table route delete --resource-group $rg --name $i --route-table-name az-rt-spoke1-to-nva -o none
+done
+# Same to UDR az-rt-spoke2-to-nva
+for i in $(az network nic list --resource-group $rg --query "[?contains(name, 'pe')].name" -o tsv)
+do
+    peip=$(az network nic show --resource-group $rg --name $i --query ipConfigurations[].privateIPAddress -o tsv)
+    az network route-table route delete --resource-group $rg --name $i --route-table-name az-rt-spoke2-to-nva -o none
 done
 # Same to UDR az-rt-hub-to-nva
 for i in $(az network nic list --resource-group $rg --query "[?contains(name, 'pe')].name" -o tsv)

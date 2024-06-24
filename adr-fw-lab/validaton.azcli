@@ -23,21 +23,21 @@ az network bastion list -g $rg -o table
 
 ###### BASTION SSH ######
 # az-hub-lxvm
-az network bastion ssh --name az-hub-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n az-hub-lxvm --query id -o tsv) --auth-type password --username azureuser
+az network bastion ssh --name az-hub-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n az-hub-lxvm --query id -o tsv) --auth-type password --username azureuser
 # az-spk1-lxvm
-az network bastion ssh --name az-hub-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n az-spk1-lxvm --query id -o tsv) --auth-type password --username azureuser
+az network bastion ssh --name az-hub-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n az-spk1-lxvm --query id -o tsv) --auth-type password --username azureuser
 # az-spk2-lxvm
-az network bastion ssh --name az-hub-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n az-spk2-lxvm --query id -o tsv) --auth-type password --username azureuser
+az network bastion ssh --name az-hub-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n az-spk2-lxvm --query id -o tsv) --auth-type password --username azureuser
 # onprem-lxvm
-az network bastion ssh --name onprem-bastion --resource-group lab-dns-resolver --target-resource-id $(az vm show -g lab-dns-resolver -n onprem-lxvm --query id -o tsv) --auth-type password --username azureuser
+az network bastion ssh --name onprem-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n onprem-lxvm --query id -o tsv) --auth-type password --username azureuser
 
 # List all route table is the rg
 az network route-table list -g $rg -o table
 
 # Associate UDR to their respective subnets
 az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-hub-to-nva -o none
-az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table az-rt-spoke-to-nva -o none
-az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke-to-nva -o none
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table az-rt-spoke1-to-nva -o none
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke2-to-nva -o none
 az network vnet subnet update --name GatewaySubnet --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-GWSubnet-to-nva -o none
 
 # Disassociate UDR from their respective subnets

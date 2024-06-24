@@ -2,6 +2,7 @@
 rg=lab-dns-resolver 
 location=eastus
 password=Msft123Msft123
+AzurehubName=az-hub #Azure Hub Name
 
 # Create App Service Plan
 az appservice plan create --name webapp-plan --resource-group $rg --location $location --sku B1 --output none --is-linux

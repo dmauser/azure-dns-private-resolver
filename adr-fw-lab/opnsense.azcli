@@ -96,38 +96,63 @@ echo "https://$opnpublicip"
 # 3) Click Restore Configuration
 # under opnconfig folder, restore-config.png
 
+# az-rt-spoke1-to-nva
 # Create UDR disabling bgp propgation and pointing default route to NVA trusted NIC
-az network route-table create --name az-rt-spoke-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
-az network route-table route create --resource-group $rg --name default-to-nva --route-table-name az-rt-spoke-to-nva \
+az network route-table create --name az-rt-spoke1-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
+az network route-table route create --resource-group $rg --name default-to-nva --route-table-name az-rt-spoke1-to-nva \
  --address-prefix 0.0.0.0/0 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
-az network route-table route create --resource-group $rg --name Exception --route-table-name az-rt-spoke-to-nva \
+az network route-table route create --resource-group $rg --name Exception --route-table-name az-rt-spoke1-to-nva \
  --address-prefix $mypip/32 \
   --next-hop-type Internet \
   --output none
-az network route-table route create --resource-group $rg --name az-az-hub-subnet1 --route-table-name az-rt-spoke-to-nva \
+az network route-table route create --resource-group $rg --name az-az-hub-subnet1 --route-table-name az-rt-spoke1-to-nva \
  --address-prefix $Azurehubsubnet1Prefix \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
-az network route-table route create --resource-group $rg --name az-hub-pesubnet --route-table-name az-rt-spoke-to-nva \
+az network route-table route create --resource-group $rg --name az-hub-pesubnet --route-table-name az-rt-spoke1-to-nva \
  --address-prefix 10.0.20.96/27 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
-az network route-table route create --resource-group $rg --name az-spk1-pesubnet --route-table-name az-rt-spoke-to-nva \
+az network route-table route create --resource-group $rg --name az-spk1-pesubnet --route-table-name az-rt-spoke1-to-nva \
  --address-prefix 10.0.21.32/27 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
-az network route-table route create --resource-group $rg --name az-spk2-pesubnet --route-table-name az-rt-spoke-to-nva \
+
+# az-rt-spoke2-to-nva
+# Create UDR disabling bgp propgation and pointing default route to NVA trusted NIC
+az network route-table create --name az-rt-spoke2-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
+az network route-table route create --resource-group $rg --name default-to-nva --route-table-name az-rt-spoke2-to-nva \
+ --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name Exception --route-table-name az-rt-spoke2-to-nva \
+ --address-prefix $mypip/32 \
+  --next-hop-type Internet \
+  --output none
+az network route-table route create --resource-group $rg --name az-az-hub-subnet1 --route-table-name az-rt-spoke2-to-nva \
+ --address-prefix $Azurehubsubnet1Prefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name az-hub-pesubnet --route-table-name az-rt-spoke2-to-nva \
+ --address-prefix 10.0.20.96/27 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create --resource-group $rg --name az-spk2-pesubnet --route-table-name az-rt-spoke2-to-nva \
  --address-prefix 10.0.22.32/27 \
   --next-hop-type VirtualAppliance \
   --next-hop-ip-address $nvaip \
   --output none
 
+# az-rt-hub-to-nva
 # VM Subnet in the Hub
 az network route-table create --name az-rt-hub-to-nva --resource-group $rg --location $location --disable-bgp-route-propagation -o none
 az network route-table route create --resource-group $rg --name Default-to-nva --route-table-name az-rt-hub-to-nva \
@@ -157,10 +182,10 @@ az network route-table route create --resource-group $rg --name az-hub-pesubnet 
 
 # Associate UDR az-rt-hub-to-nva to Hub Subnet1
 az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $AzurehubName-vnet --route-table az-rt-hub-to-nva -o none
-# Associate UDR az-rt-spoke-to-nva to Spoke1 Subnet1
-az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table az-rt-spoke-to-nva -o none
-# Associate UDR az-rt-spoke-to-nva to Spoke2 Subnet1
-az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke-to-nva -o none
+# Associate UDR az-rt-spoke1-to-nva to Spoke1 Subnet1
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke1Name-vnet --route-table az-rt-spoke1-to-nva -o none
+# Associate UDR az-rt-spoke2-to-nva to Spoke2 Subnet1
+az network vnet subnet update --name subnet1 --resource-group $rg --vnet-name $Azurespoke2Name-vnet --route-table az-rt-spoke2-to-nva -o none
 
 # Create UDR GatewaySubnet and pointing default route to Azure Firewall
 az network route-table create --name az-rt-gwsubnet-to-nva --resource-group $rg --location $location -o none

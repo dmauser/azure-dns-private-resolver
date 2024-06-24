@@ -1,0 +1,122 @@
+rg=lab-dns-resolver #Define your resource group
+location=eastus #Set location
+username=azureuser
+password=Msft123Msft123
+vmsize=Standard_DS1_v2
+AzurehubName=az-hub
+Azurespoke1Name=az-spk1
+Azurespoke2Name=az-spk2
+AzurehubaddressSpacePrefix=$(az network vnet show -n az-hub-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
+Azurehubsubnet1Prefix=$(az network vnet subnet show -n subnet1 -g $rg --vnet-name az-hub-vnet --query addressPrefix -o tsv)
+Azurespoke1AddressSpacePrefix=$(az network vnet show -n az-spk1-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
+Azurespoke2AddressSpacePrefix=$(az network vnet show -n az-spk2-vnet -g $rg --query addressSpace.addressPrefixes -o tsv)
+spoke1subnet2addressprefix=10.0.21.64/27
+spoke1subnet3addressprefix=10.0.21.96/27
+
+# Create Spoke1 subnet2
+az network vnet subnet create --name subnet2 --resource-group $rg --vnet-name az-spk1-vnet --address-prefix $spoke1subnet2addressprefix -o none
+# Create Spoke1 subnet3
+az network vnet subnet create --name subnet3 --resource-group $rg --vnet-name az-spk1-vnet --address-prefix $spoke1subnet3addressprefix -o none
+
+# Create VMs on subnet2 and 3
+az vm create -n az-spk1-lxvm2  -g $rg --image Ubuntu2204 --public-ip-sku Standard --size $vmsize -l $location --subnet subnet2 --vnet-name az-spk1-vnet --admin-username $username --admin-password $password --nsg "" --no-wait --only-show-errors
+az vm create -n az-spk1-lxvm3  -g $rg --image Ubuntu2204 --public-ip-sku Standard --size $vmsize -l $location --subnet subnet3 --vnet-name az-spk1-vnet --admin-username $username --admin-password $password --nsg "" --no-wait --only-show-errors
+
+# Associate eastus-default-nsg to subnet2 and 3
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet2 --network-security-group eastus-default-nsg -o none
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet3 --network-security-group eastus-default-nsg -o none
+
+# Remove UDR associated to subnet1
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet1 --route-table "" -o none
+
+
+# Get OPNSense Trusted NIC Private IP
+nvaip=$(az network nic show -g $rg -n $virtualMachineName-Trusted-NIC --query ipConfigurations[].privateIPAddress -o tsv)
+
+# Create UDR az-rt1-spoke1-to-nva and associate to subnet1
+az network route-table create -g $rg --name az-rt1-spoke1-to-nva --disable-bgp-route-propagation true -o none
+az network route-table route create -g $rg --name default-to-nva --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-nva --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix $Azurespoke1AddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name subnet1-to-subnet2 --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix 10.0.21.64/27 \
+  --next-hop-type VnetLocal \
+  --output none
+az network route-table route create -g $rg --name subnet1-to-subnet3 --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix 10.0.21.96/27 \
+  --next-hop-type VnetLocal \
+  --output none
+az network route-table route create -g $rg --name vnet-to-Hubvnet --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix 10.0.20.0/24 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-hubpe1 --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix 10.0.20.100/32 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-hubpe2 --route-table-name az-rt1-spoke1-to-nva \
+ --address-prefix 10.0.20.101/32 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet1 --route-table az-rt1-spoke1-to-nva -o none
+
+# Create UDR az-rt2-spoke1-to-nva and associate to subnet2 and subnet3
+az network route-table create -g $rg --name az-rt2-spoke1-to-nva --disable-bgp-route-propagation true -o none
+az network route-table route create -g $rg --name default-to-nva --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-nva --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix $Azurespoke1AddressSpacePrefix \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name subnet1-to-subnet2 --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 10.0.21.0/27 \
+  --next-hop-type VnetLocal \
+  --output none
+az network route-table route create -g $rg --name vnet-to-hubpe1 --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 10.0.20.100/32 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-hubpe2 --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 10.0.20.101/32 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-Hubvnet --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 10.0.20.0/24 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-skpe1 --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 10.0.21.36/32 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network route-table route create -g $rg --name vnet-to-skpe2 --route-table-name az-rt2-spoke1-to-nva \
+ --address-prefix 10.0.21.37/32 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address $nvaip \
+  --output none
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet2 --route-table az-rt2-spoke1-to-nva -o none
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet3 --route-table az-rt2-spoke1-to-nva -o none
+
+# Desassociate UDRs from subnet1, subnet2 and subnet3 on az-spoke1-vnet
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet1 --route-table null -o none
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet2 --route-table null -o none
+az network vnet subnet update -g $rg --vnet-name az-spk1-vnet -n subnet3 --route-table null -o none
+
+

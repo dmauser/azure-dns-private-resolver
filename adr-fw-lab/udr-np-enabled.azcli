@@ -10,10 +10,8 @@ Azurespoke2Name=az-spk2
 ### Enable Network Policy at the Subnet Level ####
 
 # Enable Network Policy at the pesubnet for each vnet in the resource group
-az network vnet subnet update --name pesubnet --resource-group $rg --vnet-name $AzurehubName-vnet --disable-private-endpoint-network-policies false -o none
-az network vnet subnet update --name pesubnet --resource-group $rg --vnet-name $Azurespoke1Name-vnet --disable-private-endpoint-network-policies false -o none   
-az network vnet subnet update --name pesubnet --resource-group $rg --vnet-name $Azurespoke2Name-vnet --disable-private-endpoint-network-policies false -o none
-
-# Optional - run udr-remove-pip32.azcli to remove the UDRs from the PIPs ###
+az network vnet subnet update --name pesubnet --resource-group $rg --vnet-name $AzurehubName-vnet --private-endpoint-network-policies enabled -o none
+az network vnet subnet update --name pesubnet --resource-group $rg --vnet-name $Azurespoke1Name-vnet --private-endpoint-network-policies enabled -o none   
+az network vnet subnet update --name pesubnet --resource-group $rg --vnet-name $Azurespoke2Name-vnet --private-endpoint-network-policies enabled -o none
 
 

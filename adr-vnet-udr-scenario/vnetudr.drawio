@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="3">
-    <diagram name="NetworkPolicy-Disabled" id="TIKukc__NlJQYqkLnaR7">
-        <mxGraphModel dx="866" dy="459" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <diagram name="NetworkPolicy-Disabled-VNET-UDR" id="TIKukc__NlJQYqkLnaR7">
+        <mxGraphModel dx="1373" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-0"/>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-1" parent="he0kqgZxXAUqB0J18NEI-0"/>
@@ -53,16 +53,16 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-19" value="az-spk1-vnet&lt;br style=&quot;font-size: 12px;&quot;&gt;10.0.21.0/24" style="whiteSpace=wrap;html=1;fillColor=none;strokeColor=#007FFF;dashed=1;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;labelPosition=center;verticalLabelPosition=top;align=right;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="65" y="334" width="254" height="129.19" as="geometry"/>
+                    <mxGeometry x="65" y="204" width="254" height="241" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-20" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/networking/Virtual_Networks.svg;dashed=1;labelBackgroundColor=none;fontFamily=Verdana;fillColor=default;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="298.9" y="338" width="20.1" height="12" as="geometry"/>
+                    <mxGeometry x="298.9" y="208" width="20.1" height="12" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-22" value="Subnet1&lt;br&gt;10.0.21.0/27" style="whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Verdana;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=8;labelPosition=center;verticalLabelPosition=top;align=left;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="225.61" y="358" width="82" height="98.98" as="geometry"/>
+                    <mxGeometry x="225.61" y="228" width="82" height="98.98" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-23" value="az-spk1-lxvm&lt;br style=&quot;font-size: 10px;&quot;&gt;10.0.21.4" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=10;image=img/lib/azure2/compute/Virtual_Machine.svg;labelBackgroundColor=none;fontFamily=Verdana;fillColor=default;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="252.61130000000003" y="374.9998865153538" width="34.086598798397866" height="31.616555407209614" as="geometry"/>
+                    <mxGeometry x="252.61130000000003" y="244.9998865153538" width="34.086598798397866" height="31.616555407209614" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-24" value="az-spk2-vnet&lt;br style=&quot;font-size: 12px;&quot;&gt;10.0.22.0/24" style="whiteSpace=wrap;html=1;fillColor=none;strokeColor=#007FFF;dashed=1;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;labelPosition=center;verticalLabelPosition=top;align=left;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
                     <mxGeometry x="543" y="338" width="266" height="129" as="geometry"/>
@@ -89,7 +89,7 @@
                     <mxGeometry x="597.14" y="542" width="20.1" height="12" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-34" value="spk1stg" style="verticalLabelPosition=top;html=1;verticalAlign=bottom;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.storage;pointerEvents=1;labelBackgroundColor=none;labelPosition=center;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="83.08999999999999" y="249.18999999999994" width="50" height="40" as="geometry"/>
+                    <mxGeometry x="83.08999999999999" y="119.18999999999994" width="50" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-36" style="edgeStyle=none;html=1;dashed=1;strokeColor=#999999;fontFamily=Verdana;fontSize=12;endArrow=none;endFill=0;" parent="he0kqgZxXAUqB0J18NEI-1" source="he0kqgZxXAUqB0J18NEI-37" target="he0kqgZxXAUqB0J18NEI-54" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -98,10 +98,10 @@
                     <mxGeometry x="650.9100000000001" y="249.99999999999994" width="50" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-47" value="PESubnet&lt;br style=&quot;font-size: 9px;&quot;&gt;10.0.21.32/27" style="whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Verdana;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=9;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="68.82" y="358.98" width="154" height="100.02" as="geometry"/>
+                    <mxGeometry x="68.82" y="228.98000000000002" width="154" height="100.02" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-51" value="spk1stgpe&lt;br style=&quot;font-size: 11px;&quot;&gt;10.0.21.36" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=11;image=img/lib/azure2/networking/Private_Endpoint.svg;labelBackgroundColor=none;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="91.73" y="368" width="32.73" height="30" as="geometry"/>
+                    <mxGeometry x="91.73" y="238" width="32.73" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-53" value="PESubnet&lt;br style=&quot;font-size: 9px;&quot;&gt;10.0.22.32/27" style="whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Verdana;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=9;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
                     <mxGeometry x="642" y="366" width="161" height="96.79" as="geometry"/>
@@ -115,7 +115,7 @@
                 <mxCell id="he0kqgZxXAUqB0J18NEI-57" value="hubstgpe&lt;br style=&quot;font-size: 11px;&quot;&gt;10.0.20.100" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=11;image=img/lib/azure2/networking/Private_Endpoint.svg;labelBackgroundColor=none;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
                     <mxGeometry x="543.91" y="670" width="32.18" height="29.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="he0kqgZxXAUqB0J18NEI-60" value="hubstg" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.storage;pointerEvents=1;labelBackgroundColor=none;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                <mxCell id="he0kqgZxXAUqB0J18NEI-60" value="hubstgpe" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.storage;pointerEvents=1;labelBackgroundColor=none;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
                     <mxGeometry x="651" y="664.75" width="50" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="he0kqgZxXAUqB0J18NEI-61" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;endArrow=none;endFill=0;opacity=50;" parent="he0kqgZxXAUqB0J18NEI-1" source="he0kqgZxXAUqB0J18NEI-57" target="he0kqgZxXAUqB0J18NEI-60" edge="1">
@@ -124,33 +124,65 @@
                 <mxCell id="he0kqgZxXAUqB0J18NEI-11" value="az-hub-opnnva1&#10;&#10;" style="aspect=fixed;points=[];align=center;image;fontSize=11;image=img/lib/azure2/compute/Virtual_Machine.svg;labelBackgroundColor=none;fontFamily=Verdana;fillColor=default;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontColor=#FF3333;spacingBottom=0;spacing=-5;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
                     <mxGeometry x="419" y="643.61" width="50" height="46.39" as="geometry"/>
                 </mxCell>
-                <mxCell id="18" style="edgeStyle=none;html=1;endArrow=none;fontSize=12;fontFamily=Verdana;strokeColor=#999999;endFill=0;dashed=1;" parent="he0kqgZxXAUqB0J18NEI-1" source="16" target="17" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="16" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/ai_machine_learning/Machine_Learning.svg;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="150" y="242.69" width="49.89" height="53" as="geometry"/>
-                </mxCell>
-                <mxCell id="17" value="pe-aml&lt;br style=&quot;font-size: 11px;&quot;&gt;10.0.21.37" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=11;image=img/lib/azure2/networking/Private_Endpoint.svg;labelBackgroundColor=none;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
-                    <mxGeometry x="156.58" y="368" width="32.73" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="0" value="UDR" style="" parent="he0kqgZxXAUqB0J18NEI-0" visible="0"/>
-                <mxCell id="2" style="edgeStyle=none;html=1;entryX=0.526;entryY=1.005;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;strokeColor=#999999;fontFamily=Verdana;fontSize=10;endArrow=none;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="0" edge="1">
+                <mxCell id="18" style="edgeStyle=none;html=1;endArrow=none;fontSize=12;fontFamily=Verdana;strokeColor=#999999;endFill=0;dashed=1;" parent="he0kqgZxXAUqB0J18NEI-1" target="17" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="307.6100000000001" y="407.49" as="sourcePoint"/>
-                        <mxPoint x="426.472" y="302.885" as="targetPoint"/>
+                        <mxPoint x="174.47931157191806" y="165.69000000000005" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="3" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;strokeColor=#999999;fontFamily=Verdana;fontSize=10;endArrow=none;endFill=0;exitX=0.54;exitY=1.016;exitDx=0;exitDy=0;exitPerimeter=0;" parent="0" edge="1">
+                <mxCell id="17" value="spk1sqlpe&lt;br style=&quot;font-size: 11px;&quot;&gt;10.0.21.37" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=11;image=img/lib/azure2/networking/Private_Endpoint.svg;labelBackgroundColor=none;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="156.58" y="238" width="32.73" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="u85C0EznjOGx18qawjpu-18" value="spk2sqlpe&lt;br style=&quot;font-size: 11px;&quot;&gt;10.0.22.6" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=11;image=img/lib/azure2/networking/Private_Endpoint.svg;labelBackgroundColor=none;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="731" y="380.99999999999994" width="32.18" height="29.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvM8kI2MNh7dbPhWVr8c-18" value="spk2spg" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/databases/SQL_Server.svg;dashed=1;labelBackgroundColor=none;strokeColor=#0000FF;labelPosition=center;verticalLabelPosition=top;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="725" y="250" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvM8kI2MNh7dbPhWVr8c-19" style="edgeStyle=none;html=1;dashed=1;strokeColor=#999999;fontFamily=Verdana;fontSize=12;endArrow=none;endFill=0;exitX=0.432;exitY=0.98;exitDx=0;exitDy=0;exitPerimeter=0;" parent="he0kqgZxXAUqB0J18NEI-1" source="mvM8kI2MNh7dbPhWVr8c-18" target="u85C0EznjOGx18qawjpu-18" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="428.8800000000001" y="304.832" as="sourcePoint"/>
-                        <mxPoint x="552" y="414.395" as="targetPoint"/>
+                        <mxPoint x="685.9100000000001" y="300" as="sourcePoint"/>
+                        <mxPoint x="685.9099999999999" y="388.3699999999999" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="HTE0FkGj9pcxfgc9vMI8-18" value="hubsqlpe" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/databases/SQL_Server.svg;dashed=1;labelBackgroundColor=none;strokeColor=#0000FF;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="659.82" y="724.6" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="HTE0FkGj9pcxfgc9vMI8-20" style="edgeStyle=none;html=1;endArrow=none;endFill=0;dashed=1;" parent="he0kqgZxXAUqB0J18NEI-1" source="HTE0FkGj9pcxfgc9vMI8-19" target="HTE0FkGj9pcxfgc9vMI8-18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="HTE0FkGj9pcxfgc9vMI8-19" value="hubsqlpe&lt;br style=&quot;font-size: 11px;&quot;&gt;10.0.20.101" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=11;image=img/lib/azure2/networking/Private_Endpoint.svg;labelBackgroundColor=none;fontStyle=1" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="541.99" y="734.85" width="32.18" height="29.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="spk2spg" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/databases/SQL_Server.svg;dashed=1;labelBackgroundColor=none;strokeColor=#0000FF;labelPosition=center;verticalLabelPosition=top;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="154" y="119.19" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="Subnet2&lt;br&gt;10.0.21.64/27" style="whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Verdana;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=8;labelPosition=center;verticalLabelPosition=top;align=left;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="69.5" y="360.84" width="119.81" height="80.16" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="Subnet3&lt;br&gt;10.0.21.96/27" style="whiteSpace=wrap;html=1;labelBackgroundColor=none;fontFamily=Verdana;fillColor=#f5f5f5;fontColor=#333333;strokeColor=none;fontSize=8;labelPosition=center;verticalLabelPosition=top;align=left;verticalAlign=bottom;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="198" y="360.84" width="116" height="78.16" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="az-spk1-lxvm2&lt;br style=&quot;font-size: 10px;&quot;&gt;10.0.21.68" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=10;image=img/lib/azure2/compute/Virtual_Machine.svg;labelBackgroundColor=none;fontFamily=Verdana;fillColor=default;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="104.00130000000001" y="369.9998865153538" width="34.086598798397866" height="31.616555407209614" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="az-spk1-lxvm3&lt;br style=&quot;font-size: 10px;&quot;&gt;10.0.21.100" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=10;image=img/lib/azure2/compute/Virtual_Machine.svg;labelBackgroundColor=none;fontFamily=Verdana;fillColor=default;" parent="he0kqgZxXAUqB0J18NEI-1" vertex="1">
+                    <mxGeometry x="238.9613" y="365.9998865153538" width="34.086598798397866" height="31.616555407209614" as="geometry"/>
+                </mxCell>
+                <mxCell id="0" value="UDR-Solution" style="" parent="he0kqgZxXAUqB0J18NEI-0"/>
+                <mxCell id="40" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt2-spoke1-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = disabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;0.0.0.0/0 -&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;&lt;b style=&quot;&quot;&gt;&lt;font color=&quot;#ff0000&quot;&gt;10.0.21.0/24&amp;nbsp; -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/font&gt;&lt;/b&gt;&lt;/span&gt;&lt;font color=&quot;#009900&quot;&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;10.0.21.0/27 -&amp;gt; VNET&lt;/b&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;/font&gt;&lt;font color=&quot;#ff0000&quot;&gt;&lt;b&gt;&lt;span style=&quot;font-size: 11px;&quot;&gt;10.0.21.36/32 -&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/b&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-size: 11px;&quot;&gt;10.0.21.37/32 -&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/b&gt;&lt;/font&gt;&lt;span style=&quot;color: rgb(255, 0, 0); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.0/24&amp;nbsp; -&amp;gt; 10.0.20.84&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;u&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.100/32 -&amp;gt; 10.0.20.84 - hubstgpe&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.101/32 -&amp;gt; 10.0.20.84 - hubsqlpe&lt;/span&gt;&lt;/u&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="0" vertex="1">
+                    <mxGeometry x="-208.00000000000006" y="486" width="230" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" style="edgeStyle=none;html=1;entryX=1.01;entryY=0.571;entryDx=0;entryDy=0;dashed=1;strokeColor=#999999;fontFamily=Verdana;fontSize=10;endArrow=none;endFill=0;exitX=0.515;exitY=1.006;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" parent="0" source="5" target="he0kqgZxXAUqB0J18NEI-24" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="930.0000000000001" y="245.002" as="sourcePoint"/>
+                        <mxPoint x="1053.12" y="354.565" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="4" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/networking/Route_Tables.svg;dashed=1;labelBackgroundColor=none;strokeColor=default;fontFamily=Verdana;" parent="0" vertex="1">
-                    <mxGeometry x="488" y="114" width="28.9" height="28" as="geometry"/>
+                    <mxGeometry x="582" y="67" width="28.9" height="28" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt-spoke-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = disabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;0.0.0.0/0 -&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.0/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.96/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.21.32/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.22.32/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;u&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.100/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.101/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.21.36/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.21.37/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.22.36/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.22.37/32 -&amp;gt; 10.0.20.84&lt;/span&gt;&lt;/u&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="0" vertex="1">
-                    <mxGeometry x="336" y="125" width="172" height="177" as="geometry"/>
+                <mxCell id="5" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt1-spoke2-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = disabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;0.0.0.0/0 -&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.0/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.96/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.21.32/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.22.32/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;u&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.100/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.101/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.22.36/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.22.37/32 -&amp;gt; 10.0.20.84&lt;/span&gt;&lt;/u&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="0" vertex="1">
+                    <mxGeometry x="952" y="156" width="172" height="151" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" style="edgeStyle=none;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;dashed=1;strokeColor=#999999;fontFamily=Verdana;fontSize=10;endArrow=none;endFill=0;" parent="0" source="7" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -169,7 +201,7 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="10" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt-gwsubnet-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = enabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.21.0/24 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.22.0/24 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.0/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.96/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;&lt;u&gt;10.0.20.100/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/u&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;&lt;u&gt;10.0.20.101/32 -&amp;gt; 10.0.20.84&lt;/u&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;u&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.21.36/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.21.37/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.22.36/32 -&amp;gt; 10.0.20.84&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.22.37/32 -&amp;gt; 10.0.20.84&lt;/span&gt;&lt;/u&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="0" vertex="1">
-                    <mxGeometry x="38" y="612" width="172" height="164" as="geometry"/>
+                    <mxGeometry x="62" y="617" width="172" height="164" as="geometry"/>
                 </mxCell>
                 <mxCell id="11" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/networking/Route_Tables.svg;dashed=1;labelBackgroundColor=none;strokeColor=default;fontFamily=Verdana;" parent="0" vertex="1">
                     <mxGeometry x="189" y="603.5" width="28.9" height="28" as="geometry"/>
@@ -179,8 +211,8 @@
                         <mxPoint x="609.26" y="801" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="13" value="&lt;b style=&quot;font-size: 9px;&quot;&gt;Network Policy = Disabled&lt;/b&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" parent="0" vertex="1">
-                    <mxGeometry x="61.6099999999999" y="432.79" width="164" height="30" as="geometry"/>
+                <mxCell id="13" value="&lt;b style=&quot;font-size: 10px;&quot;&gt;Network Policy = Disabled&lt;/b&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#009900;" parent="0" vertex="1">
+                    <mxGeometry x="61.6099999999999" y="302.79" width="164" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="14" value="&lt;b style=&quot;font-size: 9px;&quot;&gt;Network Policy = Disabled&lt;/b&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" parent="0" vertex="1">
                     <mxGeometry x="642.0999999999999" y="439" width="164" height="30" as="geometry"/>
@@ -188,11 +220,56 @@
                 <mxCell id="15" value="&lt;b style=&quot;font-size: 9px;&quot;&gt;Network Policy = Disabled&lt;/b&gt;" style="text;strokeColor=default;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;dashed=1;" parent="0" vertex="1">
                     <mxGeometry x="640.5" y="807" width="134.5" height="30" as="geometry"/>
                 </mxCell>
+                <mxCell id="38" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#FF0000;dashed=1;endArrow=none;endFill=0;" parent="0" source="40" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="69.5" y="400.91999999999985" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="39" style="edgeStyle=none;html=1;dashed=1;fontColor=#FF0000;endArrow=none;endFill=0;" parent="0" source="40" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="256" y="436" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="46" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=10;fontColor=#FF0000;endArrow=none;endFill=0;" parent="0" source="45" target="he0kqgZxXAUqB0J18NEI-22" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt1-spoke1-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = disabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;0.0.0.0/0 -&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;&lt;b style=&quot;&quot;&gt;&lt;font color=&quot;#ff0000&quot;&gt;10.0.21.0/24&amp;nbsp; -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/font&gt;&lt;/b&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; text-align: start;&quot;&gt;&lt;font style=&quot;border-color: var(--border-color);&quot; color=&quot;#ff0000&quot;&gt;10.0.20.0/24&amp;nbsp; -&amp;gt; 10.0.20.84&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;&lt;b style=&quot;&quot;&gt;&lt;font color=&quot;#ff0000&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/b&gt;&lt;/span&gt;&lt;font color=&quot;#009900&quot;&gt;&lt;b&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.21.64/27 -&amp;gt; VNET&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;10.0.21.96/27 -&amp;gt; VNET&lt;br&gt;&lt;/span&gt;&lt;/b&gt;&lt;/font&gt;&lt;b style=&quot;border-color: var(--border-color); color: rgb(0, 153, 0);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; text-align: start;&quot;&gt;10.0.21.32/27 -&amp;gt; VNET (Broken)&lt;/span&gt;&lt;/b&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;u&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.100/32 -&amp;gt; 10.0.20.84 - hubstgpe&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); font-family: Verdana; color: rgb(41, 40, 39); text-align: start;&quot;&gt;10.0.20.101/32 -&amp;gt; 10.0.20.84 - hubsqlpe&lt;/span&gt;&lt;/u&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="0" vertex="1">
+                    <mxGeometry x="370" y="90" width="230" height="139" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/networking/Route_Tables.svg;dashed=1;labelBackgroundColor=none;strokeColor=default;fontFamily=Verdana;" parent="0" vertex="1">
+                    <mxGeometry x="-222" y="447" width="28.9" height="28" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" value="UDR-Issue" parent="he0kqgZxXAUqB0J18NEI-0" visible="0"/>
+                <mxCell id="48" value="&lt;b style=&quot;font-size: 10px;&quot;&gt;Network Policy = Enabled&lt;/b&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#FF8000;" parent="47" vertex="1">
+                    <mxGeometry x="59" y="297" width="164" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=10;fontColor=#009900;endArrow=none;endFill=0;" parent="47" source="49" target="21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" style="edgeStyle=none;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;fontSize=10;fontColor=#009900;endArrow=none;endFill=0;" parent="47" source="49" target="22" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt2-spoke-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = disabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;0.0.0.0/0 -&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;&lt;b style=&quot;&quot;&gt;&lt;font color=&quot;#ff0000&quot;&gt;10.0.21.0/24&amp;nbsp; -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/font&gt;&lt;/b&gt;&lt;/span&gt;&lt;font color=&quot;#009900&quot;&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;10.0.21.0/27 -&amp;gt; VNET&lt;br&gt;&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;/font&gt;&lt;b style=&quot;border-color: var(--border-color); font-family: Verdana; text-align: start;&quot;&gt;&lt;font style=&quot;border-color: var(--border-color);&quot; color=&quot;#ff3333&quot;&gt;10.0.22.32/27 -&amp;gt; 10.0.20.84&lt;/font&gt;&lt;/b&gt;&lt;font color=&quot;#009900&quot;&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;/font&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.0/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.96/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.21.32/27 -&amp;gt; 10.0.20.84&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="47" vertex="1">
+                    <mxGeometry x="-179.00000000000006" y="455" width="181" height="126" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=10;fontColor=#009900;endArrow=none;endFill=0;" parent="47" source="50" target="he0kqgZxXAUqB0J18NEI-22" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" value="&lt;font face=&quot;Verdana&quot;&gt;&lt;b&gt;az-rt1-spoke-to-nva&lt;br&gt;&lt;/b&gt;GW propagation = disabled&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;0.0.0.0/0 -&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;&lt;b style=&quot;&quot;&gt;&lt;font color=&quot;#ff0000&quot;&gt;10.0.21.0/24&amp;nbsp; -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/font&gt;&lt;/b&gt;&lt;/span&gt;&lt;font color=&quot;#009900&quot;&gt;&lt;b&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;10.0.21.64/27 -&amp;gt; VNET&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;10.0.21.96/27 -&amp;gt; VNET&lt;br&gt;&lt;/span&gt;&lt;/b&gt;&lt;/font&gt;&lt;span style=&quot;font-family: Verdana; text-align: start;&quot;&gt;&lt;font color=&quot;#009900&quot;&gt;&lt;b&gt;10.0.21.32/27 -&amp;gt; VNET&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;&lt;font face=&quot;Verdana&quot;&gt;&lt;span style=&quot;color: rgb(41, 40, 39); text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.0/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: Verdana; text-align: start;&quot;&gt;10.0.20.96/27 -&amp;gt; 10.0.20.84&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(41, 40, 39); font-family: az_ea_font, &amp;quot;Segoe UI&amp;quot;, az_font, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, &amp;quot;Open Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; text-align: start; background-color: rgb(255, 255, 255); font-size: 10px;&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;fontSize=10;fontStyle=0;dashed=1;" parent="47" vertex="1">
+                    <mxGeometry x="410" y="92" width="177" height="139" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/networking/Route_Tables.svg;dashed=1;labelBackgroundColor=none;strokeColor=default;fontFamily=Verdana;" parent="47" vertex="1">
+                    <mxGeometry x="-207.9" y="450" width="28.9" height="28" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/networking/Route_Tables.svg;dashed=1;labelBackgroundColor=none;strokeColor=default;fontFamily=Verdana;" parent="47" vertex="1">
+                    <mxGeometry x="571" y="78" width="28.9" height="28" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram name="NetworkPolicy-Enabled" id="QJTYta4yJP7eJ28P1nHF">
-        <mxGraphModel dx="866" dy="459" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="973" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="mILvHSCZfIqw_XFxnMRQ-0"/>
                 <mxCell id="mILvHSCZfIqw_XFxnMRQ-1" parent="mILvHSCZfIqw_XFxnMRQ-0"/>
@@ -243,6 +320,9 @@
                 </mxCell>
                 <mxCell id="mILvHSCZfIqw_XFxnMRQ-15" value="Trusted-NIC&lt;br&gt;10.0.20.84" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=10;image=img/lib/azure2/networking/Network_Interfaces.svg;labelBackgroundColor=none;fontFamily=Verdana;fontColor=#000000;fillColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;spacing=4;" parent="mILvHSCZfIqw_XFxnMRQ-1" vertex="1">
                     <mxGeometry x="432.95" y="723" width="22.67" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="f42BECAK5r51VM6gwXT2-0" value="" style="edgeStyle=none;html=1;" parent="mILvHSCZfIqw_XFxnMRQ-1" source="mILvHSCZfIqw_XFxnMRQ-21" target="mILvHSCZfIqw_XFxnMRQ-18" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="mILvHSCZfIqw_XFxnMRQ-21" value="hubsql" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/databases/SQL_Server.svg;dashed=1;labelBackgroundColor=none;strokeColor=#0000FF;" parent="mILvHSCZfIqw_XFxnMRQ-1" vertex="1">
                     <mxGeometry x="659.82" y="724.6" width="50" height="50" as="geometry"/>
@@ -405,7 +485,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="zOX7VpMLd-8lQlo3Ocq1" name="SNAT-Requirement">
-        <mxGraphModel dx="937" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="973" dy="656" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
