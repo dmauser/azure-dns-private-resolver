@@ -100,6 +100,22 @@ az vm create -n $hub1name-svcVM  -g $rg --image $vmlinuximage --public-ip-sku St
 az vm create -n spoke3VM  -g $rg --image $vmlinuximage --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name spoke3 --admin-username $username --admin-password $password --nsg "" --no-wait
 az vm create -n spoke4VM  -g $rg --image $vmlinuximage --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name spoke4 --admin-username $username --admin-password $password --nsg "" --no-wait
 az vm create -n $hub2name-svcVM  -g $rg --image $vmlinuximage --public-ip-sku Standard --size $vmsize -l $region2 --subnet main --vnet-name $hub2name-svc --admin-username $username --admin-password $password --nsg "" --no-wait
+
+# Only continue if all vms are created by using a loop script
+echo Checking VMs provisioning status...
+# Checking VMs provisioning state
+for vm in `az vm list -g $rg --query "[].{name:name}" -o tsv`
+do
+    prState=''
+    while [[ $prState != 'Succeeded' ]];
+    do
+        prState=$(az vm show -g $rg -n $vm --query 'provisioningState' -o tsv)
+        echo "$vm provisioningState="$prState
+        sleep 5
+    done
+done
+
+
 #Enable boot diagnostics
 echo Enabling boot diagnostics
 az vm boot-diagnostics enable --ids $(az vm list -g $rg --query '[].{id:id}' -o tsv) -o none
