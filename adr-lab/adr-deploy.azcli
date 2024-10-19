@@ -4,7 +4,7 @@ az extension add -n dns-resolver
 
 #Parameters
 rg=lab-dns-resolver #Define your resource group
-location=eastus2 #Set location
+location=westus3 #Set location
 username=azureuser
 password=Msft123Msft123
 dnsvmname=onprem-windns
