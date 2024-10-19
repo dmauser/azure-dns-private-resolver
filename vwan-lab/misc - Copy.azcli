@@ -1,0 +1,57 @@
+
+# Parameters (make changes based on your requirements)
+region1=southcentralus
+region2=northcentralus
+rg=lab-vwan-adr
+vwanname=vwan-adr
+hub1name=hub1
+hub2name=hub2
+username=azureuser
+password="Msft123Msft123"
+vmsize=Standard_DS1_v2
+
+#Bastion
+hub1svcBastionPrefix=172.16.10.64/27
+
+# Creating Bastion on hub1-svc
+echo Creating Bastion on hub1-svc for Windows DNS Server management
+# hub1-svc
+az network vnet subnet create -g $rg --vnet-name hub1-svc -n AzureBastionSubnet --address-prefixes $hub1svcBastionPrefix --output none
+az network public-ip create --resource-group $rg --name hub1-svc-bastion-pip --sku Standard --location $region1 --output none --zone 1 2 3
+az network bastion create --name hub1-svc-bastion --public-ip-address hub1-svc-bastion-pip --resource-group $rg --vnet-name hub1-svc --location $region1 --sku Basic --output none --no-wait
+
+# Deploying hub1-svc Windows DNS Server
+echo Deploying hub1-svc Windows DNS Server
+az network nic create --name hub1-svc-windns-nic --resource-group $rg --subnet main --vnet hub1-svc --location $region1 -o none --only-show-errors
+az vm create --resource-group $rg --location $region1 --name hub1-svc-windns --size $vmsize --nics hub1-svc-windns-nic  --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter-smalldisk:latest --admin-username $username --admin-password $password -o none --only-show-errors
+az vm extension set --resource-group $rg --vm-name hub1-svc-windns  --name CustomScriptExtension \
+ --publisher Microsoft.Compute \
+ --setting "{\"commandToExecute\": \"powershell Install-WindowsFeature -Name DNS -IncludeManagementTools\"}" \
+ --no-wait
+
+# Windows VM Tools:
+for winvm in `az vm list -g $rg --query "[?storageProfile.imageReference.offer=='WindowsServer'].name" -o tsv`
+do
+az vm run-command invoke --command-id RunPowerShellScript \
+ --name $winvm \
+ --resource-group $rg \
+ --scripts \
+'# "Enabled ICMPv4 Windows Firewall Rule - Allow Ping on target VM' \
+'Set-NetfirewallRule -Name FPS-ICMP4-ERQ-In -Enable True -Profile Any' \
+'# Sysinternals Psping'  \
+'Start-BitsTransfer -source "https://live.sysinternals.com/psping.exe" -destination "$env:windir\system32\psping.exe"' \
+'# TCPing' \
+'Start-BitsTransfer -source "https://download.elifulkerson.com/files/tcping/0.39/x64/tcping64.exe" -destination "$env:windir\system32\tcping.exe"' \
+'# Network Monitor using silent install' \
+'Start-BitsTransfer -source https://download.microsoft.com/download/7/1/0/7105C7FF-768E-4472-AFD5-F29108D1E383/NM34_x64.exe -destination "$env:windir\temp"' \
+'cmd /c "$env:windir\temp\NM34_x64.exe /q"' \
+'# NTTTCP - Reference: https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing' \
+'Start-BitsTransfer -source "https://github.com/microsoft/ntttcp/releases/download/v5.35/NTttcp.exe" -destination "$env:windir\system32\NTttcp.exe"' \
+'Write-host "PS script has finished on VM $env:computername"' \
+ --output none \
+ --no-wait
+done
+
+
+# write me 
+

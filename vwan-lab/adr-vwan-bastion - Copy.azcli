@@ -1,0 +1,32 @@
+# Pre-Requisite
+az extension add --name virtual-wan 
+az extension add --name bastion
+# or update
+az extension update --name virtual-wan
+az extension update --name bastion
+
+# Parameters (make changes based on your requirements)
+region1=southcentralus
+region2=northcentralus
+rg=lab-vwan-adr
+vwanname=vwan-adr
+hub1name=hub1
+hub2name=hub2
+username=azureuser
+password="Msft123Msft123"
+vmsize=Standard_DS1_v2
+
+#Bastion
+spoke1BastionPrefix=172.16.1.32/28
+spoke3BastionPrefix=172.16.3.32/28
+
+# Creating Bastion on spoke1 and spoke3
+echo Creating Bastion on spoke1 and spoke3 for Windows DNS Server management
+# spoke1
+az network vnet subnet create -g $rg --vnet-name spoke1 -n AzureBastionSubnet --address-prefixes $spoke1BastionPrefix --output none
+az network public-ip create --resource-group $rg --name spoke1-bastion-pip --sku Standard --location $region1 --output none 
+az network bastion create --name spoke1-bastion --public-ip-address spoke1-bastion-pip --resource-group $rg --vnet-name spoke1 --location $region1 --sku Basic --output none --no-wait
+# spoke3
+az network vnet subnet create -g $rg --vnet-name spoke3 -n AzureBastionSubnet --address-prefixes $spoke3BastionPrefix --output none
+az network public-ip create --resource-group $rg --name spoke3-bastion-pip --sku Standard --location $region2 --output none 
+az network bastion create --name spoke3-bastion --public-ip-address spoke3-bastion-pip --resource-group $rg --vnet-name spoke3 --location $region2 --sku Basic --output none --no-wait
