@@ -1,7 +1,23 @@
 # **** Validation *****
 #Parameters
 rg=lab-dns-resolver 
-location=eastus
+location=$(az group show -n $rg --query location -o tsv)
+#check ssh extention and add if not present
+az extension show --name ssh
+if [ $? -ne 0 ]; then
+    az extension add --name ssh
+fi
+
+###### BASTION SSH ######
+# az-hub-lxvm
+az network bastion ssh --name az-hub-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n az-hub-lxvm --query id -o tsv) --auth-type password --username azureuser
+# az-spk1-lxvm
+az network bastion ssh --name az-hub-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n az-spk1-lxvm --query id -o tsv) --auth-type password --username azureuser
+# az-spk2-lxvm
+az network bastion ssh --name az-hub-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n az-spk2-lxvm --query id -o tsv) --auth-type password --username azureuser
+# onprem-lxvm
+az network bastion ssh --name onprem-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n onprem-lxvm --query id -o tsv) --auth-type password --username azureuser
+
 
 ### Scenario 1: Private Endpoint DNS Name Resolution
 
@@ -9,11 +25,12 @@ location=eastus
 az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv
 # Example of the ouput for the hub storage account: https://hubstg32476.blob.core.windows.net/
 
-# 2) Access VM Onprem-vmlx via serial console/SSH or Bastion 
+# 2) Access VM Onprem-vmlx via serial console/SSH or Bastion
 ## 2.1) Review DNS client config. It will show the DNS server configured.
-systemd-resolve --status | grep "DNS Servers:"
+resolvectl status | grep "DNS Servers:"
 ## 2.2) Test storage account name resolution (change the name below based on the output on step 1):
-nslookup hubstg32476.blob.core.windows.net
+nslookup hubstg4033.blob.core.windows.net
+dig hubstg4033.blob.core.windows.net
 ## Repeat the same steps above on spk1stgxxxx and spoke2stgxxx storage accounts.
 ## Test from all VMs (on-premises and Azure Hub and spokes)
 ## Expectation is to get the private endpoint IP for each
