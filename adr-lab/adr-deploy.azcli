@@ -50,7 +50,7 @@ echo Deploying base lab: Hub with Spoke1 and 2, On-Premises and VPN using VNGs w
 echo "*** It will take around 30 minutes to finish the deployment ***"
 az group create --name $rg --location $location --output none
 az deployment group create --name lab-$RANDOM --resource-group $rg \
---template-uri https://raw.githubusercontent.com/dmauser/azure-hub-spoke-base-lab/main/azuredeployv5.json \
+--template-uri https://raw.githubusercontent.com/dmauser/azure-hub-spoke-base-lab/main/azuredeployv6.json \
 --parameters HubVPNGatewaytype=Active-Passive virtualMachineSize=$vmsize deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password deployBastion=true \
 --output none
 
