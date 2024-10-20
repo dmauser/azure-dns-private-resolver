@@ -1,0 +1,25 @@
+
+
+#Parameters
+rg=lab-dns-resolver #Define your resource group
+location=westus3 #Set location
+username=azureuser
+password=Msft123Msft123
+dnsvmname=onprem-windns
+vmsize=Standard_DS1_v2
+vmlinuximage=Ubuntu2204
+
+az vm create -n onprem-binddns  -g $rg --image $vmlinuximage --public-ip-sku Standard --size $vmsize -l $location --subnet main --vnet-name spoke1 --admin-username $username --admin-password $password --nsg "" --no-wait
+
+# Add custom scruipt extension to the VM
+az vm extension set --resource-group $rg --vm-name onprem-binddns --name customScript --publisher Microsoft.Compute \
+--settings '{"fileUris":["https://raw.githubusercontent.com/adrinux/adr-lab/main/bind-dns-setup.sh"],"commandToExecute":"bash bind-dns-setup.sh"}'
+
+
+# Add Custom Script Extension to run the GitHub script
+az vm extension set \
+  --resource-group MyResourceGroup \
+  --vm-name MyUbuntuVM \
+  --name CustomScript \
+  --publisher Microsoft.Azure.Extensions \
+  --settings '{"fileUris": ["https://raw.githubusercontent.com/<your-repo>/<your-branch>/bind-dns-setup.sh"], "commandToExecute": "bash bind-dns-setup.sh"}'
