@@ -1,5 +1,3 @@
-
-
 #Parameters
 rg=lab-dns-resolver #Define your resource group
 location=westus3 #Set location
@@ -9,17 +7,21 @@ dnsvmname=onprem-windns
 vmsize=Standard_DS1_v2
 vmlinuximage=Ubuntu2204
 
-az vm create -n onprem-binddns  -g $rg --image $vmlinuximage --public-ip-sku Standard --size $vmsize -l $location --subnet main --vnet-name spoke1 --admin-username $username --admin-password $password --nsg "" --no-wait
+az vm create -n onprem-binddns  -g $rg --image $vmlinuximage --public-ip-address "" --size $vmsize -l $location --subnet subnet1 --vnet-name onprem-vnet --admin-username $username --admin-password $password --nsg "" --no-wait
+
+# Only continue if the VM is created
+sleep 5
+az vm show -n onprem-binddns -g $rg --query powerState -o tsv
+while [ $? -ne 0 ]; do
+  sleep 15
+  echo "VM not yet created..."
+  az vm show -n onprem-binddns -g $rg --query powerState -o tsv
+done
 
 # Add custom scruipt extension to the VM
-az vm extension set --resource-group $rg --vm-name onprem-binddns --name customScript --publisher Microsoft.Compute \
---settings '{"fileUris":["https://raw.githubusercontent.com/adrinux/adr-lab/main/bind-dns-setup.sh"],"commandToExecute":"bash bind-dns-setup.sh"}'
+az vm extension set --resource-group $rg --vm-name onprem-binddns \
+--name customScript \
+ --publisher Microsoft.Azure.Extensions \
+--settings '{"fileUris":["https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/refs/heads/main/adr-lab/scripts/bind-dns-setup.sh"],"commandToExecute":"bash bind-dns-setup.sh"}' \
+--no-wait
 
-
-# Add Custom Script Extension to run the GitHub script
-az vm extension set \
-  --resource-group MyResourceGroup \
-  --vm-name MyUbuntuVM \
-  --name CustomScript \
-  --publisher Microsoft.Azure.Extensions \
-  --settings '{"fileUris": ["https://raw.githubusercontent.com/<your-repo>/<your-branch>/bind-dns-setup.sh"], "commandToExecute": "bash bind-dns-setup.sh"}'

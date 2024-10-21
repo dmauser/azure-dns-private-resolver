@@ -23,7 +23,7 @@ sudo bash -c 'cat << EOF > /etc/bind/named.conf.local
 zone "privatelink.blob.core.windows.net" {
     type forward;
     forwarders {
-        10.20.0.164;
+        10.0.20.164;
     };
 };
 EOF'
