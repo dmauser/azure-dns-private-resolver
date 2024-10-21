@@ -35,35 +35,6 @@
         1,
         1
       ]
-    },
-    {
-      "id": "vjoIqbPW7fUYRt1fpkTVT",
-      "type": "rectangle",
-      "x": 24.811419582022666,
-      "y": 594.569675556638,
-      "width": 98.03034002130684,
-      "height": 53.33335182883525,
-      "angle": 0,
-      "strokeColor": "#1e1e1e",
-      "backgroundColor": "transparent",
-      "fillStyle": "solid",
-      "strokeWidth": 1,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "groupIds": [],
-      "frameId": null,
-      "roundness": {
-        "type": 3
-      },
-      "seed": 673981394,
-      "version": 423,
-      "versionNonce": 1402324626,
-      "isDeleted": false,
-      "boundElements": [],
-      "updated": 1729462525556,
-      "link": null,
-      "locked": false
     }
   ],
   "appState": {

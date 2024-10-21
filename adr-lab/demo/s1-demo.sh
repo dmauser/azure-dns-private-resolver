@@ -1,3 +1,7 @@
+### Deploy the lab environment
+
+
+
 # **** Validation *****
 #Parameters
 rg=lab-dns-resolver 
