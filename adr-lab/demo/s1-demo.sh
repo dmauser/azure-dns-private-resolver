@@ -1,5 +1,5 @@
 ### Deploy the lab environment
-
+curl -s https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/demo/s1-contoso.azcli | bash
 
 
 # **** Validation *****
