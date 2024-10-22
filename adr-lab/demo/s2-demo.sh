@@ -1,4 +1,7 @@
-# **** Validation *****
+### Deploy the lab environment
+curl -s https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/demo/s2-fabrikam.azcli | bash
+
+ **** Validation *****
 #Parameters
 rg=lab-dns-fabrikam 
 location=$(az group show -n $rg --query location -o tsv)
@@ -11,7 +14,6 @@ fi
 ###### BASTION SSH ######
 # fabrikam-lxvm
 az network bastion ssh --name fabrikam-bastion --resource-group $rg --target-resource-id $(az vm show -g $rg -n fabrikam-lxvm --query id -o tsv) --auth-type password --username azureuser
-
 
 # 1) List Blob Storage Account names to test Private Endpoint name resolution.
 az storage account list -g $rg --query [].primaryEndpoints.blob -o tsv

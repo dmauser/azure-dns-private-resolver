@@ -91,7 +91,7 @@
       "containerId": "cnEmKc-h9adngC_KUJZtj",
       "originalText": "vHub1\n192.168.1.0/24",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 45
     },
     {
       "type": "ellipse",
@@ -179,7 +179,7 @@
       "containerId": "jZYpZlk9yUdN8Sfdk9G8H",
       "originalText": "VHub2\n192.168.2.0/24",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 45
     },
     {
       "type": "rectangle",
@@ -253,7 +253,7 @@
       "containerId": "6z4RPO35DndxmupzcO1nO",
       "originalText": "Spoke1\n172.16.1.0/24",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 45
     },
     {
       "type": "rectangle",
@@ -327,7 +327,7 @@
       "containerId": "8dGD_eRy1Id4ktwwilAWH",
       "originalText": "Spoke2\n172.16.2.0/24",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 45
     },
     {
       "type": "arrow",
@@ -422,7 +422,7 @@
       "containerId": "Os_cnhuRPH7r-1kmcz_ir",
       "originalText": "Inter-Hub",
       "lineHeight": 1.25,
-      "baseline": 21
+      "baseline": 20
     },
     {
       "type": "arrow",
@@ -604,7 +604,7 @@
       "containerId": "aIfZfvVJSVNxYKYja4N-G",
       "originalText": "Spoke3\n172.16.3.0/24",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 45
     },
     {
       "type": "rectangle",
@@ -678,7 +678,7 @@
       "containerId": "nhaBIIfW_Z0vHRA978jJ5",
       "originalText": "Spoke4\n172.16.4.0/24",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 45
     },
     {
       "type": "arrow",
@@ -864,7 +864,7 @@
       "containerId": "NJZOEzWmrVnfQCGV5DR1S",
       "originalText": "\nDNS ProvateResolver\n172.16.10.36",
       "lineHeight": 1.25,
-      "baseline": 71
+      "baseline": 70
     },
     {
       "type": "arrow",
@@ -992,7 +992,7 @@
       "containerId": "0jfY0uDmjF7UDI_L0FoT-",
       "originalText": "\n\nDNS ProvateResolver\n172.16.20.36",
       "lineHeight": 1.25,
-      "baseline": 96
+      "baseline": 95
     },
     {
       "type": "arrow",
@@ -1050,8 +1050,8 @@
     },
     {
       "type": "text",
-      "version": 324,
-      "versionNonce": 361511222,
+      "version": 325,
+      "versionNonce": 1310755823,
       "isDeleted": false,
       "id": "ArLASDa9dnuDSZzTlIx-r",
       "fillStyle": "solid",
@@ -1071,7 +1071,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729524967742,
+      "updated": 1729630772875,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1082,7 +1082,7 @@
       "containerId": null,
       "originalText": "NorthCentralUS",
       "lineHeight": 1.25,
-      "baseline": 18
+      "baseline": 17
     },
     {
       "type": "rectangle",
@@ -1124,8 +1124,8 @@
     },
     {
       "type": "text",
-      "version": 76,
-      "versionNonce": 56073514,
+      "version": 77,
+      "versionNonce": 183611009,
       "isDeleted": false,
       "id": "hMQYmH9jUUH1tDxfiVtx2",
       "fillStyle": "solid",
@@ -1145,7 +1145,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729524967743,
+      "updated": 1729630772875,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1156,7 +1156,7 @@
       "containerId": null,
       "originalText": "DC1 (Dallas)\n10.100.0.0/16",
       "lineHeight": 1.25,
-      "baseline": 43
+      "baseline": 42
     },
     {
       "type": "arrow",
@@ -1251,12 +1251,12 @@
       "containerId": "yImuba39CF8TZE1VyM1Qx",
       "originalText": "VPN or ER",
       "lineHeight": 1.25,
-      "baseline": 21
+      "baseline": 20
     },
     {
       "type": "text",
-      "version": 255,
-      "versionNonce": 895197814,
+      "version": 256,
+      "versionNonce": 422000143,
       "isDeleted": false,
       "id": "RIlruMX1s55uoJ2alY-Lu",
       "fillStyle": "solid",
@@ -1276,7 +1276,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729524967743,
+      "updated": 1729630772875,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1287,12 +1287,12 @@
       "containerId": null,
       "originalText": "SouthCentralUS",
       "lineHeight": 1.25,
-      "baseline": 18
+      "baseline": 17
     },
     {
       "type": "text",
-      "version": 297,
-      "versionNonce": 427714538,
+      "version": 298,
+      "versionNonce": 1486501473,
       "isDeleted": false,
       "id": "9ShdZ2bkh80CECDKFkFTH",
       "fillStyle": "solid",
@@ -1317,7 +1317,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967744,
+      "updated": 1729630772876,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1328,7 +1328,7 @@
       "containerId": null,
       "originalText": "branch1-vm\n10.100.0.4\n\nbranch1-windns\n10.100.0.5",
       "lineHeight": 1.25,
-      "baseline": 118
+      "baseline": 117
     },
     {
       "type": "rectangle",
@@ -1402,7 +1402,7 @@
       "containerId": "B7DCH5Ic7VogI7Om3W2v7",
       "originalText": "DNS Config:\nGlobal FWD: 8.8.8.8\nConditional Forwarder:\nblob.core.windows.net\nPrimary IP: 172.16.10.36\nSecondary IP: 172.16.20.36",
       "lineHeight": 1.25,
-      "baseline": 146
+      "baseline": 145
     },
     {
       "type": "arrow",
@@ -1494,8 +1494,8 @@
     },
     {
       "type": "text",
-      "version": 385,
-      "versionNonce": 300671926,
+      "version": 386,
+      "versionNonce": 1041472559,
       "isDeleted": false,
       "id": "YVPuKmPPhhFkzx3MUYPK8",
       "fillStyle": "solid",
@@ -1515,7 +1515,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729524967745,
+      "updated": 1729630772876,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1526,12 +1526,12 @@
       "containerId": null,
       "originalText": "DC1 (Chicago)\n10.200.0.0/16",
       "lineHeight": 1.25,
-      "baseline": 43
+      "baseline": 42
     },
     {
       "type": "text",
-      "version": 618,
-      "versionNonce": 1040046762,
+      "version": 619,
+      "versionNonce": 329695809,
       "isDeleted": false,
       "id": "DmYuq-fcfRy0_LDHU6tZH",
       "fillStyle": "solid",
@@ -1560,7 +1560,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967745,
+      "updated": 1729630772876,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1571,7 +1571,7 @@
       "containerId": null,
       "originalText": "branch2-vm\n10.100.0.4\n\nbranch2-windns\n10.100.0.5",
       "lineHeight": 1.25,
-      "baseline": 118
+      "baseline": 117
     },
     {
       "type": "rectangle",
@@ -1645,7 +1645,7 @@
       "containerId": "q0xDYeR_opJrSmR42dQNf",
       "originalText": "DNS Config:\nGlobal FWD: 8.8.8.8\nConditional Forwarder:\nblob.core.windows.net\nPrimary IP: 172.16.20.36\nSecondary IP: 172.16.10.36",
       "lineHeight": 1.25,
-      "baseline": 146
+      "baseline": 145
     },
     {
       "type": "arrow",
@@ -1794,7 +1794,7 @@
       "containerId": "kba1U7i1rUsAteLAT_cD_",
       "originalText": "VPN or ER",
       "lineHeight": 1.25,
-      "baseline": 21
+      "baseline": 20
     },
     {
       "type": "arrow",
@@ -1889,12 +1889,12 @@
       "containerId": "-SDsJ28LjR-zhSf7K4sZa",
       "originalText": "WAN",
       "lineHeight": 1.25,
-      "baseline": 21
+      "baseline": 20
     },
     {
       "type": "text",
-      "version": 300,
-      "versionNonce": 224525558,
+      "version": 301,
+      "versionNonce": 1892564559,
       "isDeleted": false,
       "id": "yoXEocLRsniwM7aND8Lpi",
       "fillStyle": "solid",
@@ -1919,7 +1919,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967746,
+      "updated": 1729630772877,
       "link": null,
       "locked": false,
       "fontSize": 21.919995117187522,
@@ -1930,12 +1930,12 @@
       "containerId": null,
       "originalText": "\nHub1svcstg",
       "lineHeight": 1.25,
-      "baseline": 46
+      "baseline": 47
     },
     {
       "type": "text",
-      "version": 363,
-      "versionNonce": 1870722410,
+      "version": 364,
+      "versionNonce": 2029441569,
       "isDeleted": false,
       "id": "ntSBjyJi_PkY_55pgkP3A",
       "fillStyle": "solid",
@@ -1960,7 +1960,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967746,
+      "updated": 1729630772877,
       "link": null,
       "locked": false,
       "fontSize": 21.919995117187522,
@@ -1975,8 +1975,8 @@
     },
     {
       "type": "text",
-      "version": 314,
-      "versionNonce": 2101538358,
+      "version": 315,
+      "versionNonce": 1412406383,
       "isDeleted": false,
       "id": "m0cWMoqQ-wkNJYi6lNnE5",
       "fillStyle": "solid",
@@ -2005,7 +2005,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967748,
+      "updated": 1729630772878,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -2020,8 +2020,8 @@
     },
     {
       "type": "text",
-      "version": 144,
-      "versionNonce": 525514794,
+      "version": 145,
+      "versionNonce": 2105140737,
       "isDeleted": false,
       "id": "qccJfWRxqUOwE8lz7NbFg",
       "fillStyle": "solid",
@@ -2046,7 +2046,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967749,
+      "updated": 1729630772879,
       "link": null,
       "locked": false,
       "fontSize": 20.3199951171875,
@@ -2061,8 +2061,8 @@
     },
     {
       "type": "text",
-      "version": 213,
-      "versionNonce": 1047770998,
+      "version": 214,
+      "versionNonce": 469776015,
       "isDeleted": false,
       "id": "K55rokjTwZ2x9oMWMspsp",
       "fillStyle": "solid",
@@ -2087,7 +2087,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967749,
+      "updated": 1729630772879,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2098,12 +2098,12 @@
       "containerId": null,
       "originalText": "Hub2-PE\n172.16.20.100",
       "lineHeight": 1.25,
-      "baseline": 43
+      "baseline": 42
     },
     {
       "type": "text",
-      "version": 130,
-      "versionNonce": 1566450410,
+      "version": 131,
+      "versionNonce": 1278180833,
       "isDeleted": false,
       "id": "y1kLTAeeiCS2Mi2rG70wj",
       "fillStyle": "solid",
@@ -2123,7 +2123,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729524967749,
+      "updated": 1729630772879,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2134,12 +2134,12 @@
       "containerId": null,
       "originalText": "Hub1-SharedSvc\n172.16.10.0/24",
       "lineHeight": 1.25,
-      "baseline": 43
+      "baseline": 42
     },
     {
       "type": "text",
-      "version": 258,
-      "versionNonce": 1228495030,
+      "version": 259,
+      "versionNonce": 1861782703,
       "isDeleted": false,
       "id": "rw3oQgSp1c7Vm-lhMF84g",
       "fillStyle": "solid",
@@ -2164,7 +2164,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729524967749,
+      "updated": 1729630772880,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2175,7 +2175,7 @@
       "containerId": null,
       "originalText": "Hub2-SharedSvc\n172.16.20.0/24",
       "lineHeight": 1.25,
-      "baseline": 43
+      "baseline": 42
     },
     {
       "type": "arrow",
@@ -2695,8 +2695,8 @@
     },
     {
       "type": "text",
-      "version": 449,
-      "versionNonce": 70137258,
+      "version": 450,
+      "versionNonce": 69671361,
       "isDeleted": false,
       "id": "9cWsRE8wWeieq0kCYnfhd",
       "fillStyle": "solid",
@@ -2716,7 +2716,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729524967750,
+      "updated": 1729630772880,
       "link": null,
       "locked": false,
       "fontSize": 18.87999877929687,
