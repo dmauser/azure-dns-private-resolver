@@ -283,7 +283,7 @@ az network vnet update -g $rg -n $OnPremName-vnet \
  --output none
 # Restarting onprem VMs to commit the new VNET DNS settings.
 echo Restarting onprem VMs to commit the new VNET DNS settings.
-az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'$OnPremName'`)].{id:id}' -o tsv) --output none
+az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'$OnPremName'`)].{id:id}' -o tsv) --no-wait --output none
 
 ### Deploying On-premises BIND DNS Server
 

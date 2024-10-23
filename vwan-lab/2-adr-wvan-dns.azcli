@@ -154,6 +154,6 @@ az network vnet update -g $rg -n branch2 \
  --output none
 # Restarting onprem VMs to commit the new VNET DNS settings.
 echo Restarting branches VMs to commit the new VNET DNS settings.
-az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'branch'`)].{id:id}' -o tsv) --no- --output none
+az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'branch'`)].{id:id}' -o tsv) --no-wait --output none
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.

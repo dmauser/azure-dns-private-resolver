@@ -23,10 +23,6 @@ az network bastion list -g $rg --query "[].{name:name,location:location,resource
 az network bastion ssh --resource-group $rg --name branch1-bastion --target-resource-id $(az vm show -g $rg -n branch1vm --query id -o tsv)  --auth-type password --username $username 
 az network bastion ssh --resource-group $rg --name branch2-bastion --target-resource-id $(az vm show -g $rg -n branch2vm --query id -o tsv)  --auth-type password --username $username 
 
-
-
-
-
 # dump storage accounts for resource group $rg
 echo Listing Private Endpoint Names:
 az storage account list  -g $rg --query [].primaryEndpoints.blob -o table
