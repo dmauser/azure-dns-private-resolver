@@ -58,7 +58,7 @@ az deployment group create --name lab-$RANDOM --resource-group $rg \
 
 # Add Deployment checking
 
-#Creating Storage Accounts (boot diagnostics + serial console)
+#Creating Storage Accounts
 echo Creating Hub and Spokes storage accounts for serial console and private link.
 randomIdentifier1=$RANDOM 
 az storage account create -n hubstg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
@@ -286,12 +286,6 @@ echo Restarting onprem VMs to commit the new VNET DNS settings.
 az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'$OnPremName'`)].{id:id}' -o tsv) --no-wait --output none
 
 ### Deploying On-premises BIND DNS Server
-
-username=azureuser
-password=Msft123Msft123
-vmsize=Standard_DS1_v2
-
-
 az vm create -n $OnPremName-binddns  -g $rg --image $vmlinuximage --public-ip-address "" --size $vmsize -l $location --subnet subnet1 --vnet-name $OnPremName-vnet --admin-username $username --admin-password $password --nsg "" --no-wait
 
 # Only continue if the VM is created

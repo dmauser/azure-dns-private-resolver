@@ -1,15 +1,18 @@
 ### Deploy the lab environment using Azure Cloud Shell bash
 curl -s https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/demo/s2-fabrikam.azcli | bash
 
- **** Validation *****
-#Parameters
-rg=lab-dns-fabrikam 
-location=$(az group show -n $rg --query location -o tsv)
-#check ssh extention and add if not present
+#Check ssh extention and add if not present
 az extension show --name ssh -o none
 if [ $? -ne 0 ]; then
     az extension add --name ssh
 fi
+
+# **** Validation *****
+
+#Parameters
+rg=lab-dns-fabrikam 
+location=$(az group show -n $rg --query location -o tsv)
+
 
 ###### BASTION SSH ######
 # fabrikam-lxvm
