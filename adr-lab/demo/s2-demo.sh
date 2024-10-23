@@ -1,4 +1,4 @@
-### Deploy the lab environment
+### Deploy the lab environment using Azure Cloud Shell bash
 curl -s https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/demo/s2-fabrikam.azcli | bash
 
  **** Validation *****

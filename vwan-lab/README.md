@@ -31,7 +31,7 @@ Although this article goes over multi-region with Virtual WAN the same scenarios
 The lab is also available in the above .azcli that you can rename as .sh (shell script) and execute. You can open [Azure Cloud Shell (Bash)](https://shell.azure.com) and run the following commands to build the entire lab:
 
 ```bash
-wget -O adr-vwan-deploy.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-vwan-deploy.azcli
+wget -O adr-vwan-deploy.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/1-adr-vwan-deploy.azcli
 chmod +xr adr-vwan-deploy.sh
 ./adr-vwan-deploy.sh
 ```
@@ -43,7 +43,7 @@ In this part of the lab, you will add all DNS components:
 2 - DNS Private Resolver with Inbound and Outbound endpoints.
 
 ```bash
-wget -O adr-wvan-dns.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-wvan-dns.azcli
+wget -O adr-wvan-dns.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/2-adr-wvan-dns.azcli
 chmod +xr adr-wvan-dns.sh
 ./adr-wvan-dns.sh
 ```
@@ -57,7 +57,7 @@ The following diagram reflects what is the outcome after deploying the shell adr
 ## Scenario 2: Private Link name resolution
 
 ```bash
-wget -O adr-vwan-pl.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/adr-vwan-pl.azcli
+wget -O adr-vwan-pl.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/vwan-lab/3-adr-vwan-pl.azcli
 chmod +xr adr-vwan-pl.sh
 ./adr-vwan-pl.sh
 ```
