@@ -4,7 +4,7 @@ curl -s https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/mai
 
 # **** Validation *****
 #Parameters
-rg=lab-dns-resolver 
+rg=lab-dns-contoso 
 location=$(az group show -n $rg --query location -o tsv)
 #check ssh extention and add if not present
 az extension show --name ssh -o none

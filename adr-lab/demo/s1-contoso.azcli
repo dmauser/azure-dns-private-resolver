@@ -10,6 +10,7 @@ OnPremName=contoso #On-premises Name
 rg=lab-dns-$OnPremName #Define your resource group
 dnsvmname=$OnPremName-windns
 vmsize=Standard_DS1_v2
+vmlinuximage=Ubuntu2204
 
 #Variables
 mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NSG to restrict access to SSH only for your Public IP.
@@ -17,29 +18,29 @@ sharedkey=$(openssl rand -base64 24) #VPN Gateways S2S shared key is automatical
 
 #Define parameters for Azure Hub and Spokes:
 AzurehubName=az-hub #Azure Hub Name
-AzurehubaddressSpacePrefix=10.0.200.0/24 #Azure Hub VNET address space
+AzurehubaddressSpacePrefix=10.0.20.0/24 #Azure Hub VNET address space
 AzurehubNamesubnetName=subnet1 #Azure Hub Subnet name where VM will be provisioned
-Azurehubsubnet1Prefix=10.0.200.0/27 #Azure Hub Subnet address prefix
-AzurehubgatewaySubnetPrefix=10.0.200.32/27 #Azure Hub Gateway Subnet address prefix
-AzureFirewallPrefix=10.0.200.64/26 #Azure Firewall Prefix
-AzurehubrssubnetPrefix=10.0.200.128/27 #Azure Hub Route Server subnet address prefix
-AzureHubDnsInSubnetPrefix=10.0.200.160/28
-AzureHubDnsOutSubnetPrefix=10.0.200.176/28
-AzureHubBastionSubnet=10.0.200.192/26
+Azurehubsubnet1Prefix=10.0.20.0/27 #Azure Hub Subnet address prefix
+AzurehubgatewaySubnetPrefix=10.0.20.32/27 #Azure Hub Gateway Subnet address prefix
+AzureFirewallPrefix=10.0.20.64/26 #Azure Firewall Prefix
+AzurehubrssubnetPrefix=10.0.20.128/27 #Azure Hub Route Server subnet address prefix
+AzureHubDnsInSubnetPrefix=10.0.20.160/28
+AzureHubDnsOutSubnetPrefix=10.0.20.176/28
+AzureHubBastionSubnet=10.0.20.192/26
 Azurespoke1Name=az-spk1 #Azure Spoke 1 name
-Azurespoke1AddressSpacePrefix=10.0.201.0/24 # Azure Spoke 1 VNET address space
-Azurespoke1Subnet1Prefix=10.0.201.0/27 # Azure Spoke 1 Subnet1 address prefix
+Azurespoke1AddressSpacePrefix=10.0.21.0/24 # Azure Spoke 1 VNET address space
+Azurespoke1Subnet1Prefix=10.0.21.0/27 # Azure Spoke 1 Subnet1 address prefix
 Azurespoke2Name=az-spk2 #Azure Spoke 1 name
-Azurespoke2AddressSpacePrefix=10.0.202.0/24 # Azure Spoke 1 VNET address space
-Azurespoke2Subnet1Prefix=10.0.202.0/27 # Azure Spoke 1 VNET address space
+Azurespoke2AddressSpacePrefix=10.0.22.0/24 # Azure Spoke 1 VNET address space
+Azurespoke2Subnet1Prefix=10.0.22.0/27 # Azure Spoke 1 VNET address space
 
 #On-premises 
 #Define emulated On-premises parameters:
 OnPremName=contoso #On-premises Name
-OnPremVnetAddressSpace=192.168.200.0/24 #On-premises VNET address space
-OnPremSubnet1prefix=192.168.200.0/27 #On-premises Subnet1 address prefix
-OnPremgatewaySubnetPrefix=192.168.200.128/27 #On-premises Gateways address prefix
-OnPremAzureBastionSubnet=192.168.200.192/26
+OnPremVnetAddressSpace=192.168.100.0/24 #On-premises VNET address space
+OnPremSubnet1prefix=192.168.100.0/27 #On-premises Subnet1 address prefix
+OnPremgatewaySubnetPrefix=192.168.100.128/27 #On-premises Gateways address prefix
+OnPremAzureBastionSubnet=192.168.100.192/26
 OnPremgatewayASN=60010 #On-premises VPN Gateways ASN
 
 #Parsing parameters above in Json format (do not change)
@@ -167,9 +168,9 @@ az network private-dns zone create \
 # Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
 # Create a subnet called pesubnet Private Endpoint for Hub, Spoke1 and Spoke 2.
 echo Creating subnet called pesubnet Private Endpoint for Hub, Spoke1 and Spoke 2.
-az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet -n pesubnet --address-prefixes 10.0.200.96/27 --output none
-az network vnet subnet create -g $rg --vnet-name $Azurespoke1Name-vnet -n pesubnet --address-prefixes 10.0.201.32/27 --output none
-az network vnet subnet create -g $rg --vnet-name $Azurespoke2Name-vnet -n pesubnet --address-prefixes 10.0.202.32/27 --output none
+az network vnet subnet create -g $rg --vnet-name $AzurehubName-vnet -n pesubnet --address-prefixes 10.0.20.96/27 --output none
+az network vnet subnet create -g $rg --vnet-name $Azurespoke1Name-vnet -n pesubnet --address-prefixes 10.0.21.32/27 --output none
+az network vnet subnet create -g $rg --vnet-name $Azurespoke2Name-vnet -n pesubnet --address-prefixes 10.0.22.32/27 --output none
 
 echo Creating Private Endpoints for Hub, Spoke1 and Spoke 2.
 ## Hub
@@ -282,6 +283,31 @@ az network vnet update -g $rg -n $OnPremName-vnet \
  --output none
 # Restarting onprem VMs to commit the new VNET DNS settings.
 echo Restarting onprem VMs to commit the new VNET DNS settings.
-az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'$OnPremName'`)].{id:id}' -o tsv) --no- --output none
+az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'$OnPremName'`)].{id:id}' -o tsv) --output none
+
+### Deploying On-premises BIND DNS Server
+
+username=azureuser
+password=Msft123Msft123
+vmsize=Standard_DS1_v2
+
+
+az vm create -n $OnPremName-binddns  -g $rg --image $vmlinuximage --public-ip-address "" --size $vmsize -l $location --subnet subnet1 --vnet-name $OnPremName-vnet --admin-username $username --admin-password $password --nsg "" --no-wait
+
+# Only continue if the VM is created
+sleep 5
+az vm show -n $OnPremName-binddns -g $rg --query powerState -o tsv
+while [ $? -ne 0 ]; do
+  sleep 15
+  echo "VM not yet created..."
+  az vm show -n $OnPremName-binddns -g $rg --query powerState -o tsv
+done
+
+# Add custom scruipt extension to the VM
+az vm extension set --resource-group $rg --vm-name $OnPremName-binddns \
+--name customScript \
+ --publisher Microsoft.Azure.Extensions \
+--settings '{"fileUris":["https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/refs/heads/main/adr-lab/scripts/bind-dns-setup.sh"],"commandToExecute":"bash bind-dns-setup.sh"}' \
+--no-wait
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.
