@@ -71,7 +71,7 @@
       "containerId": "BFqrTevcrsbWQkOvZpCRY",
       "originalText": "\n\n\nSpoke1",
       "lineHeight": 1.25,
-      "baseline": 95
+      "baseline": 93
     },
     {
       "type": "rectangle",
@@ -141,7 +141,7 @@
       "containerId": "eTDoczOTlYuvogdEvi_MH",
       "originalText": "\n\n\nSpoke2",
       "lineHeight": 1.25,
-      "baseline": 95
+      "baseline": 93
     },
     {
       "type": "rectangle",
@@ -245,7 +245,7 @@
       "containerId": "xQEZBZqkdx08XVtAy989O",
       "originalText": "\n\n\n\nSpoke 3",
       "lineHeight": 1.25,
-      "baseline": 120
+      "baseline": 118
     },
     {
       "type": "rectangle",
@@ -315,7 +315,7 @@
       "containerId": "qCD44RfN1vDYL8Ne-_mXf",
       "originalText": "\n\n\n\nSpoke 4",
       "lineHeight": 1.25,
-      "baseline": 120
+      "baseline": 118
     },
     {
       "type": "rectangle",
@@ -683,7 +683,7 @@
       "containerId": null,
       "originalText": "Prod\nHub\n10.0.0.0/24",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -719,7 +719,7 @@
       "containerId": null,
       "originalText": "Dev\nHub\n10.10.0.0/24",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -760,12 +760,12 @@
       "containerId": null,
       "originalText": "PrivateDNSResolver\n10.0.0.5",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
-      "version": 465,
-      "versionNonce": 880842312,
+      "version": 466,
+      "versionNonce": 972871069,
       "isDeleted": false,
       "id": "tN7KofEbBMeV59CNUQboX",
       "fillStyle": "hachure",
@@ -774,18 +774,18 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 2231.5028157309875,
+      "x": 2231.521829199389,
       "y": 133.51124064127606,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "#a5d8ff",
-      "width": 161.3554402668806,
-      "height": 58.888905843098996,
+      "width": 161.31741333007812,
+      "height": 58.88890584309899,
       "seed": 466305136,
       "groupIds": [],
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1729630651516,
+      "updated": 1730320696820,
       "link": null,
       "locked": false,
       "fontSize": 23.555562337239596,
@@ -796,7 +796,7 @@
       "containerId": null,
       "originalText": "HubProdStgPE\n10.0.0.10",
       "lineHeight": 1.25,
-      "baseline": 50.00000000000001
+      "baseline": 49
     },
     {
       "type": "text",
@@ -832,7 +832,7 @@
       "containerId": null,
       "originalText": "HubDevStgPE\n10.10.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "text",
@@ -909,7 +909,7 @@
       "containerId": null,
       "originalText": "PrivateDNSResolver\n10.10.0.5",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -950,7 +950,7 @@
       "containerId": null,
       "originalText": "VM Client",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -995,7 +995,7 @@
       "containerId": null,
       "originalText": "DNS Server",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -1369,8 +1369,8 @@
     },
     {
       "type": "text",
-      "version": 886,
-      "versionNonce": 1710620984,
+      "version": 887,
+      "versionNonce": 286957235,
       "isDeleted": false,
       "id": "Dz4_ZmunpERuceFCbPuV4",
       "fillStyle": "hachure",
@@ -1383,7 +1383,7 @@
       "y": -83.37771267361117,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "#a5d8ff",
-      "width": 419.74774169921875,
+      "width": 419.7477722167969,
       "height": 70,
       "seed": 633707664,
       "groupIds": [],
@@ -1399,7 +1399,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729630651516,
+      "updated": 1730320696821,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -1446,7 +1446,7 @@
       "containerId": null,
       "originalText": "hubprodstg A (Host) 10.1.0.10\nhubdevstg A (Host) 10.10.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "arrow",
@@ -1541,7 +1541,7 @@
       "containerId": "l2L6Ny7lAM8Dn7eef22hI",
       "originalText": "VNET Link",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -1636,7 +1636,7 @@
       "containerId": "Brj2iED73bVivIMYdZLc2",
       "originalText": "VNET Link",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -1706,7 +1706,7 @@
       "containerId": "6yLBdXQa5VDPy6CWLMPfJ",
       "originalText": "Zone: blob.core.windows.net\nForwarders: 10.0.0.5, 10.10.0.5",
       "lineHeight": 1.25,
-      "baseline": 45
+      "baseline": 43
     },
     {
       "type": "arrow",
@@ -1830,7 +1830,7 @@
       "containerId": "ICZmiCtsRO24it_aHWlf7",
       "originalText": "Spoke1",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -1900,7 +1900,7 @@
       "containerId": "2s1IoRGNY1NiFyqfMajF_",
       "originalText": "Spoke2",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -2004,7 +2004,7 @@
       "containerId": "IQfkPk9YoWG6MLhQusX44",
       "originalText": "Spoke 3",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -2074,7 +2074,7 @@
       "containerId": "gwZG5aV94vlO_KsxoLAum",
       "originalText": "Spoke 4",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -2437,7 +2437,7 @@
       "containerId": null,
       "originalText": "Prod\nHub\n10.0.0.0/24",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -2473,7 +2473,7 @@
       "containerId": null,
       "originalText": "Dev\nHub\n10.10.0.0/24",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -2514,7 +2514,7 @@
       "containerId": null,
       "originalText": "PrivateDNSResolver\n10.0.0.5",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -2550,7 +2550,7 @@
       "containerId": null,
       "originalText": "ProdStgPE\n10.0.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "text",
@@ -2586,7 +2586,7 @@
       "containerId": null,
       "originalText": "DevStgPE\n10.10.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "text",
@@ -2663,7 +2663,7 @@
       "containerId": null,
       "originalText": "PrivateDNSResolver\n10.10.0.5",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -2704,7 +2704,7 @@
       "containerId": null,
       "originalText": "VM Client",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -2757,7 +2757,7 @@
       "containerId": null,
       "originalText": "DNS Server",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -3457,8 +3457,8 @@
     },
     {
       "type": "text",
-      "version": 1060,
-      "versionNonce": 896985912,
+      "version": 1061,
+      "versionNonce": 443161085,
       "isDeleted": false,
       "id": "53_oxhg_Nyp5_cfxEQNPE",
       "fillStyle": "hachure",
@@ -3471,7 +3471,7 @@
       "y": -1570.9610341389975,
       "strokeColor": "#1971c2",
       "backgroundColor": "#a5d8ff",
-      "width": 419.74774169921875,
+      "width": 419.7477722167969,
       "height": 35,
       "seed": 660085872,
       "groupIds": [],
@@ -3483,7 +3483,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729630651517,
+      "updated": 1730320696823,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -3530,7 +3530,7 @@
       "containerId": null,
       "originalText": "\ndevstg A (Host) 10.10.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "arrow",
@@ -3712,7 +3712,7 @@
       "containerId": "38xxTJXtbxN5P-KiqRBvg",
       "originalText": "Zone: blob.core.windows.net\nForwarders: 10.0.0.5, 10.10.0.5",
       "lineHeight": 1.25,
-      "baseline": 45
+      "baseline": 43
     },
     {
       "type": "arrow",
@@ -3770,8 +3770,8 @@
     },
     {
       "type": "text",
-      "version": 1157,
-      "versionNonce": 634554696,
+      "version": 1158,
+      "versionNonce": 744116307,
       "isDeleted": false,
       "id": "muVtQRtSZOHpQiQPeFEmy",
       "fillStyle": "hachure",
@@ -3784,7 +3784,7 @@
       "y": -1570.7108726501465,
       "strokeColor": "#6741d9",
       "backgroundColor": "#a5d8ff",
-      "width": 419.74774169921875,
+      "width": 419.7477722167969,
       "height": 35,
       "seed": 1786714736,
       "groupIds": [],
@@ -3796,7 +3796,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729630651517,
+      "updated": 1730320696824,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -3848,7 +3848,7 @@
       "containerId": null,
       "originalText": "prodstg A (Host) 10.1.0.10",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -3928,7 +3928,7 @@
       "containerId": null,
       "originalText": "Access Control using Azure Policy\nApp Onwers don't have permission to \nmanage Privatelink DNS zone",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "line",
@@ -7093,7 +7093,7 @@
       "containerId": "s-FlaAwWXnGSTwl1hJrtg",
       "originalText": "Spoke1",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -7163,7 +7163,7 @@
       "containerId": "yDjxP9cuB_yLWA75XRr1E",
       "originalText": "Spoke2",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -7267,7 +7267,7 @@
       "containerId": "cfsX09vUGXaqHdNCdypjZ",
       "originalText": "Spoke 3",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -7337,7 +7337,7 @@
       "containerId": "m0VgxudhsjQD4mmmcnQcz",
       "originalText": "Spoke 4",
       "lineHeight": 1.25,
-      "baseline": 20
+      "baseline": 18
     },
     {
       "type": "rectangle",
@@ -7700,7 +7700,7 @@
       "containerId": null,
       "originalText": "Prod\nHub\n10.0.0.0/24",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -7736,7 +7736,7 @@
       "containerId": null,
       "originalText": "Dev\nHub\n10.10.0.0/24",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -7777,7 +7777,7 @@
       "containerId": null,
       "originalText": "PrivateDNSResolver\n10.0.0.5",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -7813,7 +7813,7 @@
       "containerId": null,
       "originalText": "ProdStgPE\n10.0.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "text",
@@ -7849,7 +7849,7 @@
       "containerId": null,
       "originalText": "DevStgPE\n10.10.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "text",
@@ -7926,7 +7926,7 @@
       "containerId": null,
       "originalText": "PrivateDNSResolver\n10.10.0.5",
       "lineHeight": 1.25,
-      "baseline": 67
+      "baseline": 68
     },
     {
       "type": "text",
@@ -7967,7 +7967,7 @@
       "containerId": null,
       "originalText": "VM Client",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -8012,7 +8012,7 @@
       "containerId": null,
       "originalText": "DNS Server",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -8712,8 +8712,8 @@
     },
     {
       "type": "text",
-      "version": 1129,
-      "versionNonce": 192349240,
+      "version": 1130,
+      "versionNonce": 426758749,
       "isDeleted": false,
       "id": "54hz9McG9hfDM8TDnsBzv",
       "fillStyle": "hachure",
@@ -8726,7 +8726,7 @@
       "y": -1575.897967391537,
       "strokeColor": "#1971c2",
       "backgroundColor": "#a5d8ff",
-      "width": 419.74774169921875,
+      "width": 419.7477722167969,
       "height": 35,
       "seed": 826747987,
       "groupIds": [],
@@ -8738,7 +8738,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729630651518,
+      "updated": 1730320696827,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -8785,7 +8785,7 @@
       "containerId": null,
       "originalText": "\ndevstg A (Host) 10.10.0.10",
       "lineHeight": 1.25,
-      "baseline": 42
+      "baseline": 43
     },
     {
       "type": "arrow",
@@ -8967,7 +8967,7 @@
       "containerId": "iw_Y_WgeSg2HZYIAZJn9v",
       "originalText": "Zone: blob.core.windows.net\nForwarders: 10.0.0.5, 10.10.0.5",
       "lineHeight": 1.25,
-      "baseline": 45
+      "baseline": 43
     },
     {
       "type": "arrow",
@@ -9025,8 +9025,8 @@
     },
     {
       "type": "text",
-      "version": 1226,
-      "versionNonce": 2035015752,
+      "version": 1227,
+      "versionNonce": 1408421363,
       "isDeleted": false,
       "id": "m8T-l01IL1SwjzlDMoBR9",
       "fillStyle": "hachure",
@@ -9039,7 +9039,7 @@
       "y": -1575.6478059026858,
       "strokeColor": "#6741d9",
       "backgroundColor": "#a5d8ff",
-      "width": 419.74774169921875,
+      "width": 419.7477722167969,
       "height": 35,
       "seed": 580310963,
       "groupIds": [],
@@ -9051,7 +9051,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1729630651518,
+      "updated": 1730320696828,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -9103,7 +9103,7 @@
       "containerId": null,
       "originalText": "prodstg A (Host) 10.1.0.10",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -9139,7 +9139,7 @@
       "containerId": null,
       "originalText": "Solution depends on the On-premies DNS solution.\nExamples:\n-> PowerDNS (BIND based)\n-> Add HA Proxy with DNS query inspection\ncontains \"prod\" send traffic to 10.0.0.5\ncontains \"dev\" send traffic to 10.10.0.5\n",
       "lineHeight": 1.25,
-      "baseline": 167
+      "baseline": 168
     },
     {
       "type": "text",
@@ -9184,7 +9184,7 @@
       "containerId": null,
       "originalText": "HA Proxy ",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "arrow",
@@ -9693,7 +9693,7 @@
       "containerId": null,
       "originalText": "Private Endpoint",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "text",
@@ -9729,7 +9729,7 @@
       "containerId": null,
       "originalText": "10.0.0.5",
       "lineHeight": 1.25,
-      "baseline": 17
+      "baseline": 18
     },
     {
       "type": "line",
