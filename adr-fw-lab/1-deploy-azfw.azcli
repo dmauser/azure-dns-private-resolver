@@ -1,0 +1,85 @@
+#Parameters
+rg=lab-dns-resolver #Define your resource group
+location=$(az group show --name $rg --query location -o tsv)
+username=azureuser
+password=Msft123Msft123
+dnsvmname=onprem-windns
+vmsize=Standard_DS1_v2
+
+AzurehubName=az-hub
+Azurespoke1Name=az-spk1
+Azure$hubvnetName=az-spk2
+hubvnet=$AzurehubName-vnet
+
+# Validate Firewall SKU
+if [ "$1" == "basic" ]; then
+    firewalltier=basic
+elif [ "$1" == "standard" ]; then
+    firewalltier=standard
+elif [ "$1" == "premium" ]; then
+    firewalltier=premium
+elif [ "$1" == "help" ]; then
+    echo "Usage: ./vwan-irazfw.sh [basic|standard|premium]"
+    exit 0
+elif [ -z "$1" ]; then
+    echo "No parameter passed, setting Azure Firewall to basic tier"
+    firewalltier=basic
+fi
+
+# Check if azure-firewall extension is installed if not install it
+if ! az extension list | grep -q azure-firewall; then
+    echo "azure-firewall extension is not installed, installing it now..."
+    az extension add --name azure-firewall --only-show-errors
+fi
+
+# Adding script starting time and finish time
+start=`date +%s`
+echo "Script started at $(date)"
+
+echo Deploying Azure Firewall...
+# Deploy Azure Firewall on $hubvnet 
+
+# Create Firewall Policy for each region:
+echo Creating Azure Firewall Policy for each region...
+az network firewall policy create -g $rg -n $location-azfw-policy --threat-intel-mode Alert --location $location --sku $firewalltier --output none
+
+# Create firewall policy rule collection group for each region:
+echo Creating Azure Firewall Policy Rule Collection Group for each region...
+az network firewall policy rule-collection-group create -g $rg --policy-name $location-azfw-policy -n NetworkRuleCollectionGroup --priority 200 --output none
+
+# Create a any to any Network Rule Collection for each region:
+# For $location-azfw-policy
+az network firewall policy rule-collection-group collection add-filter-collection \
+ --resource-group $rg \
+ --policy-name $location-azfw-policy \
+ --name GenericCollection \
+ --rcg-name NetworkRuleCollectionGroup \
+ --rule-type NetworkRule \
+ --rule-name AnytoAny \
+ --action Allow \
+ --ip-protocols "Any" \
+ --source-addresses "*" \
+ --destination-addresses  "*" \
+ --destination-ports "*" \
+ --collection-priority 100 \
+ --output none
+
+#Build Azure Firewall / Note this section takes few minutes to complete.
+echo Building Azure Firewall...
+
+# Delete route server subnet if it exists
+az network vnet subnet delete -g $rg --vnet-name $hubvnet -n RouteServerSubnet --output none --only-show-errors
+
+# Create Azure Firewall Subnet and Management Subnets
+az network vnet subnet create -g $rg --vnet-name $hubvnet -n AzureFirewallSubnet --address-prefixes 10.0.20.64/26 --output none
+az network public-ip create --name $hubvnet-azfw-pip --resource-group $rg --location $location --allocation-method static --sku standard --output none --only-show-errors
+
+az network vnet subnet create -g $rg --vnet-name $hubvnet -n AzureFirewallManagementSubnet --address-prefixes 10.0.20.128/26 --output none
+az network public-ip create --name $hubvnet-azfw-mgmtpip --resource-group $rg --location $location --allocation-method static --sku standard --output none --only-show-errors
+
+# Create Azure Firewall
+az network firewall create --name $hubvnet-azfw --resource-group $rg --location $location --firewall-policy $location-azfw-policy --vnet-name $hubvnet --sku AZFW_VNet --tier $firewalltier --conf-name FW-config --m-conf-name FW-mgmconfig --m-public-ip $hubvnet-azfw-mgmtpip --output none
+az network firewall create --name $hubvnet-azfw --resource-group $rg --location $location --firewall-policy $location-azfw-policy --vnet-name $hubvnet --sku AZFW_VNet --conf-name FW-config --m-conf-name FW-mgmconfig --m-public-ip $hubvnet-azfw-mgmtpip --output none
+# Add Public IP to the firewall
+az network firewall ip-config create --firewall-name $hubvnet-azfw --name FW-config --m-name FW-mgmconfig --public-ip-address $hubvnet-azfw-pip --m-public-ip-address $hubvnet-azfw-mgmtpip --m-vnet-name $hubvnet --resource-group $rg --vnet-name $hubvnet --output none
+az network firewall update --name $hubvnet-azfw --resource-group $rg --output none --only-show-errors
