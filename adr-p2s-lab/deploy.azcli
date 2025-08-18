@@ -1,0 +1,91 @@
+### AZ CLI 
+az login
+#List all your subscriptions
+az account list -o table --query "[].{Name:name, IsDefault:isDefault}"
+#List default Subscription being used
+az account list --query "[?isDefault == \`true\`].{Name:name, IsDefault:isDefault}" -o table
+
+
+#Parameters
+rgname=lab-p2s-client
+location=westus3
+vnetname=lab-p2s-vnet
+vnetprefix=10.20.0.0/24
+mainsubnetname=main
+mainsubnetprefix=10.20.0.0/27
+bastionsubnetprefix=10.20.0.64/26
+username=azureuser
+password=Msft123Msft123
+gwrg=lab-dns-resolver
+gwname=az-hub-vpngw
+
+# Create RG
+az group create -n $rgname -l $location -o none
+
+# Create VNET and main subnet
+az network vnet create -g $rgname -n $vnetname --address-prefix $vnetprefix --subnet-name $mainsubnetname --subnet-prefix $mainsubnetprefix  -o none
+
+# Create NSG and associate to main subnet
+az network nsg create -g $rgname -n $mainsubnetname-nsg -o none
+az network vnet subnet update -g $rgname --vnet-name $vnetname -n $mainsubnetname --network-security-group $mainsubnetname-nsg -o none
+
+# Create Window 11 VM
+az vm create \
+    -g $rgname \
+    -n win11 \
+    --image MicrosoftWindowsDesktop:windows-11:win11-24h2-pro:latest \
+    --admin-username $username \
+    --admin-password $password \
+    --vnet-name $vnetname \
+    --subnet $mainsubnetname \
+    --size Standard_DS1_v2 \
+    --public-ip-address "" \
+    --nsg "" \
+    --no-wait \
+    -o none
+
+# Wait for win11 VM deployment to complete
+az vm wait -g $rgname -n win11 --created
+echo "VM deployment completed"
+
+# Create Azure Bastion Subnet
+az network vnet subnet create -g $rgname --vnet-name $vnetname -n AzureBastionSubnet --address-prefixes $bastionsubnetprefix -o none
+# Create Azure Bastion Public IP 
+az network public-ip create -g $rgname -n azbastionpip --sku standard --location $location --allocation-method Static --zone 1 2 3 -o none
+# create Azure Bastion
+az network bastion create -g $rgname -n azbastion --public-ip-address azbastionpip --vnet-name $vnetname --location $location --no-wait -o none
+
+# Loop script to check Azure Bastion Deployment
+while true; do
+    if [ $(az network bastion show -g $rgname -n azbastion --query "provisioningState" -o tsv --only-show-errors) == "Succeeded" ]; then
+        echo "Azure Bastion deployment completed"
+        break
+    else
+        echo "Azure Bastion deployment still in progress"
+        sleep 10
+    fi
+done
+
+#Point to Site config OpenVPN + IKEv2 + Certificate
+az network vnet-gateway update -g $gwrg -n $gwname \
+--client-protocol OpenVPN IkeV2 \
+--address-prefixes 172.16.50.0/24 \
+--root-cert-name LabRootCA \
+--root-cert-data cert/labrootca.cer \
+--output none
+
+az network vnet-gateway update -g $gwrg -n $gwname --client-protocol OpenVPN IkeV2 --address-prefixes 172.16.50.0/24 --root-cert-name LabRootCA --root-cert-data cert/labrootca.cer --output none
+
+# Run the following command over Powershell inside the VM:
+Start-BitsTransfer -source "https://github.com/dmauser/azure-p2s-er-issue-repro/raw/main/cert/labuser.pfx" -destination "$env:windir\temp\labuser.pfx"
+Start-BitsTransfer -source "https://github.com/dmauser/azure-p2s-er-issue-repro/raw/main/cert/labrootca.cer" -destination "$env:windir\temp\labrootca.cer"
+$mypass="Password1234" | ConvertTo-SecureString -AsPlainText -Force 
+Import-PfxCertificate -FilePath "$env:windir\temp\labuser.pfx" -CertStoreLocation "Cert:\CurrentUser\My" -Password $mypass
+Import-Certificate -FilePath "$env:windir\temp\labrootca.cer" -CertStoreLocation "Cert:\LocalMachine\Root"
+# Install sysinternals psping tool 
+Start-BitsTransfer -source "https://live.sysinternals.com/psping.exe" -destination "$env:windir\system32\psping.exe"
+
+#Download VPN profiles 
+az network vnet-gateway vpn-client generate --name $gwname --processor-architecture Amd64 --resource-group $gwrg 
+vpnurl=$(az network vnet-gateway vpn-client show-url -g $gwrg -n $gwname -o tsv)
+echo "*** Copy $vpnurl to download client on P2S VPN client ***"
