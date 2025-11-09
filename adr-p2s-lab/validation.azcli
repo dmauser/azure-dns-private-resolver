@@ -1,0 +1,16 @@
+# Download and install Storage Explorer
+# https://azure.microsoft.com/en-us/features/storage-explorer/
+
+# Connect the storage using: BlobEndpoint
+
+# After connect to VPN:
+# NRPT - Check if populated via Powershell
+Get-DnsClientNrptPolicy | Format-Table NameSpace, NameServers -AutoSize
+Resolve-DnsName -Name hubstg12935.blob.core.windows.net -DnsOnly
+
+
+# ADF
+Resolve-DnsName -Name mauseradf.datafactory.azure.net 
+
+# ADF Portal
+Resolve-DnsName -Name adf.azure.com

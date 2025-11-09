@@ -77,8 +77,8 @@ az network vnet-gateway update -g $gwrg -n $gwname \
 az network vnet-gateway update -g $gwrg -n $gwname --client-protocol OpenVPN IkeV2 --address-prefixes 172.16.50.0/24 --root-cert-name LabRootCA --root-cert-data cert/labrootca.cer --output none
 
 # Run the following command over Powershell inside the VM:
-Start-BitsTransfer -source "https://github.com/dmauser/azure-p2s-er-issue-repro/raw/main/cert/labuser.pfx" -destination "$env:windir\temp\labuser.pfx"
-Start-BitsTransfer -source "https://github.com/dmauser/azure-p2s-er-issue-repro/raw/main/cert/labrootca.cer" -destination "$env:windir\temp\labrootca.cer"
+Start-BitsTransfer -source "https://github.com/dmauser/azure-dns-private-resolver/raw/refs/heads/main/adr-p2s-lab/cert/labuser-privkey.txt" -destination "$env:windir\temp\labuser.pfx"
+Start-BitsTransfer -source "https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/refs/heads/main/adr-p2s-lab/cert/labrootca.cer" -destination "$env:windir\temp\labrootca.cer"
 $mypass="Password1234" | ConvertTo-SecureString -AsPlainText -Force 
 Import-PfxCertificate -FilePath "$env:windir\temp\labuser.pfx" -CertStoreLocation "Cert:\CurrentUser\My" -Password $mypass
 Import-Certificate -FilePath "$env:windir\temp\labrootca.cer" -CertStoreLocation "Cert:\LocalMachine\Root"

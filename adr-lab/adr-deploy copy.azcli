@@ -1,35 +1,16 @@
 #!/bin/bash
 # Pre-Requisites
-if ! az extension list | grep -q dns-resolver; then
-    echo "dns-resolver extension is not installed, installing it now..."
-    az extension add --name dns-resolver --only-show-errors
-fi
+az extension add -n dns-resolver
 
 #Parameters
-read -p "Enter the region (hit enter for default: westus3): " location
-location=${location:-westus3} # Prompt for region, default to westus3 if not provided
 rg=lab-dns-resolver #Define your resource group
-
-# Prompt for username with default suggestion
-read -p "Enter username [azureuser]: " username
-username=${username:-azureuser}
-
-# Prompt for password with confirmation
-while true; do
-    read -s -p "Enter password: " password
-    echo
-    read -s -p "Confirm password: " password_confirm
-    echo
-    if [ "$password" = "$password_confirm" ] && [ -n "$password" ]; then
-        break
-    else
-        echo "Passwords do not match or are empty. Please try again."
-    fi
-done
+location=westus3 #Set location
+username=azureuser
+password=Msft123Msft123
+dnsvmname=onprem-windns
+vmsize=Standard_DS1_v2
 
 #Variables
-vmsize=Standard_DS1_v2
-dnsvmname=onprem-windns
 mypip=$(curl -4 ifconfig.io -s) #Captures your local Public IP and adds it to NSG to restrict access to SSH only for your Public IP.
 sharedkey=$(openssl rand -base64 24) #VPN Gateways S2S shared key is automatically generated. This works on Linux only.
 
@@ -64,56 +45,27 @@ OnPremgatewayASN=60010 #On-premises VPN Gateways ASN
 JsonAzure={\"hubName\":\"$AzurehubName\",\"addressSpacePrefix\":\"$AzurehubaddressSpacePrefix\",\"subnetName\":\"$AzurehubNamesubnetName\",\"subnet1Prefix\":\"$Azurehubsubnet1Prefix\",\"AzureFirewallPrefix\":\"$AzureFirewallPrefix\",\"gatewaySubnetPrefix\":\"$AzurehubgatewaySubnetPrefix\",\"rssubnetPrefix\":\"$AzurehubrssubnetPrefix\",\"bastionSubnetPrefix\":\"$AzureHubBastionSubnet\",\"spoke1Name\":\"$Azurespoke1Name\",\"spoke1AddressSpacePrefix\":\"$Azurespoke1AddressSpacePrefix\",\"spoke1Subnet1Prefix\":\"$Azurespoke1Subnet1Prefix\",\"spoke2Name\":\"$Azurespoke2Name\",\"spoke2AddressSpacePrefix\":\"$Azurespoke2AddressSpacePrefix\",\"spoke2Subnet1Prefix\":\"$Azurespoke2Subnet1Prefix\"}
 JsonOnPrem={\"name\":\"$OnPremName\",\"addressSpacePrefix\":\"$OnPremVnetAddressSpace\",\"subnet1Prefix\":\"$OnPremSubnet1prefix\",\"gatewaySubnetPrefix\":\"$OnPremgatewaySubnetPrefix\",\"bastionSubnetPrefix\":\"$OnPremAzureBastionSubnet\",\"asn\":\"$OnPremgatewayASN\"}
 
-# Detect if running in Azure Cloud Shell
-is_cloudshell=false
-if [[ "$ACC_TERM" == "1" ]] || [[ "$AZURE_HTTP_USER_AGENT" == *"cloud-shell"* ]] || [[ "$(hostname)" == SandboxHost-* ]]; then
-    is_cloudshell=true
-fi
-# Start a background keepalive process only in Cloud Shell
-if $is_cloudshell; then
-    echo "Azure Cloud Shell detected: starting keepalive to prevent timeout."
-    (while true; do echo -e "\nCloud Shell keepalive\n"; sleep 300; done) &
-    keepalive_pid=$!
-fi
-
-start=`date +%s`
-echo "Script started at $(date)"
-
 #Deploy base lab environment = Hub + VPN Gateway + VM and two Spokes with one VM on each.
 echo Deploying base lab: Hub with Spoke1 and 2, On-Premises and VPN using VNGs with BGP.
 echo "*** It will take around 30 minutes to finish the deployment ***"
-randomIdentifier1=$RANDOM 
 az group create --name $rg --location $location --output none
-az deployment group create --name lab-$randomIdentifier1 --resource-group $rg \
+az deployment group create --name lab-$RANDOM --resource-group $rg \
 --template-uri https://raw.githubusercontent.com/dmauser/azure-hub-spoke-base-lab/main/azuredeployv6.json \
 --parameters HubVPNGatewaytype=Active-Passive virtualMachineSize=$vmsize deployHubVPNGateway=true deployOnpremisesVPNGateway=true enableBgp=true gatewaySku=VpnGw1 vpnGatewayGeneration=Generation1 Restrict_SSH_VM_AccessByPublicIP=$mypip sharedKey=$sharedkey deployHubERGateway=false Onprem=$JsonOnPrem Azure=$JsonAzure VmAdminUsername=$username VmAdminPassword=$password deployBastion=true \
---output none \
---no-wait
+--output none
 
-# Add loop script to check deployment status every 15 seconds
-echo "Waiting for base lab deployment to complete..."
-while true; do
-    deployment_status=$(az deployment group show --resource-group $rg --name lab-$randomIdentifier1 --query properties.provisioningState -o tsv 2>/dev/null)
-    if [[ "$deployment_status" == "Succeeded" ]]; then
-        echo "Base lab deployment completed successfully."
-        break
-    elif [[ "$deployment_status" == "Failed" ]]; then
-        echo "Base lab deployment failed. Please check the Azure portal for details."
-    else
-        echo "Deployment status: ${deployment_status:-NotStarted}. Checking again in 15 seconds..."
-        sleep 15
-    fi
-done
+# Add Deployment checking
 
 #Creating Storage Accounts (boot diagnostics + serial console)
 echo Creating Hub and Spokes storage accounts for serial console and private link.
+randomIdentifier1=$RANDOM 
 az storage account create -n hubstg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
 az storage account create -n spk1stg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
 az storage account create -n spk2stg$randomIdentifier1 -g $rg -l $location --sku Standard_LRS -o none
 
 #Enabling boot diagnostics for all VMs in the resource group (Serial console)
 echo Enabling boot diagnostics for all VMs in the resource group for serial console access
-az vm boot-diagnostics enable --ids $(az vm list -g $rg --query '[].{id:id}' -o tsv) -o none &>/dev/null &
+az vm boot-diagnostics enable --ids $(az vm list -g $rg --query [].id -o tsv) -o none
 
 ### Installing tools for networking connectivity validation such as traceroute, tcptraceroute, iperf and others (check link below for more details) 
 echo Installing tools for networking connectivity validation such as traceroute, tcptraceroute, iperf and others  
@@ -332,8 +284,3 @@ echo Restarting onprem VMs to commit the new VNET DNS settings.
 az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{id:id}' -o tsv) --no-wait --output none
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.
-
-end=`date +%s`
-runtime=$((end-start))
-echo "Script finished at $(date)"
-echo "Total script execution time: $(($runtime / 3600)) hours $((($runtime / 60) % 60)) minutes and $(($runtime % 60)) seconds."
