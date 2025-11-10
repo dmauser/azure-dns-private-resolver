@@ -75,7 +75,9 @@ Please, use the [issues tab](https://github.com/dmauser/azure-dns-private-resolv
 The lab is also available in the above .azcli that you can rename as .sh (shell script) and execute. You can open [Azure Cloud Shell (Bash)](https://shell.azure.com) and run the following commands to build the entire lab:
 
 ```bash
-curl -s https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/adr-deploy.azcli | bash
+wget -q -O adr-deploy.sh https://raw.githubusercontent.com/dmauser/azure-dns-private-resolver/main/adr-lab/adr-deploy.azcli
+chmod +x adr-deploy.sh
+./adr-deploy.sh
 ```
 
 **Note:** Azure Cloud Shell has a timeout of 20 min of inactivity. Please, ensure you have an active window or issue a few times enter on your keyboard during the deployment. An alternative for Azure Cloud Shell is to install AZCLI for your Linux distribution or get Linux for Windows via WSL2. See more information in [Set up a WSL development environment](https://docs.microsoft.com/en-us/windows/wsl/setup/environment)
