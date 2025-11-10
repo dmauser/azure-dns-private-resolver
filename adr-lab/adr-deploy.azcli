@@ -333,6 +333,12 @@ az vm restart --ids $(az vm list -g $rg --query '[?contains(name,`'onprem'`)].{i
 echo Follow the validation script to test the name resolution.
 echo echo Lab deployment has finished.
 
+# Kill keepalive process if running
+if $is_cloudshell && [[ -n "$keepalive_pid" ]]; then
+    kill $keepalive_pid >/dev/null 2>&1
+    echo "Stopped keepalive process"
+fi
+
 end=`date +%s`
 runtime=$((end-start))
 echo "Script finished at $(date)"
